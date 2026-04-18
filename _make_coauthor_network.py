@@ -20,7 +20,8 @@ OUT_JSON = 'coauthor_network.json'
 OUT_HTML = 'coauthor_network.html'
 
 MIN_AUTHOR_PAPERS = 5
-MIN_EDGE_COLLABS  = 5
+MIN_EDGE_COLLABS  = 2   # 데이터에 포함되는 최소 공저 횟수
+DEFAULT_EDGE_VIEW = 5   # HTML 슬라이더 초기값 (≤ MIN_EDGE_COLLABS 이상)
 
 _dblp = re.compile(r'\s+\d{4}$')
 def clean_author(s):
@@ -209,8 +210,8 @@ HTML = r"""<!DOCTYPE html>
   <div class="meta" id="meta-text"></div>
   <div class="slider-row">
     <span style="font-size:11px;">Edge threshold</span>
-    <input type="range" id="edge-slider" min="__MIN_EDGE__" max="30" value="__MIN_EDGE__">
-    <span class="val" id="edge-val">__MIN_EDGE__</span>
+    <input type="range" id="edge-slider" min="__MIN_EDGE__" max="30" value="__DEFAULT_EDGE__">
+    <span class="val" id="edge-val">__DEFAULT_EDGE__</span>
   </div>
   <div class="slider-row">
     <span style="font-size:11px;">Sparsity</span>
@@ -274,11 +275,16 @@ let width = canvas.width = window.innerWidth;
 let height = canvas.height = window.innerHeight;
 
 // --- Build working data (copies we can filter on) ---
+const INITIAL_EDGE_THRESHOLD = __DEFAULT_EDGE__;
 const allNodes = DATA.nodes.map(d => ({ ...d }));
-const allEdges = DATA.edges.map(d => ({ ...d }));
-let nodes = allNodes.slice();
-let edges = allEdges.slice();
-let nodeById = new Map(nodes.map(n => [n.id, n]));
+const allEdges = DATA.edges.map(d => ({ ...d }));  // source/target are ids here
+const nodeById = new Map(allNodes.map(n => [n.id, n]));
+
+// Initial filter to default threshold so the page opens at a sensible view
+let edges = allEdges.filter(d => d.weight >= INITIAL_EDGE_THRESHOLD).map(d => ({ ...d }));
+const usedIdsInit = new Set();
+edges.forEach(e => { usedIdsInit.add(e.source); usedIdsInit.add(e.target); });
+let nodes = allNodes.filter(n => usedIdsInit.has(n.id));
 edges.forEach(e => { e.source = nodeById.get(e.source); e.target = nodeById.get(e.target); });
 
 // Year color scale (inferno: dark → bright for older → newer)
@@ -699,15 +705,17 @@ function fullReset() {
   btnHubs.textContent = '▸ Top 100 hubs (most co-authors)';
 
   // Reset sliders to defaults
-  slider.value = META.min_edge_collabs;
-  sliderVal.textContent = META.min_edge_collabs;
+  slider.value = INITIAL_EDGE_THRESHOLD;
+  sliderVal.textContent = INITIAL_EDGE_THRESHOLD;
   sparsitySlider.value = INITIAL_SPARSITY;
   sparsityVal.textContent = INITIAL_SPARSITY;
   sparsity = INITIAL_SPARSITY;
 
-  // Reset graph to full unfiltered
-  edges = allEdges.map(d => ({ source: d.source, target: d.target, weight: d.weight }));
-  nodes = allNodes.slice();
+  // Reset graph to default-threshold subset
+  edges = allEdges.filter(d => d.weight >= INITIAL_EDGE_THRESHOLD).map(d => ({ source: d.source, target: d.target, weight: d.weight }));
+  const usedNow = new Set();
+  edges.forEach(e => { usedNow.add(e.source); usedNow.add(e.target); });
+  nodes = allNodes.filter(n => usedNow.has(n.id));
   // Rebind source/target references to node objects
   edges.forEach(e => {
     if (typeof e.source !== 'object') e.source = nodeById.get(e.source);
@@ -799,7 +807,8 @@ window.addEventListener('resize', () => {
 
 html_out = (HTML
             .replace('__DATA__', json.dumps(out, ensure_ascii=False))
-            .replace('__MIN_EDGE__', str(MIN_EDGE_COLLABS)))
+            .replace('__MIN_EDGE__', str(MIN_EDGE_COLLABS))
+            .replace('__DEFAULT_EDGE__', str(DEFAULT_EDGE_VIEW)))
 
 with open(OUT_HTML, 'w', encoding='utf-8') as f:
     f.write(html_out)
