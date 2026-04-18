@@ -604,8 +604,65 @@ d3.select(canvas).call(d3.drag()
 );
 
 // --- Buttons ---
+const INITIAL_SPARSITY = 3.5;
 let frozen = false;
-document.getElementById('restart').onclick = () => { simulation.alpha(0.6).restart(); frozen = false; document.getElementById('freeze').textContent = 'Freeze'; };
+
+function fullReset() {
+  // Clear user state
+  selectedNode = null;
+  frozen = false;
+  showDegrees = false;
+  document.getElementById('show-degrees').checked = false;
+  document.getElementById('tier-legend').style.display = 'none';
+  document.getElementById('selected').innerHTML = '';
+  edgeTier.clear();
+
+  // Reset search + hubs panels
+  searchInput.value = '';
+  resultsDiv.innerHTML = '';
+  hubsList.style.display = 'none';
+  btnHubs.textContent = '▸ Top 100 hubs (most co-authors)';
+
+  // Reset sliders to defaults
+  slider.value = META.min_edge_collabs;
+  sliderVal.textContent = META.min_edge_collabs;
+  sparsitySlider.value = INITIAL_SPARSITY;
+  sparsityVal.textContent = INITIAL_SPARSITY;
+  sparsity = INITIAL_SPARSITY;
+
+  // Reset graph to full unfiltered
+  edges = allEdges.map(d => ({ source: d.source, target: d.target, weight: d.weight }));
+  nodes = allNodes.slice();
+  // Rebind source/target references to node objects
+  edges.forEach(e => {
+    if (typeof e.source !== 'object') e.source = nodeById.get(e.source);
+    if (typeof e.target !== 'object') e.target = nodeById.get(e.target);
+  });
+
+  // Scramble initial positions so layout forms fresh
+  for (const n of nodes) {
+    n.fx = null; n.fy = null;
+    n.x = width / 2 + (Math.random() - 0.5) * 200;
+    n.y = height / 2 + (Math.random() - 0.5) * 200;
+    n.vx = 0; n.vy = 0;
+  }
+
+  buildAdjacency();
+
+  simulation.nodes(nodes);
+  simulation.force('link').links(edges).distance(linkDistance);
+  simulation.force('charge').strength(CHARGE_BASE * sparsity);
+  simulation.force('center', d3.forceCenter(width / 2, height / 2));
+  simulation.alpha(1).restart();
+
+  // Reset zoom
+  d3.select(canvas).transition().duration(450)
+    .call(zoom.transform, d3.zoomIdentity);
+
+  document.getElementById('freeze').textContent = 'Freeze';
+}
+
+document.getElementById('restart').onclick = fullReset;
 document.getElementById('freeze').onclick = () => {
   frozen = !frozen;
   if (frozen) { simulation.stop(); document.getElementById('freeze').textContent = 'Resume'; }
