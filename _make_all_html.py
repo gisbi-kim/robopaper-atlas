@@ -460,10 +460,12 @@ function renderBarChart() {
     if (!counts[r[1]]) counts[r[1]] = { 'ICRA': 0, 'IROS': 0, 'RA-L': 0, 'T-RO': 0, 'RSS': 0 };
     if (counts[r[1]][r[0]] !== undefined) counts[r[1]][r[0]]++;
   }
-  const years = Object.keys(counts).map(Number).sort((a, b) => a - b);
+  // x축은 항상 YMIN..YMAX 고정 (키워드/필터와 무관하게 동일한 시간축으로 비교)
+  const years = [];
+  for (let y = YMIN; y <= YMAX; y++) years.push(y);
   const datasets = VENUES.map(v => ({
     label: v,
-    data: years.map(y => counts[y][v]),
+    data: years.map(y => (counts[y] && counts[y][v]) || 0),
     backgroundColor: VENUE_COLOR[v],
   }));
   if (barChart) barChart.destroy();
