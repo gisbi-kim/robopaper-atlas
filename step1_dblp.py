@@ -97,6 +97,7 @@ def main():
         ('ral',  'journals/ral',  'RA-L', range(2016, 2026)),  # RA-L 창간 2016
         ('tro',  'journals/trob', 'T-RO', range(2004, 2026)),  # T-RO: 2004~ (이전 T-RA는 제외)
         ('rss',  'conf/rss',      'RSS',  range(2005, 2026)),  # Robotics: Science and Systems
+        ('ijrr', 'journals/ijrr', 'IJRR', range(1982, 2026)),  # Int. J. of Robotics Research (창간 1982)
     ]
 
     jobs = []

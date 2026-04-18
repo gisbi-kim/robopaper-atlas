@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>RoboPaper Atlas — 40 years of ICRA / IROS / RA-L / T-RO / RSS papers</title>
-<meta name="description" content="Interactive explorer for 71,000+ robotics papers across ICRA, IROS, RA-L, T-RO, and RSS (1984~2025). Full-text search, year filter, citation sort.">
+<title>RoboPaper Atlas — 40+ years of ICRA / IROS / RA-L / T-RO / RSS / IJRR papers</title>
+<meta name="description" content="Interactive explorer for 73,000+ robotics papers across ICRA, IROS, RA-L, T-RO, RSS, and IJRR (1982~2025). Full-text search, year filter, citation sort.">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   * { box-sizing: border-box; }
@@ -24,6 +24,7 @@
   .b-ral  { background: #2ca02c; }
   .b-tro  { background: #d62728; }
   .b-rss  { background: #9467bd; }
+  .b-ijrr { background: #8c564b; }
 
   .stats {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -92,7 +93,7 @@
 
 <h1>RoboPaper Atlas</h1>
 <div class="tagline">
-  40 years of robotics research, indexed. 71,000+ papers from ICRA, IROS, RA-L, T-RO, and RSS —
+  Four decades of robotics research, indexed. 73,000+ papers from ICRA, IROS, RA-L, T-RO, RSS, and IJRR —
   searchable, filterable, ranked by citation impact.
 </div>
 
@@ -102,23 +103,24 @@
   <span class="badge b-ral">RA-L 2016~</span>
   <span class="badge b-tro">T-RO 2004~</span>
   <span class="badge b-rss">RSS 2005~</span>
+  <span class="badge b-ijrr">IJRR 1982~</span>
 </div>
 
 <div class="stats">
-  <div class="stat"><div class="n">71,279</div><div class="l">Papers (deduped)</div></div>
-  <div class="stat"><div class="n">5</div><div class="l">Venues</div></div>
-  <div class="stat"><div class="n">1984~2025</div><div class="l">Years</div></div>
+  <div class="stat"><div class="n">73,937</div><div class="l">Papers (deduped)</div></div>
+  <div class="stat"><div class="n">6</div><div class="l">Venues</div></div>
+  <div class="stat"><div class="n">1982~2025</div><div class="l">Years</div></div>
   <div class="stat"><div class="n">99.0%</div><div class="l">Abstract coverage</div></div>
 </div>
 
 <h2>Explore</h2>
 <div class="cards">
-  <a class="card primary" href="icra_iros_ral_tro_rss_explorer.html">
+  <a class="card primary" href="icra_iros_ral_tro_rss_ijrr_explorer.html">
     <div class="title">Full Explorer <span class="pill">MAIN</span></div>
-    <div class="desc">All 71k papers. Filter by year / venue / min-citations, search title & author, sort any column, paginate. Hover a title to preview its abstract.</div>
+    <div class="desc">All 73k papers. Filter by year / venue / min-citations, search title & author, sort any column, paginate. Hover a title to preview its abstract.</div>
     <div class="arrow">Open →</div>
   </a>
-  <a class="card" href="icra_iros_ral_tro_rss_by_year.html">
+  <a class="card" href="icra_iros_ral_tro_rss_ijrr_by_year.html">
     <div class="title">Papers by Year</div>
     <div class="desc">Annual paper counts per venue. Stacked, grouped, and line views — see the rise of RA-L, the steady growth of ICRA/IROS.</div>
     <div class="arrow">Open →</div>
@@ -132,7 +134,7 @@
 
 <h2>Download the dataset</h2>
 <div class="downloads">
-  <a class="dl" href="icra_iros_ral_tro_rss_all.xlsx">
+  <a class="dl" href="icra_iros_ral_tro_rss_ijrr_all.xlsx">
     <span>📊 Excel (.xlsx)</span> <span class="sz">38 MB · 5 sheets</span>
   </a>
 </div>
@@ -153,6 +155,7 @@
     <tr><th>Venue</th><th>DBLP stream</th><th>Since</th></tr>
     <tr><td>ICRA</td><td><code>conf/icra</code></td><td>1984</td></tr>
     <tr><td>IROS</td><td><code>conf/iros</code></td><td>1988</td></tr>
+    <tr><td>IJRR</td><td><code>journals/ijrr</code></td><td>1982</td></tr>
     <tr><td>T-RO</td><td><code>journals/trob</code></td><td>2004</td></tr>
     <tr><td>RSS</td><td><code>conf/rss</code></td><td>2005</td></tr>
     <tr><td>RA-L</td><td><code>journals/ral</code></td><td>2016</td></tr>

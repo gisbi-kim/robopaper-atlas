@@ -23,10 +23,10 @@ try:
 except OSError:
     AS_OF = datetime.now().date().isoformat()
 print(f"Citations as of: {AS_OF}")
-OUT_XLSX = "icra_iros_ral_tro_rss_all.xlsx"
+OUT_XLSX = "icra_iros_ral_tro_rss_ijrr_all.xlsx"
 
 # DOI 중복 시 어느 venue를 남길지 우선순위 (저널/선택도 높은 conf 우선)
-VENUE_PRIORITY = {'T-RO': 0, 'RA-L': 1, 'RSS': 2, 'ICRA': 3, 'IROS': 4}
+VENUE_PRIORITY = {'T-RO': 0, 'IJRR': 1, 'RA-L': 2, 'RSS': 3, 'ICRA': 4, 'IROS': 5}
 
 with open(INPUT, encoding='utf-8') as f:
     papers = json.load(f)
@@ -142,6 +142,7 @@ summary_rows = [
     ('RA-L', int((df['venue'] == 'RA-L').sum())),
     ('T-RO', int((df['venue'] == 'T-RO').sum())),
     ('RSS',  int((df['venue'] == 'RSS').sum())),
+    ('IJRR', int((df['venue'] == 'IJRR').sum())),
     ('Year range', f"{df['year'].min()} ~ {df['year'].max()}"),
     ('With DOI', f"{int(df['doi'].astype(bool).sum())} ({100*df['doi'].astype(bool).mean():.1f}%)"),
     ('With abstract', f"{int((df['abstract'].astype(str).str.len() > 0).sum())} ({100*(df['abstract'].astype(str).str.len() > 0).mean():.1f}%)"),

@@ -51,7 +51,7 @@ HTML = r"""<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>ICRA / IROS / RA-L / T-RO / RSS Top 100 Most Cited Papers</title>
+<title>ICRA / IROS / RA-L / T-RO / RSS / IJRR Top 100 Most Cited Papers</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   body { font-family: -apple-system, "Segoe UI", sans-serif; margin: 24px; background: #fafafa; color: #222; }
@@ -84,7 +84,7 @@ HTML = r"""<!DOCTYPE html>
 <body>
 
 <div class="brand"><a href="index.html">RoboPaper Atlas</a></div>
-<h1>ICRA / IROS / RA-L / T-RO / RSS Top 100 Most Cited Papers</h1>
+<h1>ICRA / IROS / RA-L / T-RO / RSS / IJRR Top 100 Most Cited Papers</h1>
 <div class="sub" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
   <span>OpenAlex 기준 인용수 · 출간 연도 분포 (최신 논문일수록 인용 축적 기간이 짧아 적게 잡힘)</span>
   <span style="color:#888; text-align:right; line-height:1.4;">
@@ -214,7 +214,7 @@ html = (HTML
         .replace('__BY_YEAR_JSON__', json.dumps(by_year))
         .replace('__TOP_JSON__', json.dumps(top, ensure_ascii=False)))
 
-OUT = 'icra_iros_ral_tro_rss_top100.html'
+OUT = 'icra_iros_ral_tro_rss_ijrr_top100.html'
 with open(OUT, 'w', encoding='utf-8') as f:
     f.write(html)
 print(f'wrote {OUT} ({len(html):,} chars)')

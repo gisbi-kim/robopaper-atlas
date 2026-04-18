@@ -1,4 +1,4 @@
-"""연도별 편수 시각화 HTML 생성 (ICRA + IROS + RA-L + T-RO + RSS, deduped)"""
+"""연도별 편수 시각화 HTML 생성 (ICRA + IROS + RA-L + T-RO + RSS + IJRR, deduped)"""
 import json
 import os
 from datetime import datetime
@@ -9,16 +9,16 @@ try:
 except OSError:
     AS_OF = datetime.now().date().isoformat()
 
-df = pd.read_excel('icra_iros_ral_tro_rss_all.xlsx', sheet_name='by_year_pivot')
+df = pd.read_excel('icra_iros_ral_tro_rss_ijrr_all.xlsx', sheet_name='by_year_pivot')
 df['year'] = df['year'].astype(int)
-for c in ['ICRA', 'IROS', 'RA-L', 'T-RO', 'RSS']:
+for c in ['ICRA', 'IROS', 'RA-L', 'T-RO', 'RSS', 'IJRR']:
     if c not in df.columns:
         df[c] = 0
     df[c] = df[c].fillna(0).astype(int)
-df['total'] = df[['ICRA', 'IROS', 'RA-L', 'T-RO', 'RSS']].sum(axis=1)
+df['total'] = df[['ICRA', 'IROS', 'RA-L', 'T-RO', 'RSS', 'IJRR']].sum(axis=1)
 df = df.sort_values('year', ascending=True).reset_index(drop=True)
 
-rows = [[int(r['year']), int(r['ICRA']), int(r['IROS']), int(r['RA-L']), int(r['T-RO']), int(r['RSS'])]
+rows = [[int(r['year']), int(r['ICRA']), int(r['IROS']), int(r['RA-L']), int(r['T-RO']), int(r['RSS']), int(r['IJRR'])]
         for r in df.to_dict('records')]
 
 total_icra = int(df['ICRA'].sum())
@@ -26,7 +26,8 @@ total_iros = int(df['IROS'].sum())
 total_ral  = int(df['RA-L'].sum())
 total_tro  = int(df['T-RO'].sum())
 total_rss  = int(df['RSS'].sum())
-grand_total = total_icra + total_iros + total_ral + total_tro + total_rss
+total_ijrr = int(df['IJRR'].sum())
+grand_total = total_icra + total_iros + total_ral + total_tro + total_rss + total_ijrr
 
 # 최다 연도 찾기
 peak_row = df.loc[df['total'].idxmax()]
@@ -37,7 +38,7 @@ HTML = r"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>ICRA / IROS / RA-L / T-RO / RSS Papers by Year</title>
+<title>ICRA / IROS / RA-L / T-RO / RSS / IJRR Papers by Year</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   body { font-family: -apple-system, "Segoe UI", sans-serif; margin: 24px; background: #fafafa; color: #222; }
@@ -63,6 +64,7 @@ HTML = r"""<!DOCTYPE html>
   .card.ral  { border-top: 3px solid #2ca02c; }
   .card.tro  { border-top: 3px solid #d62728; }
   .card.rss  { border-top: 3px solid #9467bd; }
+  .card.ijrr { border-top: 3px solid #8c564b; }
   table { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 12px; }
   th, td { border-bottom: 1px solid #eee; padding: 6px 10px; text-align: right; }
   th:first-child, td:first-child { text-align: left; }
@@ -72,13 +74,14 @@ HTML = r"""<!DOCTYPE html>
   td.c-ral  { color: #2ca02c; font-variant-numeric: tabular-nums; }
   td.c-tro  { color: #d62728; font-variant-numeric: tabular-nums; }
   td.c-rss  { color: #9467bd; font-variant-numeric: tabular-nums; }
+  td.c-ijrr { color: #8c564b; font-variant-numeric: tabular-nums; }
   td.c-total { font-weight: 600; font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body>
 
 <div class="brand"><a href="index.html">RoboPaper Atlas</a></div>
-<h1>ICRA / IROS / RA-L / T-RO / RSS Papers by Year</h1>
+<h1>ICRA / IROS / RA-L / T-RO / RSS / IJRR Papers by Year</h1>
 <div class="sub" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
   <span>DBLP-based · __YMIN__ ~ __YMAX__ · __TOTAL__ papers (DOI-deduped)</span>
   <span style="color:#888; text-align:right; line-height:1.4;">
@@ -93,6 +96,7 @@ HTML = r"""<!DOCTYPE html>
   <div class="card ral"><div class="num">__RAL_TOT__</div><div class="label">RA-L (2016~)</div></div>
   <div class="card tro"><div class="num">__TRO_TOT__</div><div class="label">T-RO (2004~)</div></div>
   <div class="card rss"><div class="num">__RSS_TOT__</div><div class="label">RSS (2005~)</div></div>
+  <div class="card ijrr"><div class="num">__IJRR_TOT__</div><div class="label">IJRR (1982~)</div></div>
   <div class="card"><div class="num">__TOTAL__</div><div class="label">Grand total</div></div>
   <div class="card"><div class="num">__PEAK_YEAR__ (__PEAK_TOT__)</div><div class="label">Peak year</div></div>
 </div>
@@ -107,12 +111,12 @@ HTML = r"""<!DOCTYPE html>
 </div>
 
 <table>
-  <thead><tr><th>Year</th><th>ICRA</th><th>IROS</th><th>RA-L</th><th>T-RO</th><th>RSS</th><th>Total</th></tr></thead>
+  <thead><tr><th>Year</th><th>ICRA</th><th>IROS</th><th>RA-L</th><th>T-RO</th><th>RSS</th><th>IJRR</th><th>Total</th></tr></thead>
   <tbody id="tbody"></tbody>
 </table>
 
 <script>
-// rows: [year, ICRA, IROS, RA-L, T-RO, RSS]
+// rows: [year, ICRA, IROS, RA-L, T-RO, RSS, IJRR]
 const raw = __ROWS_JSON__;
 raw.sort((a, b) => a[0] - b[0]);
 const labels = raw.map(r => r[0]);
@@ -121,16 +125,18 @@ const iros = raw.map(r => r[2]);
 const ral  = raw.map(r => r[3]);
 const tro  = raw.map(r => r[4]);
 const rss  = raw.map(r => r[5]);
+const ijrr = raw.map(r => r[6]);
 
 const ICRA_COLOR = '#1f77b4';
 const IROS_COLOR = '#ff7f0e';
 const RAL_COLOR  = '#2ca02c';
 const TRO_COLOR  = '#d62728';
 const RSS_COLOR  = '#9467bd';
+const IJRR_COLOR = '#8c564b';
 
 const tbody = document.getElementById('tbody');
-[...raw].reverse().forEach(([y, a, b, c, d, e]) => {
-  const tot = a + b + c + d + e;
+[...raw].reverse().forEach(([y, a, b, c, d, e, f]) => {
+  const tot = a + b + c + d + e + f;
   const tr = document.createElement('tr');
   tr.innerHTML = `<td>${y}</td>`
     + `<td class="c-icra">${a.toLocaleString()}</td>`
@@ -138,6 +144,7 @@ const tbody = document.getElementById('tbody');
     + `<td class="c-ral">${c.toLocaleString()}</td>`
     + `<td class="c-tro">${d.toLocaleString()}</td>`
     + `<td class="c-rss">${e.toLocaleString()}</td>`
+    + `<td class="c-ijrr">${f.toLocaleString()}</td>`
     + `<td class="c-total">${tot.toLocaleString()}</td>`;
   tbody.appendChild(tr);
 });
@@ -170,7 +177,8 @@ function render(mode) {
           { label: 'IROS', data: iros, borderColor: IROS_COLOR, backgroundColor: IROS_COLOR + '33', tension: 0.25, fill: false },
           { label: 'RA-L', data: ral,  borderColor: RAL_COLOR,  backgroundColor: RAL_COLOR  + '33', tension: 0.25, fill: false },
           { label: 'T-RO', data: tro,  borderColor: TRO_COLOR,  backgroundColor: TRO_COLOR  + '33', tension: 0.25, fill: false },
-          { label: 'RSS',  data: rss,  borderColor: RSS_COLOR,  backgroundColor: RSS_COLOR  + '33', tension: 0.25, fill: false }
+          { label: 'RSS',  data: rss,  borderColor: RSS_COLOR,  backgroundColor: RSS_COLOR  + '33', tension: 0.25, fill: false },
+          { label: 'IJRR', data: ijrr, borderColor: IJRR_COLOR, backgroundColor: IJRR_COLOR + '33', tension: 0.25, fill: false }
         ]
       },
       options: common
@@ -186,7 +194,8 @@ function render(mode) {
           { label: 'IROS', data: iros, backgroundColor: IROS_COLOR },
           { label: 'RA-L', data: ral,  backgroundColor: RAL_COLOR  },
           { label: 'T-RO', data: tro,  backgroundColor: TRO_COLOR  },
-          { label: 'RSS',  data: rss,  backgroundColor: RSS_COLOR  }
+          { label: 'RSS',  data: rss,  backgroundColor: RSS_COLOR  },
+          { label: 'IJRR', data: ijrr, backgroundColor: IJRR_COLOR }
         ]
       },
       options: {
@@ -224,13 +233,14 @@ html_out = (HTML
             .replace('__RAL_TOT__',  f'{total_ral:,}')
             .replace('__TRO_TOT__',  f'{total_tro:,}')
             .replace('__RSS_TOT__',  f'{total_rss:,}')
+            .replace('__IJRR_TOT__', f'{total_ijrr:,}')
             .replace('__TOTAL__', f'{grand_total:,}')
             .replace('__AS_OF__', AS_OF)
             .replace('__PEAK_YEAR__', str(peak_year))
             .replace('__PEAK_TOT__', f'{peak_total:,}')
             .replace('__ROWS_JSON__', json.dumps(rows)))
 
-OUT = 'icra_iros_ral_tro_rss_by_year.html'
+OUT = 'icra_iros_ral_tro_rss_ijrr_by_year.html'
 with open(OUT, 'w', encoding='utf-8') as f:
     f.write(html_out)
 print(f'wrote {OUT} ({len(html_out):,} chars)')
