@@ -87,7 +87,10 @@ HTML = r"""<!DOCTYPE html>
 <h1>ICRA / IROS / RA-L / T-RO / RSS Top 100 Most Cited Papers</h1>
 <div class="sub">
   OpenAlex 기준 인용수 · 출간 연도 분포 (최신 논문일수록 인용 축적 기간이 짧아 적게 잡힘)
-  <span style="float:right; color:#888;">Citations as of __AS_OF__</span>
+  <span style="float:right; color:#888; text-align:right; line-height:1.4;">
+    <a href="REFRESH.md" style="color:#1f77b4; text-decoration:none; font-size:11px;">How to refresh? ↻</a><br>
+    Citations as of __AS_OF__
+  </span>
 </div>
 
 <div class="summary">
