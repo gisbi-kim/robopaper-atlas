@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RoboPaper Atlas — 40 years of ICRA / IROS / RA-L / T-RO / RSS papers</title>
+<meta name="description" content="Interactive explorer for 71,000+ robotics papers across ICRA, IROS, RA-L, T-RO, and RSS (1984~2025). Full-text search, year filter, citation sort.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", "Helvetica Neue", sans-serif;
+    max-width: 920px; margin: 0 auto; padding: 40px 24px;
+    color: #222; background: #fafafa; line-height: 1.6;
+  }
+  h1 { font-size: 34px; margin: 0 0 8px; letter-spacing: -0.5px; }
+  .tagline { color: #666; font-size: 16px; margin-bottom: 32px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 32px; }
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 4px;
+    font-size: 12px; font-weight: 600; color: #fff;
+  }
+  .b-icra { background: #1f77b4; }
+  .b-iros { background: #ff7f0e; }
+  .b-ral  { background: #2ca02c; }
+  .b-tro  { background: #d62728; }
+  .b-rss  { background: #9467bd; }
+
+  .stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px; margin-bottom: 32px;
+  }
+  .stat { background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 14px 16px; }
+  .stat .n { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+  h2 { font-size: 20px; margin: 40px 0 12px; }
+  .cards {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+  }
+  .card {
+    background: #fff; border: 1px solid #e5e5e5; border-radius: 8px;
+    padding: 18px 20px; text-decoration: none; color: inherit;
+    transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
+    display: block;
+  }
+  .card:hover {
+    transform: translateY(-2px); border-color: #1f77b4;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  .card .title { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+  .card .desc  { font-size: 13px; color: #666; }
+  .card .arrow { color: #1f77b4; font-weight: 600; font-size: 13px; margin-top: 8px; }
+
+  .downloads { display: flex; flex-wrap: wrap; gap: 10px; }
+  .dl {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border: 1px solid #ccc; border-radius: 6px;
+    text-decoration: none; color: #333; font-size: 13px; background: #fff;
+  }
+  .dl:hover { border-color: #1f77b4; color: #1f77b4; }
+  .dl .sz { color: #999; font-size: 11px; }
+
+  .sources { font-size: 13px; color: #555; }
+  .sources table { border-collapse: collapse; margin-top: 8px; font-size: 13px; }
+  .sources th, .sources td { padding: 4px 12px 4px 0; text-align: left; }
+  .sources th { color: #888; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid #e5e5e5; color: #888; font-size: 12px; }
+  footer a { color: #666; }
+</style>
+</head>
+<body>
+
+<h1>RoboPaper Atlas</h1>
+<div class="tagline">
+  40 years of robotics research, indexed. 71,000+ papers from ICRA, IROS, RA-L, T-RO, and RSS —
+  searchable, filterable, ranked by citation impact.
+</div>
+
+<div class="badges">
+  <span class="badge b-icra">ICRA 1984~</span>
+  <span class="badge b-iros">IROS 1988~</span>
+  <span class="badge b-ral">RA-L 2016~</span>
+  <span class="badge b-tro">T-RO 2004~</span>
+  <span class="badge b-rss">RSS 2005~</span>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="n">71,279</div><div class="l">Papers (deduped)</div></div>
+  <div class="stat"><div class="n">5</div><div class="l">Venues</div></div>
+  <div class="stat"><div class="n">1984~2025</div><div class="l">Years</div></div>
+  <div class="stat"><div class="n">99.0%</div><div class="l">Abstract coverage</div></div>
+</div>
+
+<h2>Explore</h2>
+<div class="cards">
+  <a class="card" href="icra_iros_ral_tro_rss_explorer.html">
+    <div class="title">Full Explorer</div>
+    <div class="desc">All 71k papers. Filter by year / venue / min-citations, search title & author, sort any column, paginate.</div>
+    <div class="arrow">Open →</div>
+  </a>
+  <a class="card" href="icra_iros_ral_tro_rss_by_year.html">
+    <div class="title">Papers by Year</div>
+    <div class="desc">Annual paper counts per venue. Stacked, grouped, and line views — see the rise of RA-L, the steady growth of ICRA/IROS.</div>
+    <div class="arrow">Open →</div>
+  </a>
+  <a class="card" href="icra_iros_ral_tro_rss_top100.html">
+    <div class="title">Top 100 Cited</div>
+    <div class="desc">Most-cited robotics papers of all time. Year × citations scatter plot, venue breakdown, DOI-linked table.</div>
+    <div class="arrow">Open →</div>
+  </a>
+</div>
+
+<h2>Download the dataset</h2>
+<div class="downloads">
+  <a class="dl" href="icra_iros_ral_tro_rss_all.xlsx">
+    <span>📊 Excel (.xlsx)</span> <span class="sz">38 MB · 5 sheets</span>
+  </a>
+  <a class="dl" href="icra_iros_ral_tro_rss_all.csv">
+    <span>📄 CSV</span> <span class="sz">97 MB</span>
+  </a>
+</div>
+
+<h2>Data sources &amp; method</h2>
+<div class="sources">
+  <p>
+    Paper metadata (title, authors, year, DOI, pages) is harvested from
+    <a href="https://dblp.org/">DBLP</a>; abstracts, citation counts, and topic concepts come from
+    <a href="https://openalex.org/">OpenAlex</a>. Duplicates across venues (e.g., a RA-L paper presented at ICRA)
+    are collapsed via DOI + (normalized title, year) matching, with journals taking priority over conferences.
+  </p>
+  <p>
+    Citation counts change over time — the exact data date is shown in the header of every view and in the
+    Excel <code>summary</code> sheet.
+  </p>
+  <table>
+    <tr><th>Venue</th><th>DBLP stream</th><th>Since</th></tr>
+    <tr><td>ICRA</td><td><code>conf/icra</code></td><td>1984</td></tr>
+    <tr><td>IROS</td><td><code>conf/iros</code></td><td>1988</td></tr>
+    <tr><td>T-RO</td><td><code>journals/trob</code></td><td>2004</td></tr>
+    <tr><td>RSS</td><td><code>conf/rss</code></td><td>2005</td></tr>
+    <tr><td>RA-L</td><td><code>journals/ral</code></td><td>2016</td></tr>
+  </table>
+</div>
+
+<h2>Update / refresh</h2>
+<p style="font-size:14px; color:#555;">
+  Citations drift and new papers appear. See
+  <a href="REFRESH.md">REFRESH.md</a> for the one-line prompt to re-run the pipeline, or
+  <a href="README.md">README.md</a> for full pipeline docs.
+</p>
+
+<footer>
+  Built with Python (requests / pandas / openpyxl) and Chart.js.
+  Source: <a href="https://github.com/gisbi-kim/robopaper-atlas">github.com/gisbi-kim/robopaper-atlas</a>.
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ICRA / IROS / RA-L / T-RO / RSS Papers by Year</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  body { font-family: -apple-system, "Segoe UI", sans-serif; margin: 24px; background: #fafafa; color: #222; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 20px; }
+  .controls { margin-bottom: 12px; }
+  .controls button {
+    border: 1px solid #ccc; background: #fff; padding: 6px 14px; margin-right: 6px;
+    border-radius: 6px; cursor: pointer; font-size: 13px;
+  }
+  .controls button.active { background: #1f77b4; color: #fff; border-color: #1f77b4; }
+  .wrap { background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 16px; }
+  canvas { max-height: 520px; }
+  .summary { display: flex; gap: 16px; margin-top: 20px; flex-wrap: wrap; }
+  .card { flex: 1; min-width: 140px; background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 14px 18px; }
+  .card .num { font-size: 24px; font-weight: 600; }
+  .card .label { color: #666; font-size: 12px; }
+  .card.icra { border-top: 3px solid #1f77b4; }
+  .card.iros { border-top: 3px solid #ff7f0e; }
+  .card.ral  { border-top: 3px solid #2ca02c; }
+  .card.tro  { border-top: 3px solid #d62728; }
+  .card.rss  { border-top: 3px solid #9467bd; }
+  table { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 12px; }
+  th, td { border-bottom: 1px solid #eee; padding: 6px 10px; text-align: right; }
+  th:first-child, td:first-child { text-align: left; }
+  th { background: #f4f4f4; font-weight: 600; }
+  td.c-icra { color: #1f77b4; font-variant-numeric: tabular-nums; }
+  td.c-iros { color: #ff7f0e; font-variant-numeric: tabular-nums; }
+  td.c-ral  { color: #2ca02c; font-variant-numeric: tabular-nums; }
+  td.c-tro  { color: #d62728; font-variant-numeric: tabular-nums; }
+  td.c-rss  { color: #9467bd; font-variant-numeric: tabular-nums; }
+  td.c-total { font-weight: 600; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+<h1>ICRA / IROS / RA-L / T-RO / RSS Papers by Year</h1>
+<div class="sub">
+  DBLP-based · 1984 ~ 2025 · 71,279 papers (DOI-deduped)
+  <span style="float:right; color:#888;">Data as of 2026-04-18</span>
+</div>
+
+<div class="summary">
+  <div class="card icra"><div class="num">30,612</div><div class="label">ICRA (1984~)</div></div>
+  <div class="card iros"><div class="num">26,588</div><div class="label">IROS (1988~)</div></div>
+  <div class="card ral"><div class="num">9,405</div><div class="label">RA-L (2016~)</div></div>
+  <div class="card tro"><div class="num">3,353</div><div class="label">T-RO (2004~)</div></div>
+  <div class="card rss"><div class="num">1,321</div><div class="label">RSS (2005~)</div></div>
+  <div class="card"><div class="num">71,279</div><div class="label">Grand total</div></div>
+  <div class="card"><div class="num">2025 (5,530)</div><div class="label">Peak year</div></div>
+</div>
+
+<div style="margin-top: 24px;">
+  <div class="controls">
+    <button id="btn-stacked" class="active">Stacked</button>
+    <button id="btn-grouped">Grouped</button>
+    <button id="btn-line">Line</button>
+  </div>
+  <div class="wrap"><canvas id="chart"></canvas></div>
+</div>
+
+<table>
+  <thead><tr><th>Year</th><th>ICRA</th><th>IROS</th><th>RA-L</th><th>T-RO</th><th>RSS</th><th>Total</th></tr></thead>
+  <tbody id="tbody"></tbody>
+</table>
+
+<script>
+// rows: [year, ICRA, IROS, RA-L, T-RO, RSS]
+const raw = [[1984, 74, 0, 0, 0, 0], [1985, 158, 0, 0, 0, 0], [1986, 339, 0, 0, 0, 0], [1987, 329, 0, 0, 0, 0], [1988, 329, 129, 0, 0, 0], [1989, 281, 89, 0, 0, 0], [1990, 331, 139, 0, 0, 0], [1991, 390, 255, 0, 0, 0], [1992, 428, 289, 0, 0, 0], [1993, 452, 311, 0, 0, 0], [1994, 533, 309, 0, 0, 0], [1995, 499, 265, 0, 0, 0], [1996, 588, 238, 0, 0, 0], [1997, 574, 288, 0, 0, 0], [1998, 593, 318, 0, 0, 0], [1999, 519, 311, 0, 0, 0], [2000, 641, 378, 0, 0, 0], [2001, 678, 379, 0, 0, 0], [2002, 689, 499, 0, 0, 0], [2003, 714, 620, 0, 0, 0], [2004, 854, 660, 0, 112, 0], [2005, 765, 662, 0, 127, 49], [2006, 679, 1001, 0, 120, 39], [2007, 807, 688, 0, 124, 42], [2008, 663, 687, 0, 137, 41], [2009, 712, 948, 0, 139, 40], [2010, 870, 992, 0, 99, 41], [2011, 1017, 787, 0, 107, 47], [2012, 836, 854, 0, 124, 61], [2013, 873, 913, 0, 119, 56], [2014, 1036, 749, 0, 133, 58], [2015, 940, 970, 0, 124, 50], [2016, 694, 830, 158, 119, 48], [2017, 795, 878, 302, 116, 76], [2018, 815, 1086, 573, 122, 72], [2019, 1024, 933, 598, 111, 81], [2020, 1073, 1128, 895, 120, 104], [2021, 1386, 1031, 1119, 148, 93], [2022, 929, 1213, 1610, 235, 75], [2023, 1341, 1195, 1083, 283, 113], [2024, 1760, 1581, 1490, 270, 135], [2025, 1604, 1985, 1577, 364, 0]];
+raw.sort((a, b) => a[0] - b[0]);
+const labels = raw.map(r => r[0]);
+const icra = raw.map(r => r[1]);
+const iros = raw.map(r => r[2]);
+const ral  = raw.map(r => r[3]);
+const tro  = raw.map(r => r[4]);
+const rss  = raw.map(r => r[5]);
+
+const ICRA_COLOR = '#1f77b4';
+const IROS_COLOR = '#ff7f0e';
+const RAL_COLOR  = '#2ca02c';
+const TRO_COLOR  = '#d62728';
+const RSS_COLOR  = '#9467bd';
+
+const tbody = document.getElementById('tbody');
+[...raw].reverse().forEach(([y, a, b, c, d, e]) => {
+  const tot = a + b + c + d + e;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${y}</td>`
+    + `<td class="c-icra">${a.toLocaleString()}</td>`
+    + `<td class="c-iros">${b.toLocaleString()}</td>`
+    + `<td class="c-ral">${c.toLocaleString()}</td>`
+    + `<td class="c-tro">${d.toLocaleString()}</td>`
+    + `<td class="c-rss">${e.toLocaleString()}</td>`
+    + `<td class="c-total">${tot.toLocaleString()}</td>`;
+  tbody.appendChild(tr);
+});
+
+const ctx = document.getElementById('chart').getContext('2d');
+let chart;
+
+function render(mode) {
+  if (chart) chart.destroy();
+  const common = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'top' },
+      tooltip: { mode: 'index', intersect: false }
+    },
+    interaction: { mode: 'index', intersect: false },
+    scales: {
+      x: { title: { display: true, text: 'Year' } },
+      y: { title: { display: true, text: 'Papers' }, beginAtZero: true }
+    }
+  };
+  if (mode === 'line') {
+    chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          { label: 'ICRA', data: icra, borderColor: ICRA_COLOR, backgroundColor: ICRA_COLOR + '33', tension: 0.25, fill: false },
+          { label: 'IROS', data: iros, borderColor: IROS_COLOR, backgroundColor: IROS_COLOR + '33', tension: 0.25, fill: false },
+          { label: 'RA-L', data: ral,  borderColor: RAL_COLOR,  backgroundColor: RAL_COLOR  + '33', tension: 0.25, fill: false },
+          { label: 'T-RO', data: tro,  borderColor: TRO_COLOR,  backgroundColor: TRO_COLOR  + '33', tension: 0.25, fill: false },
+          { label: 'RSS',  data: rss,  borderColor: RSS_COLOR,  backgroundColor: RSS_COLOR  + '33', tension: 0.25, fill: false }
+        ]
+      },
+      options: common
+    });
+  } else {
+    const stacked = mode === 'stacked';
+    chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          { label: 'ICRA', data: icra, backgroundColor: ICRA_COLOR },
+          { label: 'IROS', data: iros, backgroundColor: IROS_COLOR },
+          { label: 'RA-L', data: ral,  backgroundColor: RAL_COLOR  },
+          { label: 'T-RO', data: tro,  backgroundColor: TRO_COLOR  },
+          { label: 'RSS',  data: rss,  backgroundColor: RSS_COLOR  }
+        ]
+      },
+      options: {
+        ...common,
+        scales: {
+          x: { ...common.scales.x, stacked },
+          y: { ...common.scales.y, stacked }
+        }
+      }
+    });
+  }
+}
+
+render('stacked');
+
+const btns = { stacked: 'btn-stacked', grouped: 'btn-grouped', line: 'btn-line' };
+Object.entries(btns).forEach(([mode, id]) => {
+  document.getElementById(id).addEventListener('click', () => {
+    Object.values(btns).forEach(x => document.getElementById(x).classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    render(mode);
+  });
+});
+</script>
+
+</body>
+</html>
