@@ -569,7 +569,7 @@ function drawBarChart(canvasId, filteredArr, which, yMax) {
     type: 'bar',
     data: { labels: years, datasets },
     options: {
-      responsive: true, maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false, animation: false,
       plugins: { tooltip: { mode: 'index', intersect: false } },
       scales: {
         x: { stacked: true, title: { display: true, text: 'Year' } },
@@ -607,7 +607,7 @@ function drawOverlayChart(yMax) {
       ]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false, animation: false,
       plugins: { tooltip: { mode: 'index', intersect: false }, legend: { position: 'top' } },
       scales: {
         x: { title: { display: true, text: 'Year' } },
@@ -651,7 +651,7 @@ function renderScatter() {
     type: 'scatter',
     data: { datasets },
     options: {
-      responsive: true, maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false, animation: false,
       plugins: {
         tooltip: {
           callbacks: {
@@ -768,7 +768,7 @@ function renderCitationStats() {
     type: 'bar',
     data: { labels, datasets: [{ label: 'Papers', data: counts, backgroundColor: '#1f77b4cc' }] },
     options: {
-      responsive: true, maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false, animation: false,
       plugins: { legend: { display: false } },
       scales: {
         x: { title: { display: true, text: 'Citation count range (bin size 10, 200+ overflow)' }, ticks: { autoSkip: true, maxRotation: 0 } },
@@ -846,14 +846,18 @@ function renderWordCloud() {
   note.textContent = `${state.filtered.length.toLocaleString()} papers · ${covered.toLocaleString()} with abstracts · top ${top.length} of ${pairs.length.toLocaleString()} unique terms · click a word to add to title filter`;
 }
 
+let wcDebounceTimer = null;
 function rerenderAll() {
   filterAndSort();
   renderStats();
   renderBarChart();
   renderScatter();
   renderCitationStats();
-  renderWordCloud();
   renderTable();
+  // Word cloud is the slowest render — debounce so rapid filter toggles
+  // don't re-layout for every click.
+  clearTimeout(wcDebounceTimer);
+  wcDebounceTimer = setTimeout(renderWordCloud, 180);
 }
 
 function applyFilters() {
