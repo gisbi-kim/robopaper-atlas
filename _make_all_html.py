@@ -998,6 +998,13 @@ document.getElementById('lock-y-axis').addEventListener('change', (e) => {
   state.shareYAxis = e.target.checked;
   renderBarChart();
 });
+
+// Word cloud uses wordcloud2.js which layouts on draw; re-render on resize
+let wcResizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(wcResizeTimer);
+  wcResizeTimer = setTimeout(renderWordCloud, 200);
+});
 ['f-year-from-b', 'f-year-to-b', 'f-icra-b', 'f-iros-b', 'f-ral-b', 'f-tro-b', 'f-rss-b', 'f-mincite-b', 'f-title-op-b'].forEach(id =>
   document.getElementById(id).addEventListener('change', applyFiltersB)
 );
