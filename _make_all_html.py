@@ -258,7 +258,7 @@ HTML = r"""<!DOCTYPE html>
       top terms across the abstracts of the current filter — pick an author + year range to see what they write about
     </span>
   </h2>
-  <div id="wordcloud" style="width: 100%; height: 380px; position: relative; background: #fff; border-radius: 4px; overflow: hidden;"></div>
+  <div id="wordcloud" style="width: 100%; height: 440px; position: relative; background: #fff; border-radius: 4px; overflow: hidden;"></div>
   <div style="color:#888; font-size:11px; margin-top: 6px;" id="wc-note">Click a word to add it to the title filter.</div>
 </div>
 
@@ -661,8 +661,8 @@ function renderWordCloud() {
   if (typeof WordCloud !== 'undefined') {
     WordCloud(container, {
       list: top,
-      gridSize: 8,
-      weightFactor: (size) => Math.max(12, (size / maxW) * 52),
+      gridSize: 6,
+      weightFactor: (size) => Math.max(16, (size / maxW) * 80),
       fontFamily: '-apple-system, "Segoe UI", sans-serif',
       color: (word, weight) => {
         const t = weight / maxW;
