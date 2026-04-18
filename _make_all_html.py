@@ -297,13 +297,13 @@ HTML = r"""<!DOCTYPE html>
 <div class="wrap">
   <h2>Papers per year (stacked ICRA / IROS / RA-L / T-RO / RSS, filtered)</h2>
   <div id="bar-grid" style="display: flex; gap: 16px; align-items: flex-start;">
-    <div style="flex: 1; min-width: 0; position: relative;">
+    <div style="flex: 1; min-width: 0;">
       <div class="chart-label" id="chart-label-a" style="display:none;"><span class="zone-label">A</span></div>
-      <canvas id="chart-bar"></canvas>
+      <div style="position: relative; height: 340px;"><canvas id="chart-bar"></canvas></div>
     </div>
-    <div id="bar-b-col" style="flex: 1; min-width: 0; display: none; position: relative;">
+    <div id="bar-b-col" style="flex: 1; min-width: 0; display: none;">
       <div class="chart-label"><span class="zone-label b">B</span></div>
-      <canvas id="chart-bar-b"></canvas>
+      <div style="position: relative; height: 340px;"><canvas id="chart-bar-b"></canvas></div>
     </div>
   </div>
 </div>
@@ -528,7 +528,15 @@ function renderStats() {
     `Showing ${f.length.toLocaleString()} / ${ALL.length.toLocaleString()} papers`;
 }
 
-function drawBarChart(canvasId, filteredArr, which) {
+function yearTotalMax(filteredArr) {
+  const totals = {};
+  for (const r of filteredArr) totals[r[1]] = (totals[r[1]] || 0) + 1;
+  let m = 0;
+  for (const k in totals) if (totals[k] > m) m = totals[k];
+  return m;
+}
+
+function drawBarChart(canvasId, filteredArr, which, yMax) {
   const counts = {};
   for (const r of filteredArr) {
     if (!counts[r[1]]) counts[r[1]] = { 'ICRA': 0, 'IROS': 0, 'RA-L': 0, 'T-RO': 0, 'RSS': 0 };
@@ -541,6 +549,8 @@ function drawBarChart(canvasId, filteredArr, which) {
     data: years.map(y => (counts[y] && counts[y][v]) || 0),
     backgroundColor: VENUE_COLOR[v],
   }));
+  const yOpts = { stacked: true, beginAtZero: true, title: { display: true, text: 'Papers' } };
+  if (yMax) yOpts.max = yMax;
   const config = {
     type: 'bar',
     data: { labels: years, datasets },
@@ -549,7 +559,7 @@ function drawBarChart(canvasId, filteredArr, which) {
       plugins: { tooltip: { mode: 'index', intersect: false } },
       scales: {
         x: { stacked: true, title: { display: true, text: 'Year' } },
-        y: { stacked: true, beginAtZero: true, title: { display: true, text: 'Papers' } }
+        y: yOpts,
       }
     }
   };
@@ -563,9 +573,14 @@ function drawBarChart(canvasId, filteredArr, which) {
 }
 
 function renderBarChart() {
-  drawBarChart('chart-bar', state.filtered, 'A');
+  let yMax = null;
   if (state.compareMode) {
-    drawBarChart('chart-bar-b', state.filteredB, 'B');
+    // Compare 모드에서는 A·B 의 연도별 총합 최댓값에 맞춰 세로축을 공유
+    yMax = Math.max(yearTotalMax(state.filtered), yearTotalMax(state.filteredB));
+  }
+  drawBarChart('chart-bar', state.filtered, 'A', yMax);
+  if (state.compareMode) {
+    drawBarChart('chart-bar-b', state.filteredB, 'B', yMax);
   } else if (barChartB) {
     barChartB.destroy(); barChartB = null;
   }
@@ -882,7 +897,7 @@ function applyFiltersB() {
   state.filteredB = computeFiltered(state.filterB);
   document.getElementById('result-info-b').textContent =
     `Showing ${state.filteredB.length.toLocaleString()} / ${ALL.length.toLocaleString()} papers`;
-  if (state.compareMode) drawBarChart('chart-bar-b', state.filteredB, 'B');
+  if (state.compareMode) renderBarChart();  // A축도 공통 yMax 재조정 필요
 }
 
 function resetFiltersB() {
