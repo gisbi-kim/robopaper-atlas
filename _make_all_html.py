@@ -188,6 +188,14 @@ HTML = r"""<!DOCTYPE html>
   .pager { display: flex; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 10px; font-size: 13px; flex-wrap: wrap; }
   .pager button { border: 1px solid #ccc; background: #fff; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
   .pager button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .toggle-btn { border: 1px solid #ccc; background: #fff; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500; }
+  .toggle-btn:hover { background: #f4f4f4; }
+  .toggle-btn.active { background: #1f77b4; color: #fff; border-color: #1f77b4; }
+  .zone-label { display: inline-block; font-size: 10px; color: #fff; background: #1f77b4; padding: 2px 7px; border-radius: 10px; vertical-align: middle; margin-left: 6px; font-weight: 700; letter-spacing: 0.3px; }
+  .zone-label.b { background: #d62728; }
+  .chart-label { font-size: 12px; color: #666; margin-bottom: 6px; text-align: center; }
+  #filter-b-wrap { background: #fff8f3; border-color: #ffd7bd; }
 </style>
 </head>
 <body>
@@ -213,8 +221,13 @@ HTML = r"""<!DOCTYPE html>
   <div class="card"><div class="num" id="c-meancite">-</div><div class="label">Mean citations</div></div>
 </div>
 
+<div style="margin-bottom: 12px;">
+  <button id="btn-compare" class="toggle-btn">+ Compare mode</button>
+  <span id="compare-hint" style="color:#888; font-size:12px; margin-left:10px;">Add a second filter zone to compare two trends side by side</span>
+</div>
+
 <div class="wrap">
-  <h2>Filters</h2>
+  <h2>Filters <span class="zone-label" id="zone-label-a" style="display:none;">A</span></h2>
   <div class="controls">
     <label>Year
       <input type="number" id="f-year-from" min="__YMIN__" max="__YMAX__" value="__YMIN__">
@@ -247,9 +260,52 @@ HTML = r"""<!DOCTYPE html>
   <div class="result-info" id="result-info"></div>
 </div>
 
+<div class="wrap" id="filter-b-wrap" style="display:none;">
+  <h2>Filters <span class="zone-label b">B</span></h2>
+  <div class="controls">
+    <label>Year
+      <input type="number" id="f-year-from-b" min="__YMIN__" max="__YMAX__" value="__YMIN__">
+      ~
+      <input type="number" id="f-year-to-b" min="__YMIN__" max="__YMAX__" value="__YMAX__">
+    </label>
+    <label><input type="checkbox" id="f-icra-b" checked> ICRA</label>
+    <label><input type="checkbox" id="f-iros-b" checked> IROS</label>
+    <label><input type="checkbox" id="f-ral-b" checked> RA-L</label>
+    <label><input type="checkbox" id="f-tro-b" checked> T-RO</label>
+    <label><input type="checkbox" id="f-rss-b" checked> RSS</label>
+    <label>Min citations
+      <input type="number" id="f-mincite-b" min="0" value="0">
+    </label>
+    <label>Title:
+      <input type="text" id="f-title-1-b" placeholder="word 1" style="min-width: 90px; width: 100px;">
+      <input type="text" id="f-title-2-b" placeholder="word 2" style="min-width: 90px; width: 100px;">
+      <input type="text" id="f-title-3-b" placeholder="word 3" style="min-width: 90px; width: 100px;">
+      <select id="f-title-op-b" style="padding: 4px 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; background: #fff;">
+        <option value="AND">AND</option>
+        <option value="OR">OR</option>
+      </select>
+    </label>
+    <label>Author:
+      <input type="text" id="f-author-b" placeholder="author name" style="min-width: 130px; width: 150px;">
+    </label>
+    <button id="btn-apply-b">Apply</button>
+    <button id="btn-reset-b" class="reset">Reset</button>
+  </div>
+  <div class="result-info" id="result-info-b"></div>
+</div>
+
 <div class="wrap">
   <h2>Papers per year (stacked ICRA / IROS / RA-L / T-RO / RSS, filtered)</h2>
-  <canvas id="chart-bar"></canvas>
+  <div id="bar-grid" style="display: flex; gap: 16px; align-items: flex-start;">
+    <div style="flex: 1; min-width: 0; position: relative;">
+      <div class="chart-label" id="chart-label-a" style="display:none;"><span class="zone-label">A</span></div>
+      <canvas id="chart-bar"></canvas>
+    </div>
+    <div id="bar-b-col" style="flex: 1; min-width: 0; display: none; position: relative;">
+      <div class="chart-label"><span class="zone-label b">B</span></div>
+      <canvas id="chart-bar-b"></canvas>
+    </div>
+  </div>
 </div>
 
 <div class="wrap">
@@ -343,9 +399,19 @@ const state = {
   sortKey: 'cites', sortDesc: true,
   page: 1, pageSize: 100,
   filtered: [],
+  compareMode: false,
+  filterB: {
+    yearFrom: YMIN, yearTo: YMAX,
+    venueFilter: { 'ICRA': true, 'IROS': true, 'RA-L': true, 'T-RO': true, 'RSS': true },
+    minCite: 0,
+    titleTerms: ['', '', ''],
+    titleOp: 'AND',
+    author: '',
+  },
+  filteredB: [],
 };
 
-let barChart, scatterChart, histChart;
+let barChart, barChartB, scatterChart, histChart;
 
 function hIndex(cites) {
   const s = cites.slice().sort((a, b) => b - a);
@@ -391,16 +457,16 @@ function buildHistBins(cites) {
   return { labels, counts };
 }
 
-function filterAndSort() {
-  const terms = state.titleTerms.map(t => t.trim().toLowerCase()).filter(t => t);
-  const author = state.author.trim().toLowerCase();
-  const useOr = state.titleOp === 'OR';
+function computeFiltered(f) {
+  const terms = f.titleTerms.map(t => t.trim().toLowerCase()).filter(t => t);
+  const author = f.author.trim().toLowerCase();
+  const useOr = f.titleOp === 'OR';
   const out = [];
   for (let i = 0; i < ALL.length; i++) {
     const r = ALL[i];
-    if (r[1] < state.yearFrom || r[1] > state.yearTo) continue;
-    if (!state.venueFilter[r[0]]) continue;
-    if (r[4] < state.minCite) continue;
+    if (r[1] < f.yearFrom || r[1] > f.yearTo) continue;
+    if (!f.venueFilter[r[0]]) continue;
+    if (r[4] < f.minCite) continue;
     if (terms.length > 0) {
       const t = r[2].toLowerCase();
       if (useOr) {
@@ -416,6 +482,11 @@ function filterAndSort() {
     if (author && !r[3].toLowerCase().includes(author)) continue;
     out.push(r);
   }
+  return out;
+}
+
+function filterAndSort() {
+  const out = computeFiltered(state);
   const k = KEYS[state.sortKey];
   const dir = state.sortDesc ? -1 : 1;
   out.sort((a, b) => {
@@ -426,6 +497,9 @@ function filterAndSort() {
   });
   state.filtered = out;
   state.page = 1;
+  if (state.compareMode) {
+    state.filteredB = computeFiltered(state.filterB);
+  }
 }
 
 function renderStats() {
@@ -769,6 +843,91 @@ document.getElementById('btn-reset').onclick = resetFilters;
 ['f-title-1', 'f-title-2', 'f-title-3', 'f-author'].forEach(id => {
   document.getElementById(id).addEventListener('keyup', (e) => {
     if (e.key === 'Enter') applyFilters();
+  });
+});
+
+// --- Compare mode (filter B) ---
+function applyFiltersB() {
+  const yf = parseInt(document.getElementById('f-year-from-b').value) || YMIN;
+  const yt = parseInt(document.getElementById('f-year-to-b').value) || YMAX;
+  state.filterB.yearFrom = Math.min(yf, yt);
+  state.filterB.yearTo = Math.max(yf, yt);
+  state.filterB.venueFilter['ICRA'] = document.getElementById('f-icra-b').checked;
+  state.filterB.venueFilter['IROS'] = document.getElementById('f-iros-b').checked;
+  state.filterB.venueFilter['RA-L'] = document.getElementById('f-ral-b').checked;
+  state.filterB.venueFilter['T-RO'] = document.getElementById('f-tro-b').checked;
+  state.filterB.venueFilter['RSS']  = document.getElementById('f-rss-b').checked;
+  state.filterB.minCite = parseInt(document.getElementById('f-mincite-b').value) || 0;
+  state.filterB.titleTerms = [
+    document.getElementById('f-title-1-b').value,
+    document.getElementById('f-title-2-b').value,
+    document.getElementById('f-title-3-b').value,
+  ];
+  state.filterB.titleOp = document.getElementById('f-title-op-b').value;
+  state.filterB.author = document.getElementById('f-author-b').value;
+  state.filteredB = computeFiltered(state.filterB);
+  document.getElementById('result-info-b').textContent =
+    `Showing ${state.filteredB.length.toLocaleString()} / ${ALL.length.toLocaleString()} papers`;
+  if (state.compareMode) drawBarChart('chart-bar-b', state.filteredB, 'B');
+}
+
+function resetFiltersB() {
+  document.getElementById('f-year-from-b').value = YMIN;
+  document.getElementById('f-year-to-b').value = YMAX;
+  ['f-icra-b','f-iros-b','f-ral-b','f-tro-b','f-rss-b'].forEach(id => document.getElementById(id).checked = true);
+  document.getElementById('f-mincite-b').value = 0;
+  ['f-title-1-b','f-title-2-b','f-title-3-b','f-author-b'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-title-op-b').value = 'AND';
+  applyFiltersB();
+}
+
+function copyFilterAtoBInputs() {
+  document.getElementById('f-year-from-b').value = document.getElementById('f-year-from').value;
+  document.getElementById('f-year-to-b').value = document.getElementById('f-year-to').value;
+  ['icra','iros','ral','tro','rss'].forEach(v => {
+    document.getElementById('f-' + v + '-b').checked = document.getElementById('f-' + v).checked;
+  });
+  document.getElementById('f-mincite-b').value = document.getElementById('f-mincite').value;
+  [1,2,3].forEach(i => document.getElementById('f-title-' + i + '-b').value = document.getElementById('f-title-' + i).value);
+  document.getElementById('f-title-op-b').value = document.getElementById('f-title-op').value;
+  document.getElementById('f-author-b').value = document.getElementById('f-author').value;
+}
+
+function toggleCompareMode() {
+  state.compareMode = !state.compareMode;
+  const btn = document.getElementById('btn-compare');
+  const zoneB = document.getElementById('filter-b-wrap');
+  const chartBCol = document.getElementById('bar-b-col');
+  const labelA = document.getElementById('zone-label-a');
+  const chartLabelA = document.getElementById('chart-label-a');
+  const hint = document.getElementById('compare-hint');
+
+  btn.classList.toggle('active', state.compareMode);
+  btn.textContent = state.compareMode ? '✕ Compare mode' : '+ Compare mode';
+  hint.textContent = state.compareMode
+    ? 'Change filter B below to contrast against filter A.'
+    : 'Add a second filter zone to compare two trends side by side';
+  zoneB.style.display = state.compareMode ? '' : 'none';
+  chartBCol.style.display = state.compareMode ? '' : 'none';
+  labelA.style.display = state.compareMode ? '' : 'none';
+  chartLabelA.style.display = state.compareMode ? '' : 'none';
+
+  if (state.compareMode) {
+    copyFilterAtoBInputs();
+    applyFiltersB();
+  }
+  renderBarChart();
+}
+
+document.getElementById('btn-apply-b').onclick = applyFiltersB;
+document.getElementById('btn-reset-b').onclick = resetFiltersB;
+document.getElementById('btn-compare').onclick = toggleCompareMode;
+['f-year-from-b', 'f-year-to-b', 'f-icra-b', 'f-iros-b', 'f-ral-b', 'f-tro-b', 'f-rss-b', 'f-mincite-b', 'f-title-op-b'].forEach(id =>
+  document.getElementById(id).addEventListener('change', applyFiltersB)
+);
+['f-title-1-b', 'f-title-2-b', 'f-title-3-b', 'f-author-b'].forEach(id => {
+  document.getElementById(id).addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') applyFiltersB();
   });
 });
 
