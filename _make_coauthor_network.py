@@ -31,7 +31,7 @@ with open(INPUT, encoding='utf-8') as f:
 
 per_author = collections.Counter()  # author -> paper count
 author_max_year = {}
-paper_authors = []  # list of {authors, year}
+paper_authors = []  # list of (authors, year, title, cites)
 
 for p in papers:
     a_str = (p.get('authors') or '').strip()
@@ -45,7 +45,12 @@ for p in papers:
         y = int(p.get('year') or 0)
     except (ValueError, TypeError):
         y = 0
-    paper_authors.append((authors, y))
+    title = htmllib.unescape((p.get('title') or '').strip()).rstrip('.').strip()
+    try:
+        cites = int(p.get('cited_by_count') or 0)
+    except (ValueError, TypeError):
+        cites = 0
+    paper_authors.append((authors, y, title, cites))
     per_author.update(authors)
     for a in authors:
         if y > author_max_year.get(a, 0):
@@ -56,7 +61,7 @@ print(f'전체 고유 저자: {len(per_author):,}')
 print(f'{MIN_AUTHOR_PAPERS}편 이상 저자: {len(eligible):,}')
 
 pair_counts = collections.Counter()
-for authors, _y in paper_authors:
+for authors, _y, _t, _c in paper_authors:
     elig = sorted({a for a in authors if a in eligible})
     if len(elig) < 2:
         continue
@@ -70,6 +75,19 @@ print(f'edges (>= {MIN_EDGE_COLLABS} collab): {len(edges_raw):,}')
 nodes_set = {a for e in edges_raw for a in e[:2]}
 print(f'connected authors: {len(nodes_set):,}')
 
+# Collect each kept author's top-3 most-cited papers
+author_papers = collections.defaultdict(list)
+for authors, y, title, cites in paper_authors:
+    if not title:
+        continue
+    for a in authors:
+        if a in nodes_set:
+            author_papers[a].append((cites, title, y))
+top_papers = {}
+for a, plist in author_papers.items():
+    plist.sort(key=lambda x: -x[0])
+    top_papers[a] = [{'t': t[:120], 'c': c, 'y': y} for c, t, y in plist[:3]]
+
 # Build output
 # Assign stable ids (index) for performance
 author_to_id = {a: i for i, a in enumerate(sorted(nodes_set))}
@@ -79,6 +97,7 @@ nodes = [
         'label': a,
         'papers': per_author[a],
         'last_year': author_max_year.get(a, 0),
+        'top': top_papers.get(a, []),
     }
     for a in sorted(nodes_set)
 ]
@@ -172,7 +191,11 @@ HTML = r"""<!DOCTYPE html>
   }
   #tooltip .tt-name { font-weight: 600; color: #f3f4f6; }
   #tooltip .tt-stat { color: #9ca3af; font-size: 11px; margin: 2px 0 5px; }
-  #tooltip .tt-co { font-size: 11px; color: #cbd5e1; line-height: 1.55; }
+  #tooltip .tt-top { font-size: 11px; color: #cbd5e1; line-height: 1.55; margin-top: 6px; padding-top: 6px; border-top: 1px solid #374151; }
+  #tooltip .tt-top b { color: #fcd34d; font-weight: 500; }
+  #tooltip .tt-top .pap { display: block; margin-left: 2px; }
+  #tooltip .tt-top .mc { color: #9ca3af; }
+  #tooltip .tt-co { font-size: 11px; color: #cbd5e1; line-height: 1.55; margin-top: 6px; padding-top: 6px; border-top: 1px solid #374151; }
   #tooltip .tt-co b { color: #38bdf8; font-weight: 500; }
   .slider-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
   .slider-row input[type="range"] { flex: 1; }
@@ -233,6 +256,7 @@ HTML = r"""<!DOCTYPE html>
 <div id="tooltip">
   <div class="tt-name" id="tt-name"></div>
   <div class="tt-stat" id="tt-stat"></div>
+  <div class="tt-top" id="tt-top"></div>
   <div class="tt-co" id="tt-co"></div>
 </div>
 
@@ -470,7 +494,12 @@ function nodeAtScreen(sx, sy) {
 const tipEl = document.getElementById('tooltip');
 const ttName = document.getElementById('tt-name');
 const ttStat = document.getElementById('tt-stat');
+const ttTop = document.getElementById('tt-top');
 const ttCo = document.getElementById('tt-co');
+
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
 
 function collectCoauthors(n) {
   const co = [];
@@ -488,14 +517,25 @@ canvas.addEventListener('mousemove', (e) => {
     canvas.style.cursor = 'pointer';
     ttName.textContent = n.label;
     ttStat.textContent = `${n.papers} papers · last active ${n.last_year}`;
+    // Top 3 most-cited papers
+    if (n.top && n.top.length) {
+      ttTop.innerHTML = '<b>Top cited papers:</b>'
+        + n.top.map(p =>
+            `<span class="pap">• ${escHtml(p.t)} <span class="mc">(${p.y}, ${p.c.toLocaleString()} cites)</span></span>`
+          ).join('');
+      ttTop.style.display = '';
+    } else {
+      ttTop.style.display = 'none';
+    }
     const co = collectCoauthors(n);
     if (co.length) {
       const top = co.slice(0, 10);
       ttCo.innerHTML = `<b>Co-authors (${co.length}):</b> `
-        + top.map(c => `${c.name} (${c.w})`).join(', ')
+        + top.map(c => `${escHtml(c.name)} (${c.w})`).join(', ')
         + (co.length > 10 ? `, … +${co.length - 10} more` : '');
+      ttCo.style.display = '';
     } else {
-      ttCo.textContent = '';
+      ttCo.style.display = 'none';
     }
     // Position: keep within viewport
     let x = e.clientX + 12, y = e.clientY + 12;
