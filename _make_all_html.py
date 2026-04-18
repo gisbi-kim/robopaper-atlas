@@ -74,12 +74,27 @@ total = len(arr)
 year_min = int(slim['year'].min())
 year_max = int(slim['year'].max())
 
+# Word book (초록 단어 cloud용) — slim embed: 논문당 top 15
+WB_TOP_PER_PAPER_EMBED = 15
+try:
+    with open('word_book.json', encoding='utf-8') as f:
+        wb = json.load(f)
+    wb_vocab = wb['vocab']
+    wb_papers_slim = {doi: idx_list[:WB_TOP_PER_PAPER_EMBED]
+                      for doi, idx_list in wb['papers'].items()}
+    print(f"word_book: {len(wb_vocab):,} vocab, {len(wb_papers_slim):,} papers")
+except FileNotFoundError:
+    print("warning: word_book.json not found — run _make_word_book.py first")
+    wb_vocab = []
+    wb_papers_slim = {}
+
 HTML = r"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>ICRA / IROS / RA-L / T-RO / RSS Paper Explorer</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.js"></script>
 <style>
   * { box-sizing: border-box; }
   body { font-family: -apple-system, "Segoe UI", sans-serif; margin: 20px; background: #fafafa; color: #222; }
@@ -213,6 +228,16 @@ HTML = r"""<!DOCTYPE html>
 </div>
 
 <div class="wrap">
+  <h2>Word cloud
+    <span style="font-weight:normal; color:#888; font-size:12px;">
+      top terms across the abstracts of the current filter — pick an author + year range to see what they write about
+    </span>
+  </h2>
+  <canvas id="wordcloud" style="width: 100%; height: 380px; display: block; background: #fff; border-radius: 4px;"></canvas>
+  <div style="color:#888; font-size:11px; margin-top: 6px;" id="wc-note"></div>
+</div>
+
+<div class="wrap">
   <h2>Citation stats
     <span style="font-weight:normal; color:#888; font-size:12px;">
       computed on the current filter result — respects year range, venue selection, min-citations, and search
@@ -269,6 +294,8 @@ HTML = r"""<!DOCTYPE html>
 <script>
 // columns: [venue, year, title, authors, cites, doi, venues_all]
 const ALL = __ARR_JSON__;
+const WB_VOCAB = __WB_VOCAB__;
+const WB_PAPERS = __WB_PAPERS__;
 const KEYS = { venue: 0, year: 1, title: 2, authors: 3, cites: 4, doi: 5 };
 const YMIN = __YMIN__, YMAX = __YMAX__;
 
@@ -535,12 +562,81 @@ function renderCitationStats() {
   });
 }
 
+function renderWordCloud() {
+  const canvas = document.getElementById('wordcloud');
+  const note = document.getElementById('wc-note');
+  if (!WB_VOCAB || WB_VOCAB.length === 0) {
+    note.textContent = 'Word book not loaded. Run _make_word_book.py and regenerate this page.';
+    return;
+  }
+  const counts = new Array(WB_VOCAB.length).fill(0);
+  let covered = 0;
+  for (const r of state.filtered) {
+    const doi = r[5];
+    const words = WB_PAPERS[doi];
+    if (words) {
+      covered++;
+      for (const idx of words) counts[idx]++;
+    }
+  }
+  const pairs = [];
+  for (let i = 0; i < counts.length; i++) {
+    if (counts[i] > 0) pairs.push([WB_VOCAB[i], counts[i]]);
+  }
+  pairs.sort((a, b) => b[1] - a[1]);
+  const top = pairs.slice(0, 100);
+
+  // Retina-friendly canvas sizing
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const cssW = canvas.offsetWidth || 800;
+  const cssH = 380;
+  canvas.width = cssW * dpr;
+  canvas.height = cssH * dpr;
+  canvas.style.width = cssW + 'px';
+  canvas.style.height = cssH + 'px';
+
+  if (covered === 0 || top.length === 0) {
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#aaa';
+    ctx.font = `${14 * dpr}px -apple-system, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText('No abstracts available for this filter', canvas.width / 2, canvas.height / 2);
+    note.textContent = `${state.filtered.length.toLocaleString()} papers · 0 with indexed abstracts`;
+    return;
+  }
+
+  const maxW = top[0][1];
+  if (typeof WordCloud !== 'undefined') {
+    WordCloud(canvas, {
+      list: top,
+      gridSize: Math.round(8 * dpr),
+      weightFactor: (size) => Math.max(10 * dpr, (size / maxW) * 64 * dpr),
+      fontFamily: '-apple-system, "Segoe UI", sans-serif',
+      color: (word, weight) => {
+        const t = weight / maxW;
+        if (t > 0.65) return '#1a4e80';
+        if (t > 0.35) return '#1f77b4';
+        if (t > 0.15) return '#2ca02c';
+        return '#6b6b6b';
+      },
+      rotateRatio: 0.22,
+      rotationSteps: 2,
+      backgroundColor: '#fff',
+      drawOutOfBound: false,
+      shrinkToFit: true,
+    });
+  }
+  note.textContent = `${state.filtered.length.toLocaleString()} papers in filter · ${covered.toLocaleString()} with indexed abstracts · showing top ${top.length} of ${pairs.length.toLocaleString()} unique terms`;
+}
+
 function rerenderAll() {
   filterAndSort();
   renderStats();
   renderBarChart();
   renderScatter();
   renderCitationStats();
+  renderWordCloud();
   renderTable();
 }
 
@@ -711,7 +807,9 @@ html_out = (HTML
             .replace('__YMIN__', str(year_min))
             .replace('__YMAX__', str(year_max))
             .replace('__AS_OF__', AS_OF)
-            .replace('__ARR_JSON__', json.dumps(arr, ensure_ascii=False)))
+            .replace('__ARR_JSON__', json.dumps(arr, ensure_ascii=False))
+            .replace('__WB_VOCAB__', json.dumps(wb_vocab, ensure_ascii=False))
+            .replace('__WB_PAPERS__', json.dumps(wb_papers_slim, ensure_ascii=False)))
 
 OUT = 'icra_iros_ral_tro_rss_explorer.html'
 with open(OUT, 'w', encoding='utf-8') as f:
