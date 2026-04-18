@@ -271,6 +271,7 @@ HTML = r"""<!DOCTYPE html>
   <div class="stat-line">
     <span>h-index <b id="stat-h">-</b></span>
     <span>i10-index <b id="stat-i10">-</b></span>
+    <span>mean <b id="stat-mean">-</b></span>
     <span>median <b id="stat-median">-</b></span>
     <span>std dev <b id="stat-std">-</b></span>
   </div>
@@ -363,16 +364,26 @@ function stdDev(vals, mean) {
   return Math.sqrt(s / (vals.length - 1));
 }
 
-const HIST_LABELS = ['0', '1-9', '10-49', '50-99', '100-499', '500-999', '1000-4999', '5000+'];
-function citeBin(c) {
-  if (c === 0) return 0;
-  if (c < 10) return 1;
-  if (c < 50) return 2;
-  if (c < 100) return 3;
-  if (c < 500) return 4;
-  if (c < 1000) return 5;
-  if (c < 5000) return 6;
-  return 7;
+function buildHistBins(cites) {
+  if (!cites.length) return { labels: [], counts: [] };
+  const step = 10;
+  const cap = 200;  // 10단위로 0~200까지 세분, 그 이상은 overflow bin
+  let max = 0;
+  for (const c of cites) if (c > max) max = c;
+  const nFine = max <= cap ? Math.ceil((max + 1) / step) : cap / step;
+  const hasOverflow = max > cap;
+  const labels = [];
+  for (let i = 0; i < nFine; i++) {
+    const lo = i * step, hi = lo + step - 1;
+    labels.push(`${lo}\u2013${hi}`);
+  }
+  if (hasOverflow) labels.push(`${cap}+`);
+  const counts = new Array(labels.length).fill(0);
+  for (const c of cites) {
+    if (c >= cap) counts[counts.length - 1]++;
+    else counts[Math.min(nFine - 1, Math.floor(c / step))]++;
+  }
+  return { labels, counts };
 }
 
 function filterAndSort() {
@@ -575,7 +586,7 @@ function renderCitationStats() {
   const setText = (id, v) => { document.getElementById(id).textContent = v; };
   if (cites.length === 0) {
     setText('stat-h', '-'); setText('stat-i10', '-');
-    setText('stat-median', '-'); setText('stat-std', '-');
+    setText('stat-mean', '-'); setText('stat-median', '-'); setText('stat-std', '-');
     if (histChart) { histChart.destroy(); histChart = null; }
     return;
   }
@@ -583,20 +594,20 @@ function renderCitationStats() {
   const mean = cites.reduce((a, b) => a + b, 0) / cites.length;
   setText('stat-h', hIndex(cites).toLocaleString());
   setText('stat-i10', i10Index(cites).toLocaleString());
+  setText('stat-mean', mean.toFixed(1));
   setText('stat-median', median(sorted).toLocaleString());
   setText('stat-std', stdDev(cites, mean).toFixed(1));
 
-  const counts = new Array(HIST_LABELS.length).fill(0);
-  for (const c of cites) counts[citeBin(c)]++;
+  const { labels, counts } = buildHistBins(cites);
   if (histChart) histChart.destroy();
   histChart = new Chart(document.getElementById('chart-hist'), {
     type: 'bar',
-    data: { labels: HIST_LABELS, datasets: [{ label: 'Papers', data: counts, backgroundColor: '#1f77b4cc' }] },
+    data: { labels, datasets: [{ label: 'Papers', data: counts, backgroundColor: '#1f77b4cc' }] },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        x: { title: { display: true, text: 'Citation count range' } },
+        x: { title: { display: true, text: 'Citation count range (bin size 10, 200+ overflow)' }, ticks: { autoSkip: true, maxRotation: 0 } },
         y: { beginAtZero: true, title: { display: true, text: 'Papers' } }
       }
     }
