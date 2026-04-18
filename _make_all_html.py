@@ -308,6 +308,10 @@ HTML = r"""<!DOCTYPE html>
       <div class="chart-label"><span class="zone-label b">B</span></div>
       <div style="position: relative; height: 340px;"><canvas id="chart-bar-b"></canvas></div>
     </div>
+    <div id="bar-overlay-col" style="flex: 1; min-width: 0; display: none;">
+      <div class="chart-label"><span class="zone-label">A</span> vs <span class="zone-label b">B</span> overlay</div>
+      <div style="position: relative; height: 340px;"><canvas id="chart-bar-overlay"></canvas></div>
+    </div>
   </div>
 </div>
 
@@ -415,7 +419,7 @@ const state = {
   filteredB: [],
 };
 
-let barChart, barChartB, scatterChart, histChart;
+let barChart, barChartB, overlayChart, scatterChart, histChart;
 
 function hIndex(cites) {
   const s = cites.slice().sort((a, b) => b - a);
@@ -576,6 +580,37 @@ function drawBarChart(canvasId, filteredArr, which, yMax) {
   }
 }
 
+function drawOverlayChart(yMax) {
+  const totalsA = {}, totalsB = {};
+  for (const r of state.filtered)  totalsA[r[1]] = (totalsA[r[1]] || 0) + 1;
+  for (const r of state.filteredB) totalsB[r[1]] = (totalsB[r[1]] || 0) + 1;
+  const years = [];
+  for (let y = YMIN; y <= YMAX; y++) years.push(y);
+  const dataA = years.map(y => totalsA[y] || 0);
+  const dataB = years.map(y => totalsB[y] || 0);
+  const yOpts = { beginAtZero: true, title: { display: true, text: 'Papers' } };
+  if (yMax) yOpts.max = yMax;
+  if (overlayChart) overlayChart.destroy();
+  overlayChart = new Chart(document.getElementById('chart-bar-overlay'), {
+    type: 'line',
+    data: {
+      labels: years,
+      datasets: [
+        { label: 'A', data: dataA, borderColor: '#1f77b4', backgroundColor: 'rgba(31, 119, 180, 0.35)', fill: 'origin', tension: 0.25, pointRadius: 0, borderWidth: 1.8 },
+        { label: 'B', data: dataB, borderColor: '#d62728', backgroundColor: 'rgba(214, 39, 40, 0.35)', fill: 'origin', tension: 0.25, pointRadius: 0, borderWidth: 1.8 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { tooltip: { mode: 'index', intersect: false }, legend: { position: 'top' } },
+      scales: {
+        x: { title: { display: true, text: 'Year' } },
+        y: yOpts
+      }
+    }
+  });
+}
+
 function renderBarChart() {
   let yMax = null;
   if (state.compareMode && state.shareYAxis) {
@@ -584,8 +619,10 @@ function renderBarChart() {
   drawBarChart('chart-bar', state.filtered, 'A', yMax);
   if (state.compareMode) {
     drawBarChart('chart-bar-b', state.filteredB, 'B', yMax);
-  } else if (barChartB) {
-    barChartB.destroy(); barChartB = null;
+    drawOverlayChart(yMax);
+  } else {
+    if (barChartB) { barChartB.destroy(); barChartB = null; }
+    if (overlayChart) { overlayChart.destroy(); overlayChart = null; }
   }
 }
 
@@ -900,7 +937,7 @@ function applyFiltersB() {
   state.filteredB = computeFiltered(state.filterB);
   document.getElementById('result-info-b').textContent =
     `Showing ${state.filteredB.length.toLocaleString()} / ${ALL.length.toLocaleString()} papers`;
-  if (state.compareMode) renderBarChart();  // A축도 공통 yMax 재조정 필요
+  if (state.compareMode) renderBarChart();  // A·B·overlay 모두 다시 그림
 }
 
 function resetFiltersB() {
@@ -942,6 +979,7 @@ function toggleCompareMode() {
     : 'Add a second filter zone to compare two trends side by side';
   zoneB.style.display = state.compareMode ? '' : 'none';
   chartBCol.style.display = state.compareMode ? '' : 'none';
+  document.getElementById('bar-overlay-col').style.display = state.compareMode ? '' : 'none';
   labelA.style.display = state.compareMode ? '' : 'none';
   chartLabelA.style.display = state.compareMode ? '' : 'none';
   lockLabel.style.display = state.compareMode ? '' : 'none';
