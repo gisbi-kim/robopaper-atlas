@@ -167,6 +167,17 @@ HTML = r"""<!DOCTYPE html>
   }
   #abstract-tooltip em { color: #999; font-style: italic; }
 
+  #wordcloud span {
+    cursor: pointer;
+    transition: filter 0.12s;
+    padding: 1px 3px;
+    border-radius: 3px;
+  }
+  #wordcloud span:hover {
+    filter: brightness(0.7);
+    background: rgba(31, 119, 180, 0.08);
+  }
+
   .pager { display: flex; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 10px; font-size: 13px; flex-wrap: wrap; }
   .pager button { border: 1px solid #ccc; background: #fff; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
   .pager button:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -242,8 +253,8 @@ HTML = r"""<!DOCTYPE html>
       top terms across the abstracts of the current filter — pick an author + year range to see what they write about
     </span>
   </h2>
-  <canvas id="wordcloud" style="width: 100%; height: 380px; display: block; background: #fff; border-radius: 4px;"></canvas>
-  <div style="color:#888; font-size:11px; margin-top: 6px;" id="wc-note"></div>
+  <div id="wordcloud" style="width: 100%; height: 380px; position: relative; background: #fff; border-radius: 4px; overflow: hidden;"></div>
+  <div style="color:#888; font-size:11px; margin-top: 6px;" id="wc-note">Click a word to add it to the title filter.</div>
 </div>
 
 <div class="wrap">
@@ -587,9 +598,22 @@ function renderCitationStats() {
   });
 }
 
+function addTitleFilterWord(word) {
+  const ids = ['f-title-1', 'f-title-2', 'f-title-3'];
+  let placed = false;
+  for (const id of ids) {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) { el.value = word; placed = true; break; }
+  }
+  if (!placed) document.getElementById('f-title-1').value = word;
+  applyFilters();
+}
+
 function renderWordCloud() {
-  const canvas = document.getElementById('wordcloud');
+  const container = document.getElementById('wordcloud');
   const note = document.getElementById('wc-note');
+  container.innerHTML = '';
+
   if (!WB_VOCAB || WB_VOCAB.length === 0) {
     note.textContent = 'Word book not loaded. Run _make_word_book.py and regenerate this page.';
     return;
@@ -609,34 +633,20 @@ function renderWordCloud() {
     if (counts[i] > 0) pairs.push([WB_VOCAB[i], counts[i]]);
   }
   pairs.sort((a, b) => b[1] - a[1]);
-  const top = pairs.slice(0, 100);
-
-  // Retina-friendly canvas sizing
-  const dpr = Math.min(2, window.devicePixelRatio || 1);
-  const cssW = canvas.offsetWidth || 800;
-  const cssH = 380;
-  canvas.width = cssW * dpr;
-  canvas.height = cssH * dpr;
-  canvas.style.width = cssW + 'px';
-  canvas.style.height = cssH + 'px';
+  const top = pairs.slice(0, 50);
 
   if (covered === 0 || top.length === 0) {
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#aaa';
-    ctx.font = `${14 * dpr}px -apple-system, sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.fillText('No abstracts available for this filter', canvas.width / 2, canvas.height / 2);
+    container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#aaa;font-size:13px;">No abstracts available for this filter</div>';
     note.textContent = `${state.filtered.length.toLocaleString()} papers · 0 with indexed abstracts`;
     return;
   }
 
   const maxW = top[0][1];
   if (typeof WordCloud !== 'undefined') {
-    WordCloud(canvas, {
+    WordCloud(container, {
       list: top,
-      gridSize: Math.round(8 * dpr),
-      weightFactor: (size) => Math.max(10 * dpr, (size / maxW) * 64 * dpr),
+      gridSize: 8,
+      weightFactor: (size) => Math.max(12, (size / maxW) * 52),
       fontFamily: '-apple-system, "Segoe UI", sans-serif',
       color: (word, weight) => {
         const t = weight / maxW;
@@ -650,9 +660,10 @@ function renderWordCloud() {
       backgroundColor: '#fff',
       drawOutOfBound: false,
       shrinkToFit: true,
+      click: (item) => addTitleFilterWord(item[0]),
     });
   }
-  note.textContent = `${state.filtered.length.toLocaleString()} papers in filter · ${covered.toLocaleString()} with indexed abstracts · showing top ${top.length} of ${pairs.length.toLocaleString()} unique terms`;
+  note.textContent = `${state.filtered.length.toLocaleString()} papers · ${covered.toLocaleString()} with abstracts · top ${top.length} of ${pairs.length.toLocaleString()} unique terms · click a word to add to title filter`;
 }
 
 function rerenderAll() {
