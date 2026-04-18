@@ -284,10 +284,11 @@ function draw() {
     ctx.globalAlpha = 1;
   }
 
-  // Nodes
+  // Nodes — partial zoom compensation so they stay visible when zoomed out
+  const nodeMult = Math.min(8, Math.pow(Math.max(1 / transform.k, 1), 0.75));
   for (const n of nodes) {
     ctx.beginPath();
-    ctx.arc(n.x, n.y, rScale(n.papers), 0, Math.PI * 2);
+    ctx.arc(n.x, n.y, rScale(n.papers) * nodeMult, 0, Math.PI * 2);
     ctx.fillStyle = n.last_year > 0 ? colorScale(n.last_year) : '#888';
     ctx.fill();
     if (n === selectedNode) {
@@ -320,9 +321,10 @@ let draggingNode = null;
 function nodeAtScreen(sx, sy) {
   const x = (sx - transform.x) / transform.k;
   const y = (sy - transform.y) / transform.k;
+  const nodeMult = Math.min(8, Math.pow(Math.max(1 / transform.k, 1), 0.75));
   for (let i = nodes.length - 1; i >= 0; i--) {
     const n = nodes[i];
-    const r = rScale(n.papers) + 1.5;
+    const r = rScale(n.papers) * nodeMult + 1.5 / transform.k;
     if ((n.x - x) ** 2 + (n.y - y) ** 2 < r * r) return n;
   }
   return null;
