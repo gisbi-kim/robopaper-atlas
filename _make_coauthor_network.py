@@ -465,18 +465,33 @@ function draw() {
     }
   }
 
-  // Labels for large nodes only
-  if (transform.k > 0.8) {
-    ctx.font = `${Math.max(9, 10 / transform.k * 1.2)}px -apple-system, sans-serif`;
-    ctx.fillStyle = 'rgba(229, 231, 235, 0.85)';
+  // Labels — progressively reveal more names as zoom increases; hub nodes
+  // (high paper count) appear earlier. Selected node always labeled.
+  if (transform.k > 0.25) {
+    const fontPx = Math.max(9, 11 / transform.k);
+    ctx.font = `${fontPx}px -apple-system, sans-serif`;
+    ctx.fillStyle = 'rgba(229, 231, 235, 0.9)';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
+    let minPapers;
+    if      (transform.k >= 2.0) minPapers = 0;   // everyone
+    else if (transform.k >= 1.2) minPapers = 8;
+    else if (transform.k >= 0.8) minPapers = 20;
+    else if (transform.k >= 0.5) minPapers = 40;
+    else                         minPapers = 80;  // only big hubs at low zoom
     for (const n of nodes) {
-      if (n.papers < 20 && transform.k < 1.6) continue;
-      if (transform.k > 2 || n.papers >= 30 || n === selectedNode) {
-        ctx.fillText(n.label, n.x, n.y + rScale(n.papers) + 2);
-      }
+      if (n.papers < minPapers && n !== selectedNode) continue;
+      const r = rScale(n.papers) * nodeMult;
+      ctx.fillText(n.label, n.x, n.y + r + 2);
     }
+  } else if (selectedNode) {
+    // very zoomed out: only selected node label
+    ctx.font = `${11 / transform.k}px -apple-system, sans-serif`;
+    ctx.fillStyle = '#38bdf8';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    const r = rScale(selectedNode.papers) * nodeMult;
+    ctx.fillText(selectedNode.label, selectedNode.x, selectedNode.y + r + 2);
   }
   ctx.restore();
 }
