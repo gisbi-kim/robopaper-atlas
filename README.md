@@ -27,6 +27,9 @@ DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 �
 - 모든 컬럼(venue, year, cites 등) **클릭 정렬**
 - 페이지당 50/100/200/500 선택 가능한 페이지네이션
 - 결과에 연동되는 **stacked bar chart** (연도별 편수) + **scatter plot** (연도 × 인용수)
+- 필터 결과의 **h-index / i10 / 인용수 히스토그램** (저자 검색 + 연도 범위로 개인 scientometrics)
+- 필터 결과 초록에서 추출한 **word cloud** (저자나 연도 구간의 주제 키워드 확인)
+- 제목에 마우스 hover → **초록 미리보기 툴팁** (OpenAlex on-demand fetch)
 - 제목 클릭 → DOI 링크 새 탭으로 열기
 
 ### 📈 [Papers by Year](icra_iros_ral_tro_rss_by_year.html)
@@ -37,6 +40,9 @@ ICRA / IROS 개최지를 3D 지구본에 시각화 (별도 프로젝트).
 
 ### 📊 [Dataset download](icra_iros_ral_tro_rss_all.xlsx)
 **XLSX** (38 MB) — 5 시트: `summary` / `by_year_pivot` / `by_year_detail` / `top_cited_100` / `papers`
+
+**Word book**: [`word_book.csv`](word_book.csv) (0.3 MB) · [`word_book.json`](word_book.json) (18 MB)
+초록에서 stop word 제외 후 추출한 단어장. CSV는 `word,total_count,num_papers`. JSON은 vocab + per-paper 상위 50 단어 인덱스 — word cloud용.
 
 ## 데이터 기준일
 
@@ -97,11 +103,18 @@ python step3_excel.py
 - **제목+연도 보조 dedup** — DOI 다르지만 같은 논문 (cross-venue 게재)
 - 5개 시트 포함 xlsx 출력
 
-### Step 4. HTML 시각화 생성
+### Step 4. 단어장 생성
 ```bash
-python _make_all_html.py       # 전체 탐색기 (h-index, i10, 인용 히스토그램 포함)
+python _make_word_book.py
+```
+초록 → 토큰화 → stop word 제거 → `word_book.json` / `word_book.csv` 출력.
+
+### Step 5. HTML 시각화 생성
+```bash
+python _make_all_html.py       # 전체 탐색기 (h-index, i10, 히스토그램, word cloud 포함)
 python _make_by_year_html.py   # 연도별 편수
 ```
+`_make_all_html.py`는 `word_book.json`을 읽어 논문당 상위 15 단어를 탐색기에 임베드합니다.
 
 ## 데이터 스키마 (`papers` 시트 / CSV)
 

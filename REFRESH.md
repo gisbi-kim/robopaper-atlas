@@ -39,6 +39,7 @@ step2는 체크포인트 없는 항목만 조회하므로 위 방식으로 자�
 
 ```bash
 python step3_excel.py          # xlsx
+python _make_word_book.py      # word_book.json / word_book.csv
 python _make_all_html.py       # icra_iros_ral_tro_rss_explorer.html
 python _make_by_year_html.py   # icra_iros_ral_tro_rss_by_year.html
 ```
