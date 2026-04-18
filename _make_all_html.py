@@ -208,8 +208,17 @@ HTML = r"""<!DOCTYPE html>
     <label>Min citations
       <input type="number" id="f-mincite" min="0" value="0">
     </label>
-    <label>Search
-      <input type="text" id="f-search" placeholder="Title or author">
+    <label>Title:
+      <input type="text" id="f-title-1" placeholder="word 1" style="min-width: 90px; width: 100px;">
+      <input type="text" id="f-title-2" placeholder="word 2" style="min-width: 90px; width: 100px;">
+      <input type="text" id="f-title-3" placeholder="word 3" style="min-width: 90px; width: 100px;">
+      <select id="f-title-op" style="padding: 4px 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; background: #fff;">
+        <option value="AND">AND</option>
+        <option value="OR">OR</option>
+      </select>
+    </label>
+    <label>Author:
+      <input type="text" id="f-author" placeholder="author name" style="min-width: 130px; width: 150px;">
     </label>
     <button id="btn-apply">Apply</button>
     <button id="btn-reset" class="reset">Reset</button>
@@ -306,7 +315,9 @@ const state = {
   yearFrom: YMIN, yearTo: YMAX,
   venueFilter: { 'ICRA': true, 'IROS': true, 'RA-L': true, 'T-RO': true, 'RSS': true },
   minCite: 0,
-  search: '',
+  titleTerms: ['', '', ''],
+  titleOp: 'AND',
+  author: '',
   sortKey: 'cites', sortDesc: true,
   page: 1, pageSize: 100,
   filtered: [],
@@ -349,14 +360,28 @@ function citeBin(c) {
 }
 
 function filterAndSort() {
-  const q = state.search.trim().toLowerCase();
+  const terms = state.titleTerms.map(t => t.trim().toLowerCase()).filter(t => t);
+  const author = state.author.trim().toLowerCase();
+  const useOr = state.titleOp === 'OR';
   const out = [];
   for (let i = 0; i < ALL.length; i++) {
     const r = ALL[i];
     if (r[1] < state.yearFrom || r[1] > state.yearTo) continue;
     if (!state.venueFilter[r[0]]) continue;
     if (r[4] < state.minCite) continue;
-    if (q && !(r[2].toLowerCase().includes(q) || r[3].toLowerCase().includes(q))) continue;
+    if (terms.length > 0) {
+      const t = r[2].toLowerCase();
+      if (useOr) {
+        let hit = false;
+        for (const term of terms) { if (t.includes(term)) { hit = true; break; } }
+        if (!hit) continue;
+      } else {
+        let all = true;
+        for (const term of terms) { if (!t.includes(term)) { all = false; break; } }
+        if (!all) continue;
+      }
+    }
+    if (author && !r[3].toLowerCase().includes(author)) continue;
     out.push(r);
   }
   const k = KEYS[state.sortKey];
@@ -651,7 +676,13 @@ function applyFilters() {
   state.venueFilter['T-RO'] = document.getElementById('f-tro').checked;
   state.venueFilter['RSS']  = document.getElementById('f-rss').checked;
   state.minCite = parseInt(document.getElementById('f-mincite').value) || 0;
-  state.search = document.getElementById('f-search').value;
+  state.titleTerms = [
+    document.getElementById('f-title-1').value,
+    document.getElementById('f-title-2').value,
+    document.getElementById('f-title-3').value,
+  ];
+  state.titleOp = document.getElementById('f-title-op').value;
+  state.author = document.getElementById('f-author').value;
   rerenderAll();
 }
 
@@ -664,7 +695,8 @@ function resetFilters() {
   document.getElementById('f-tro').checked = true;
   document.getElementById('f-rss').checked = true;
   document.getElementById('f-mincite').value = 0;
-  document.getElementById('f-search').value = '';
+  ['f-title-1','f-title-2','f-title-3','f-author'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-title-op').value = 'AND';
   applyFilters();
 }
 
@@ -690,11 +722,13 @@ document.getElementById('page-size').onchange = (e) => {
 
 document.getElementById('btn-apply').onclick = applyFilters;
 document.getElementById('btn-reset').onclick = resetFilters;
-['f-year-from', 'f-year-to', 'f-icra', 'f-iros', 'f-ral', 'f-tro', 'f-rss', 'f-mincite'].forEach(id =>
+['f-year-from', 'f-year-to', 'f-icra', 'f-iros', 'f-ral', 'f-tro', 'f-rss', 'f-mincite', 'f-title-op'].forEach(id =>
   document.getElementById(id).addEventListener('change', applyFilters)
 );
-document.getElementById('f-search').addEventListener('keyup', (e) => {
-  if (e.key === 'Enter') applyFilters();
+['f-title-1', 'f-title-2', 'f-title-3', 'f-author'].forEach(id => {
+  document.getElementById(id).addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') applyFilters();
+  });
 });
 
 rerenderAll();
