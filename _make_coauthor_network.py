@@ -221,8 +221,14 @@ HTML = r"""<!DOCTYPE html>
   <div id="selected"></div>
 </div>
 <div class="panel" id="legend">
-  Node size = # papers · Edge thickness = # co-authored papers · Color = last-active year
-  <br>Drag to pan · wheel to zoom · click node to pin · drag node to reposition
+  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 3px;">
+    <span style="color:#cbd5e1;">Node color = author's most recent year</span>
+    <span id="year-min" style="color:#9ca3af; font-variant-numeric: tabular-nums;">—</span>
+    <canvas id="color-bar" width="140" height="8" style="border-radius: 2px; display: block;"></canvas>
+    <span id="year-max" style="color:#9ca3af; font-variant-numeric: tabular-nums;">—</span>
+  </div>
+  <div style="color:#9ca3af;">Node size = # papers · Edge thickness = # co-authored papers</div>
+  <div style="color:#6b7280; margin-top: 2px;">Drag to pan · wheel to zoom · click node to pin · drag node to reposition</div>
 </div>
 <div id="tooltip">
   <div class="tt-name" id="tt-name"></div>
@@ -251,10 +257,26 @@ let edges = allEdges.slice();
 let nodeById = new Map(nodes.map(n => [n.id, n]));
 edges.forEach(e => { e.source = nodeById.get(e.source); e.target = nodeById.get(e.target); });
 
-// Year color scale (blue old → orange recent)
+// Year color scale (inferno: dark → bright for older → newer)
 const years = nodes.map(n => n.last_year).filter(y => y > 0);
 const yMin = Math.min(...years), yMax = Math.max(...years);
 const colorScale = d3.scaleSequential(d3.interpolateInferno).domain([yMin - 5, yMax]);
+
+// Draw legend color bar + set year labels
+(function drawLegend() {
+  const cb = document.getElementById('color-bar');
+  const cbCtx = cb.getContext('2d');
+  const grad = cbCtx.createLinearGradient(0, 0, cb.width, 0);
+  const steps = 20;
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    grad.addColorStop(t, colorScale(yMin - 5 + (yMax - (yMin - 5)) * t));
+  }
+  cbCtx.fillStyle = grad;
+  cbCtx.fillRect(0, 0, cb.width, cb.height);
+  document.getElementById('year-min').textContent = yMin;
+  document.getElementById('year-max').textContent = yMax;
+})();
 
 const rScale = d3.scaleSqrt()
   .domain([d3.min(nodes, d => d.papers), d3.max(nodes, d => d.papers)])
