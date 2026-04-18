@@ -198,13 +198,18 @@ HTML = r"""<!DOCTYPE html>
 
 <div class="wrap">
   <h2>Citation stats
-    <span style="font-weight:normal; color:#888; font-size:12px;">(current filter — search an author in the filter above to see their personal stats)</span>
+    <span style="font-weight:normal; color:#888; font-size:12px;">
+      computed on the current filter result — respects year range, venue selection, min-citations, and search
+    </span>
   </h2>
   <div class="stat-line">
     <span>h-index <b id="stat-h">-</b></span>
     <span>i10-index <b id="stat-i10">-</b></span>
     <span>median <b id="stat-median">-</b></span>
     <span>std dev <b id="stat-std">-</b></span>
+  </div>
+  <div style="color:#888; font-size:11px; margin: 0 0 8px;">
+    Tip: search an author name and narrow the year range to see that author's stats for the chosen period only.
   </div>
   <canvas id="chart-hist" style="max-height: 220px;"></canvas>
 </div>
