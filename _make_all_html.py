@@ -488,7 +488,7 @@ function renderScatter() {
   }
   const datasets = VENUES.map(v => ({
     label: v, data: byVenue[v],
-    backgroundColor: VENUE_COLOR[v] + '99', borderColor: VENUE_COLOR[v], pointRadius: 2.5
+    backgroundColor: VENUE_COLOR[v] + '99', borderColor: VENUE_COLOR[v], pointRadius: 4, pointHoverRadius: 7
   }));
   if (scatterChart) scatterChart.destroy();
   scatterChart = new Chart(document.getElementById('chart-scatter'), {
