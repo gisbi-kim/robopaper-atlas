@@ -309,7 +309,7 @@ let simulation = d3.forceSimulation(nodes)
 
 // --- View transform (pan/zoom) ---
 let transform = d3.zoomIdentity;
-const zoom = d3.zoom().scaleExtent([0.1, 8]).on('zoom', (e) => {
+const zoom = d3.zoom().scaleExtent([0.02, 8]).on('zoom', (e) => {
   transform = e.transform;
   draw();
 });
