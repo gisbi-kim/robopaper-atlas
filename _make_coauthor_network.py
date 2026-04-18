@@ -189,6 +189,11 @@ HTML = r"""<!DOCTYPE html>
     <input type="range" id="edge-slider" min="__MIN_EDGE__" max="30" value="__MIN_EDGE__">
     <span class="val" id="edge-val">__MIN_EDGE__</span>
   </div>
+  <div class="slider-row">
+    <span style="font-size:11px;">Sparsity</span>
+    <input type="range" id="sparsity-slider" min="1" max="10" step="0.5" value="3.5">
+    <span class="val" id="sparsity-val">3.5</span>
+  </div>
   <div class="controls">
     <button id="restart">Restart</button>
     <button id="freeze">Freeze</button>
@@ -300,12 +305,28 @@ function recomputeEdgeTiers() {
 }
 
 // --- Force simulation ---
+let sparsity = 3.5;  // controls overall spread (repulsion & link distance)
+const CHARGE_BASE = -14;   // multiplied by sparsity
+const LINK_BASE = 30;
+const LINK_WEIGHT_INV = 70;
+
+function linkDistance(d) {
+  return LINK_BASE + LINK_WEIGHT_INV / d.weight * Math.sqrt(sparsity);
+}
+
 let simulation = d3.forceSimulation(nodes)
-  .force('link', d3.forceLink(edges).id(d => d.id).distance(d => 35 + 80/(d.weight)).strength(0.35))
-  .force('charge', d3.forceManyBody().strength(-40))
+  .force('link', d3.forceLink(edges).id(d => d.id).distance(linkDistance).strength(0.35))
+  .force('charge', d3.forceManyBody().strength(CHARGE_BASE * sparsity))
   .force('center', d3.forceCenter(width / 2, height / 2))
   .force('collide', d3.forceCollide().radius(d => rScale(d.papers) + 2))
   .on('tick', draw);
+
+function applySparsity(s) {
+  sparsity = s;
+  simulation.force('charge').strength(CHARGE_BASE * s);
+  simulation.force('link').distance(linkDistance);
+  simulation.alpha(0.4).restart();
+}
 
 // --- View transform (pan/zoom) ---
 let transform = d3.zoomIdentity;
@@ -623,6 +644,15 @@ document.getElementById('show-degrees').addEventListener('change', (e) => {
   recomputeEdgeTiers();
   draw();
 });
+
+// Sparsity slider: controls how "exploded" the graph is
+const sparsitySlider = document.getElementById('sparsity-slider');
+const sparsityVal = document.getElementById('sparsity-val');
+sparsitySlider.oninput = (e) => {
+  const s = parseFloat(e.target.value);
+  sparsityVal.textContent = s;
+  applySparsity(s);
+};
 
 window.addEventListener('resize', () => {
   width = canvas.width = window.innerWidth;
