@@ -661,8 +661,8 @@ function renderWordCloud() {
   if (typeof WordCloud !== 'undefined') {
     WordCloud(container, {
       list: top,
-      gridSize: 6,
-      weightFactor: (size) => Math.max(16, (size / maxW) * 80),
+      gridSize: 14,
+      weightFactor: (size) => Math.max(16, (size / maxW) * 72),
       fontFamily: '-apple-system, "Segoe UI", sans-serif',
       color: (word, weight) => {
         const t = weight / maxW;
