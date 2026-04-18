@@ -221,9 +221,12 @@ HTML = r"""<!DOCTYPE html>
   <div class="card"><div class="num" id="c-meancite">-</div><div class="label">Mean citations</div></div>
 </div>
 
-<div style="margin-bottom: 12px;">
+<div style="margin-bottom: 12px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
   <button id="btn-compare" class="toggle-btn">+ Compare mode</button>
-  <span id="compare-hint" style="color:#888; font-size:12px; margin-left:10px;">Add a second filter zone to compare two trends side by side</span>
+  <label id="lock-y-axis-label" style="display:none; font-size: 13px; color: #555;">
+    <input type="checkbox" id="lock-y-axis"> Share y-axis between A and B
+  </label>
+  <span id="compare-hint" style="color:#888; font-size:12px;">Add a second filter zone to compare two trends side by side</span>
 </div>
 
 <div class="wrap">
@@ -400,6 +403,7 @@ const state = {
   page: 1, pageSize: 100,
   filtered: [],
   compareMode: false,
+  shareYAxis: false,
   filterB: {
     yearFrom: YMIN, yearTo: YMAX,
     venueFilter: { 'ICRA': true, 'IROS': true, 'RA-L': true, 'T-RO': true, 'RSS': true },
@@ -574,8 +578,7 @@ function drawBarChart(canvasId, filteredArr, which, yMax) {
 
 function renderBarChart() {
   let yMax = null;
-  if (state.compareMode) {
-    // Compare 모드에서는 A·B 의 연도별 총합 최댓값에 맞춰 세로축을 공유
+  if (state.compareMode && state.shareYAxis) {
     yMax = Math.max(yearTotalMax(state.filtered), yearTotalMax(state.filteredB));
   }
   drawBarChart('chart-bar', state.filtered, 'A', yMax);
@@ -930,6 +933,7 @@ function toggleCompareMode() {
   const labelA = document.getElementById('zone-label-a');
   const chartLabelA = document.getElementById('chart-label-a');
   const hint = document.getElementById('compare-hint');
+  const lockLabel = document.getElementById('lock-y-axis-label');
 
   btn.classList.toggle('active', state.compareMode);
   btn.textContent = state.compareMode ? '✕ Compare mode' : '+ Compare mode';
@@ -940,6 +944,7 @@ function toggleCompareMode() {
   chartBCol.style.display = state.compareMode ? '' : 'none';
   labelA.style.display = state.compareMode ? '' : 'none';
   chartLabelA.style.display = state.compareMode ? '' : 'none';
+  lockLabel.style.display = state.compareMode ? '' : 'none';
 
   if (state.compareMode) {
     copyFilterAtoBInputs();
@@ -951,6 +956,10 @@ function toggleCompareMode() {
 document.getElementById('btn-apply-b').onclick = applyFiltersB;
 document.getElementById('btn-reset-b').onclick = resetFiltersB;
 document.getElementById('btn-compare').onclick = toggleCompareMode;
+document.getElementById('lock-y-axis').addEventListener('change', (e) => {
+  state.shareYAxis = e.target.checked;
+  renderBarChart();
+});
 ['f-year-from-b', 'f-year-to-b', 'f-icra-b', 'f-iros-b', 'f-ral-b', 'f-tro-b', 'f-rss-b', 'f-mincite-b', 'f-title-op-b'].forEach(id =>
   document.getElementById(id).addEventListener('change', applyFiltersB)
 );
