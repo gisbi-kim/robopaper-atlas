@@ -102,7 +102,7 @@ HTML = r"""<!DOCTYPE html>
   .brand a { color: inherit; text-decoration: none; font-weight: 600; }
   .brand a:hover { color: #1f77b4; }
   h1 { font-size: 22px; margin: 0 0 4px; }
-  .sub { color: #666; font-size: 13px; margin-bottom: 16px; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
   .stat-line { display: flex; gap: 28px; font-size: 13px; color: #555; margin: 8px 0 14px; flex-wrap: wrap; }
   .stat-line b { color: #222; font-size: 16px; font-variant-numeric: tabular-nums; margin-left: 6px; font-weight: 700; }
   .wrap { background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 14px 16px; margin-bottom: 16px; }
@@ -195,8 +195,8 @@ HTML = r"""<!DOCTYPE html>
 <div class="brand"><a href="index.html">RoboPaper Atlas</a></div>
 <h1>ICRA / IROS / RA-L / T-RO / RSS Paper Explorer</h1>
 <div class="sub">
-  DBLP + OpenAlex · __TOTAL_FMT__ papers (DOI-deduped) · __YMIN__ ~ __YMAX__ · Filter · Sort · Search
-  <span style="float:right; color:#888; text-align:right; line-height:1.4;">
+  <span>DBLP + OpenAlex · __TOTAL_FMT__ papers (DOI-deduped) · __YMIN__ ~ __YMAX__ · Filter · Sort · Search</span>
+  <span style="color:#888; text-align:right; line-height:1.4;">
     <a href="REFRESH.md" style="color:#1f77b4; text-decoration:none; font-size:11px;">How to refresh? ↻</a><br>
     Citations as of __AS_OF__
   </span>
