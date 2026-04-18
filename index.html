@@ -52,6 +52,24 @@
   .card .desc  { font-size: 13px; color: #666; }
   .card .arrow { color: #1f77b4; font-weight: 600; font-size: 13px; margin-top: 8px; }
 
+  .card.primary {
+    background: linear-gradient(135deg, #eaf3fb 0%, #f6fafd 100%);
+    border-color: #1f77b4;
+    box-shadow: 0 2px 8px rgba(31, 119, 180, 0.08);
+  }
+  .card.primary:hover {
+    box-shadow: 0 6px 18px rgba(31, 119, 180, 0.18);
+    border-color: #155a8a;
+  }
+  .card.primary .title { color: #155a8a; font-size: 19px; }
+  .card.primary .title .pill {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    padding: 2px 8px; margin-left: 8px; border-radius: 10px;
+    background: #1f77b4; color: #fff; letter-spacing: 0.5px;
+    vertical-align: middle;
+  }
+  .card.primary .arrow { color: #155a8a; }
+
   .downloads { display: flex; flex-wrap: wrap; gap: 10px; }
   .dl {
     display: inline-flex; align-items: center; gap: 6px;
@@ -95,9 +113,9 @@
 
 <h2>Explore</h2>
 <div class="cards">
-  <a class="card" href="icra_iros_ral_tro_rss_explorer.html">
-    <div class="title">Full Explorer</div>
-    <div class="desc">All 71k papers. Filter by year / venue / min-citations, search title & author, sort any column, paginate.</div>
+  <a class="card primary" href="icra_iros_ral_tro_rss_explorer.html">
+    <div class="title">Full Explorer <span class="pill">MAIN</span></div>
+    <div class="desc">All 71k papers. Filter by year / venue / min-citations, search title & author, sort any column, paginate. Hover a title to preview its abstract.</div>
     <div class="arrow">Open →</div>
   </a>
   <a class="card" href="icra_iros_ral_tro_rss_by_year.html">
