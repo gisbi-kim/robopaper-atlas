@@ -113,6 +113,11 @@ HTML = r"""<!DOCTYPE html>
   .card { flex: 1; min-width: 120px; background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 10px 14px; }
   .card .num { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
   .card .label { color: #666; font-size: 11px; margin-top: 2px; }
+  .card.v-icra { border-top: 3px solid #1f77b4; }
+  .card.v-iros { border-top: 3px solid #ff7f0e; }
+  .card.v-ral  { border-top: 3px solid #2ca02c; }
+  .card.v-tro  { border-top: 3px solid #d62728; }
+  .card.v-rss  { border-top: 3px solid #9467bd; }
 
   .controls { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
   .controls label { font-size: 13px; color: #555; display: inline-flex; align-items: center; gap: 6px; }
@@ -194,11 +199,11 @@ HTML = r"""<!DOCTYPE html>
 
 <div class="summary">
   <div class="card"><div class="num" id="c-total">-</div><div class="label">Total</div></div>
-  <div class="card"><div class="num" id="c-icra">-</div><div class="label">ICRA</div></div>
-  <div class="card"><div class="num" id="c-iros">-</div><div class="label">IROS</div></div>
-  <div class="card"><div class="num" id="c-ral">-</div><div class="label">RA-L</div></div>
-  <div class="card"><div class="num" id="c-tro">-</div><div class="label">T-RO</div></div>
-  <div class="card"><div class="num" id="c-rss">-</div><div class="label">RSS</div></div>
+  <div class="card v-icra"><div class="num" id="c-icra">-</div><div class="label">ICRA</div></div>
+  <div class="card v-iros"><div class="num" id="c-iros">-</div><div class="label">IROS</div></div>
+  <div class="card v-ral"><div class="num" id="c-ral">-</div><div class="label">RA-L</div></div>
+  <div class="card v-tro"><div class="num" id="c-tro">-</div><div class="label">T-RO</div></div>
+  <div class="card v-rss"><div class="num" id="c-rss">-</div><div class="label">RSS</div></div>
   <div class="card"><div class="num" id="c-maxcite">-</div><div class="label">Max citations</div></div>
   <div class="card"><div class="num" id="c-meancite">-</div><div class="label">Mean citations</div></div>
 </div>
