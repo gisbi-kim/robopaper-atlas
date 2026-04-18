@@ -41,6 +41,9 @@ HTML = r"""<!DOCTYPE html>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   body { font-family: -apple-system, "Segoe UI", sans-serif; margin: 24px; background: #fafafa; color: #222; }
+  .brand { font-size: 12px; letter-spacing: 0.5px; color: #888; margin-bottom: 4px; }
+  .brand a { color: inherit; text-decoration: none; font-weight: 600; }
+  .brand a:hover { color: #1f77b4; }
   h1 { font-size: 22px; margin: 0 0 4px; }
   .sub { color: #666; font-size: 13px; margin-bottom: 20px; }
   .controls { margin-bottom: 12px; }
@@ -74,6 +77,7 @@ HTML = r"""<!DOCTYPE html>
 </head>
 <body>
 
+<div class="brand"><a href="index.html">RoboPaper Atlas</a></div>
 <h1>ICRA / IROS / RA-L / T-RO / RSS Papers by Year</h1>
 <div class="sub">
   DBLP-based · __YMIN__ ~ __YMAX__ · __TOTAL__ papers (DOI-deduped)

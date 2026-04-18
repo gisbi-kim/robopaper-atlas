@@ -32,12 +32,11 @@ DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 �
 ### 📈 [Papers by Year](icra_iros_ral_tro_rss_by_year.html)
 연도별 venue별 편수 추이. Stacked / Grouped / Line 세 가지 뷰로 토글.
 
-### 🏆 [Top 100 Cited](icra_iros_ral_tro_rss_top100.html)
-역대 최다 인용 논문 100편. 연도 × 인용수 scatter plot, venue 분포, DOI 링크 테이블.
+### 🌐 [Conference Location Globe](https://gisbi-kim.github.io/icra-iros-globe/src/icra_iros_globe.html)
+ICRA / IROS 개최지를 3D 지구본에 시각화 (별도 프로젝트).
 
 ### 📊 [Dataset download](icra_iros_ral_tro_rss_all.xlsx)
-- **XLSX** (38 MB) — 5 시트: `summary` / `by_year_pivot` / `by_year_detail` / `top_cited_100` / `papers`
-- **CSV** (97 MB) — 분석용 (pandas, DuckDB 등)
+**XLSX** (38 MB) — 5 시트: `summary` / `by_year_pivot` / `by_year_detail` / `top_cited_100` / `papers`
 
 ## 데이터 기준일
 
@@ -55,10 +54,9 @@ OpenAlex 인용수는 시간이 지나면서 바뀝니다. 모든 HTML 상단 �
 ```bash
 python refresh_recent.py 2019     # 2019~현재 DOI를 checkpoint에서 제거
 python step2_openalex.py          # 제거된 DOI만 재조회
-python step3_excel.py             # xlsx / csv 재생성
+python step3_excel.py             # xlsx 재생성
 python _make_all_html.py          # explorer.html
 python _make_by_year_html.py      # by_year.html
-python _make_top100_html.py       # top100.html
 ```
 
 ## 파이프라인 (처음부터 빌드)
@@ -93,16 +91,16 @@ python step3_excel.py
 작업 내용:
 - HTML 엔티티 디코딩 (`&quot;` → `"`)
 - DBLP 동명이인 식별자 제거 (`"Tong Qin 0001"` → `"Tong Qin"`)
+- 제목 끝 온점 제거 (DBLP 관습)
 - 학회 전체 proceedings 표제 행 제외 (저자 없는 것)
-- **DOI 중복 제거** — RA-L > T-RO > RSS > ICRA > IROS 우선
+- **DOI 중복 제거** — T-RO > RA-L > RSS > ICRA > IROS 우선
 - **제목+연도 보조 dedup** — DOI 다르지만 같은 논문 (cross-venue 게재)
-- 5개 시트 포함 xlsx + CSV 출력
+- 5개 시트 포함 xlsx 출력
 
 ### Step 4. HTML 시각화 생성
 ```bash
-python _make_all_html.py       # 전체 탐색기
+python _make_all_html.py       # 전체 탐색기 (h-index, i10, 인용 히스토그램 포함)
 python _make_by_year_html.py   # 연도별 편수
-python _make_top100_html.py    # Top 100
 ```
 
 ## 데이터 스키마 (`papers` 시트 / CSV)
@@ -128,6 +126,7 @@ python _make_top100_html.py    # Top 100
 - **OpenAlex 초록 커버리지**: 최근 논문 95%+, 2010년 이전은 낮음
 - **DOI 커버리지**: 전체 99.9%, 1990년 이전 일부 없음
 - **세션 정보**: DBLP에 없음. OpenAlex `concepts`가 대체재 (세밀한 세션 트랙은 IEEE Xplore API 필요)
+- **저자 탐색**: Full Explorer에서 저자명 검색하면 해당 저자의 h-index, i10-index, 인용수 히스토그램이 하단에 표시됨
 - **큰 파일 분석**: xlsx가 버거우면 `df.to_parquet('x.parquet')` 후 pandas/DuckDB 권장
 
 ## 새 venue 추가하려면

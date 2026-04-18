@@ -18,7 +18,8 @@ with open('all_enriched.json', encoding='utf-8') as f:
     papers = json.load(f)
 df = pd.DataFrame(papers)
 slim = df[['venue', 'year', 'title', 'authors', 'cited_by_count', 'doi']].copy()
-slim['title'] = slim['title'].fillna('').astype(str).map(html.unescape).str[:300]
+slim['title'] = (slim['title'].fillna('').astype(str).map(html.unescape)
+                 .str.rstrip('.').str.strip().str[:300])
 # DBLP 동명이인 식별자 ("0001" 등) 제거 + HTML 엔티티 디코딩
 _dblp_suffix = re.compile(r'\s+\d{4}$')
 def _clean_authors(s):
@@ -82,8 +83,13 @@ HTML = r"""<!DOCTYPE html>
 <style>
   * { box-sizing: border-box; }
   body { font-family: -apple-system, "Segoe UI", sans-serif; margin: 20px; background: #fafafa; color: #222; }
+  .brand { font-size: 12px; letter-spacing: 0.5px; color: #888; margin-bottom: 4px; }
+  .brand a { color: inherit; text-decoration: none; font-weight: 600; }
+  .brand a:hover { color: #1f77b4; }
   h1 { font-size: 22px; margin: 0 0 4px; }
   .sub { color: #666; font-size: 13px; margin-bottom: 16px; }
+  .stat-line { display: flex; gap: 28px; font-size: 13px; color: #555; margin: 8px 0 14px; flex-wrap: wrap; }
+  .stat-line b { color: #222; font-size: 16px; font-variant-numeric: tabular-nums; margin-left: 6px; font-weight: 700; }
   .wrap { background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 14px 16px; margin-bottom: 16px; }
   h2 { font-size: 14px; margin: 0 0 10px; color: #333; }
   canvas { max-height: 340px; }
@@ -137,6 +143,7 @@ HTML = r"""<!DOCTYPE html>
 </head>
 <body>
 
+<div class="brand"><a href="index.html">RoboPaper Atlas</a></div>
 <h1>ICRA / IROS / RA-L / T-RO / RSS Paper Explorer</h1>
 <div class="sub">
   DBLP + OpenAlex · __TOTAL_FMT__ papers (DOI-deduped) · __YMIN__ ~ __YMAX__ · Filter · Sort · Search
@@ -187,6 +194,19 @@ HTML = r"""<!DOCTYPE html>
 <div class="wrap">
   <h2>Year × Citations (max 5,000 points; top-cited sampled if more)</h2>
   <canvas id="chart-scatter"></canvas>
+</div>
+
+<div class="wrap">
+  <h2>Citation stats
+    <span style="font-weight:normal; color:#888; font-size:12px;">(current filter — search an author in the filter above to see their personal stats)</span>
+  </h2>
+  <div class="stat-line">
+    <span>h-index <b id="stat-h">-</b></span>
+    <span>i10-index <b id="stat-i10">-</b></span>
+    <span>median <b id="stat-median">-</b></span>
+    <span>std dev <b id="stat-std">-</b></span>
+  </div>
+  <canvas id="chart-hist" style="max-height: 220px;"></canvas>
 </div>
 
 <div class="wrap">
@@ -244,7 +264,41 @@ const state = {
   filtered: [],
 };
 
-let barChart, scatterChart;
+let barChart, scatterChart, histChart;
+
+function hIndex(cites) {
+  const s = cites.slice().sort((a, b) => b - a);
+  let h = 0;
+  for (let i = 0; i < s.length; i++) {
+    if (s[i] >= i + 1) h = i + 1;
+    else break;
+  }
+  return h;
+}
+function i10Index(cites) { return cites.filter(c => c >= 10).length; }
+function median(sorted) {
+  const n = sorted.length;
+  if (n === 0) return 0;
+  return n % 2 === 0 ? (sorted[n/2 - 1] + sorted[n/2]) / 2 : sorted[Math.floor(n/2)];
+}
+function stdDev(vals, mean) {
+  if (vals.length < 2) return 0;
+  let s = 0;
+  for (const v of vals) s += (v - mean) ** 2;
+  return Math.sqrt(s / (vals.length - 1));
+}
+
+const HIST_LABELS = ['0', '1-9', '10-49', '50-99', '100-499', '500-999', '1000-4999', '5000+'];
+function citeBin(c) {
+  if (c === 0) return 0;
+  if (c < 10) return 1;
+  if (c < 50) return 2;
+  if (c < 100) return 3;
+  if (c < 500) return 4;
+  if (c < 1000) return 5;
+  if (c < 5000) return 6;
+  return 7;
+}
 
 function filterAndSort() {
   const q = state.search.trim().toLowerCase();
@@ -425,11 +479,45 @@ function escapeHtml(s) {
 }
 function escapeAttr(s) { return escapeHtml(s); }
 
+function renderCitationStats() {
+  const cites = state.filtered.map(r => r[4]);
+  const setText = (id, v) => { document.getElementById(id).textContent = v; };
+  if (cites.length === 0) {
+    setText('stat-h', '-'); setText('stat-i10', '-');
+    setText('stat-median', '-'); setText('stat-std', '-');
+    if (histChart) { histChart.destroy(); histChart = null; }
+    return;
+  }
+  const sorted = cites.slice().sort((a, b) => a - b);
+  const mean = cites.reduce((a, b) => a + b, 0) / cites.length;
+  setText('stat-h', hIndex(cites).toLocaleString());
+  setText('stat-i10', i10Index(cites).toLocaleString());
+  setText('stat-median', median(sorted).toLocaleString());
+  setText('stat-std', stdDev(cites, mean).toFixed(1));
+
+  const counts = new Array(HIST_LABELS.length).fill(0);
+  for (const c of cites) counts[citeBin(c)]++;
+  if (histChart) histChart.destroy();
+  histChart = new Chart(document.getElementById('chart-hist'), {
+    type: 'bar',
+    data: { labels: HIST_LABELS, datasets: [{ label: 'Papers', data: counts, backgroundColor: '#1f77b4cc' }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { title: { display: true, text: 'Citation count range' } },
+        y: { beginAtZero: true, title: { display: true, text: 'Papers' } }
+      }
+    }
+  });
+}
+
 function rerenderAll() {
   filterAndSort();
   renderStats();
   renderBarChart();
   renderScatter();
+  renderCitationStats();
   renderTable();
 }
 

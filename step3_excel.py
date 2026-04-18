@@ -24,7 +24,6 @@ except OSError:
     AS_OF = datetime.now().date().isoformat()
 print(f"Citations as of: {AS_OF}")
 OUT_XLSX = "icra_iros_ral_tro_rss_all.xlsx"
-OUT_CSV = "icra_iros_ral_tro_rss_all.csv"
 
 # DOI 중복 시 어느 venue를 남길지 우선순위 (저널/선택도 높은 conf 우선)
 VENUE_PRIORITY = {'T-RO': 0, 'RA-L': 1, 'RSS': 2, 'ICRA': 3, 'IROS': 4}
@@ -49,6 +48,9 @@ _dblp_suffix = re.compile(r'\s+\d{4}$')
 def _clean_authors(s):
     return '; '.join(_dblp_suffix.sub('', a.strip()) for a in str(s).split(';') if a.strip())
 df['authors'] = df['authors'].map(_clean_authors)
+
+# 1c) 제목 끝 온점 제거 (DBLP 관습)
+df['title'] = df['title'].str.rstrip('.').str.strip()
 
 # 2) 학회 전체 proceedings 표제 행 제거 (저자 없는 것들)
 before = len(df)
@@ -105,10 +107,6 @@ print(f"\nVenue counts:")
 print(df['venue'].value_counts())
 print(f"\nYear range: {df['year'].min()} ~ {df['year'].max()}")
 
-# CSV 먼저 (안전)
-df.to_csv(OUT_CSV, index=False, encoding='utf-8-sig')  # utf-8-sig: 엑셀 한글 대응
-print(f"\nCSV saved: {OUT_CSV}")
-
 # --- 통계 시트들 ---
 # 1) by_year: 연도 × venue 논문 편수 (+ 커버리지)
 cited_num = pd.to_numeric(df['cited_by_count'], errors='coerce')
@@ -137,22 +135,22 @@ pivot = pivot.sort_index(ascending=False).reset_index()
 # 3) summary: 전체 요약
 total = len(df)
 summary_rows = [
-    ('인용수 기준일', AS_OF),
-    ('총 논문 수', total),
+    ('Citations as of', AS_OF),
+    ('Total papers', total),
     ('ICRA', int((df['venue'] == 'ICRA').sum())),
     ('IROS', int((df['venue'] == 'IROS').sum())),
     ('RA-L', int((df['venue'] == 'RA-L').sum())),
     ('T-RO', int((df['venue'] == 'T-RO').sum())),
     ('RSS',  int((df['venue'] == 'RSS').sum())),
-    ('연도 범위', f"{df['year'].min()} ~ {df['year'].max()}"),
-    ('DOI 있음', f"{int(df['doi'].astype(bool).sum())} ({100*df['doi'].astype(bool).mean():.1f}%)"),
-    ('초록 있음', f"{int((df['abstract'].astype(str).str.len() > 0).sum())} ({100*(df['abstract'].astype(str).str.len() > 0).mean():.1f}%)"),
-    ('인용수 있음', f"{int(cited_num.notna().sum())} ({100*cited_num.notna().mean():.1f}%)"),
-    ('총 인용 수', int(cited_num.fillna(0).sum())),
-    ('평균 인용 수', round(cited_num.mean(), 1)),
-    ('중앙값 인용 수', int(cited_num.median()) if cited_num.notna().any() else 0),
+    ('Year range', f"{df['year'].min()} ~ {df['year'].max()}"),
+    ('With DOI', f"{int(df['doi'].astype(bool).sum())} ({100*df['doi'].astype(bool).mean():.1f}%)"),
+    ('With abstract', f"{int((df['abstract'].astype(str).str.len() > 0).sum())} ({100*(df['abstract'].astype(str).str.len() > 0).mean():.1f}%)"),
+    ('With citation count', f"{int(cited_num.notna().sum())} ({100*cited_num.notna().mean():.1f}%)"),
+    ('Total citations', int(cited_num.fillna(0).sum())),
+    ('Mean citations', round(cited_num.mean(), 1)),
+    ('Median citations', int(cited_num.median()) if cited_num.notna().any() else 0),
 ]
-summary_df = pd.DataFrame(summary_rows, columns=['항목', '값'])
+summary_df = pd.DataFrame(summary_rows, columns=['Field', 'Value'])
 
 # 4) top_cited: 인용 많은 top 100
 top_cited = df.copy()
@@ -179,5 +177,5 @@ try:
     print(f"XLSX saved: {OUT_XLSX}")
     print(f"  sheets: summary, by_year_pivot, by_year_detail, top_cited_100, papers")
 except Exception as e:
-    print(f"XLSX 생성 실패 ({e}). CSV만 쓰세요.")
+    print(f"XLSX 생성 실패: {e}")
     print("해결: pip install openpyxl")
