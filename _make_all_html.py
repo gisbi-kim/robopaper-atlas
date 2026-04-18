@@ -528,13 +528,12 @@ function renderStats() {
     `Showing ${f.length.toLocaleString()} / ${ALL.length.toLocaleString()} papers`;
 }
 
-function renderBarChart() {
-  const counts = {}; // year -> {ICRA, IROS, RA-L, T-RO, RSS}
-  for (const r of state.filtered) {
+function drawBarChart(canvasId, filteredArr, which) {
+  const counts = {};
+  for (const r of filteredArr) {
     if (!counts[r[1]]) counts[r[1]] = { 'ICRA': 0, 'IROS': 0, 'RA-L': 0, 'T-RO': 0, 'RSS': 0 };
     if (counts[r[1]][r[0]] !== undefined) counts[r[1]][r[0]]++;
   }
-  // x축은 항상 YMIN..YMAX 고정 (키워드/필터와 무관하게 동일한 시간축으로 비교)
   const years = [];
   for (let y = YMIN; y <= YMAX; y++) years.push(y);
   const datasets = VENUES.map(v => ({
@@ -542,8 +541,7 @@ function renderBarChart() {
     data: years.map(y => (counts[y] && counts[y][v]) || 0),
     backgroundColor: VENUE_COLOR[v],
   }));
-  if (barChart) barChart.destroy();
-  barChart = new Chart(document.getElementById('chart-bar'), {
+  const config = {
     type: 'bar',
     data: { labels: years, datasets },
     options: {
@@ -554,7 +552,23 @@ function renderBarChart() {
         y: { stacked: true, beginAtZero: true, title: { display: true, text: 'Papers' } }
       }
     }
-  });
+  };
+  if (which === 'A') {
+    if (barChart) barChart.destroy();
+    barChart = new Chart(document.getElementById(canvasId), config);
+  } else {
+    if (barChartB) barChartB.destroy();
+    barChartB = new Chart(document.getElementById(canvasId), config);
+  }
+}
+
+function renderBarChart() {
+  drawBarChart('chart-bar', state.filtered, 'A');
+  if (state.compareMode) {
+    drawBarChart('chart-bar-b', state.filteredB, 'B');
+  } else if (barChartB) {
+    barChartB.destroy(); barChartB = null;
+  }
 }
 
 function renderScatter() {
