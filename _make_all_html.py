@@ -135,6 +135,22 @@ HTML = r"""<!DOCTYPE html>
   td.authors { color: #555; font-size: 11px; white-space: nowrap; }
   a { color: inherit; text-decoration: none; }
   a:hover { text-decoration: underline; color: #1f77b4; }
+  a[data-doi] { border-bottom: 1px dotted #bbb; }
+  a[data-doi]:hover { border-bottom: 1px solid #1f77b4; text-decoration: none; }
+
+  #abstract-tooltip {
+    position: fixed; display: none; background: #fff;
+    border: 1px solid #ccc; border-radius: 6px;
+    padding: 12px 14px; max-width: 480px; min-width: 280px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    font-size: 12.5px; line-height: 1.55; color: #333;
+    z-index: 1000; pointer-events: none;
+  }
+  #abstract-tooltip .tt-head {
+    font-size: 11px; color: #888; text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 6px;
+  }
+  #abstract-tooltip em { color: #999; font-style: italic; }
 
   .pager { display: flex; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 10px; font-size: 13px; flex-wrap: wrap; }
   .pager button { border: 1px solid #ccc; background: #fff; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
@@ -446,7 +462,9 @@ function renderTable() {
   const rows = [];
   for (let i = start; i < end; i++) {
     const r = f[i];
-    const title = r[5] ? `<a href="https://doi.org/${r[5]}" target="_blank" rel="noopener">${escapeHtml(r[2])}</a>` : escapeHtml(r[2]);
+    const title = r[5]
+      ? `<a href="https://doi.org/${r[5]}" data-doi="${r[5]}" target="_blank" rel="noopener">${escapeHtml(r[2])}</a>`
+      : escapeHtml(r[2]);
     rows.push(
       `<tr>`
       + `<td class="rank">${i + 1}</td>`
@@ -584,6 +602,104 @@ document.getElementById('f-search').addEventListener('keyup', (e) => {
 });
 
 rerenderAll();
+
+// --- Abstract tooltip on title hover (OpenAlex on-demand, cached) ---
+const abstractCache = new Map();
+const tooltip = document.createElement('div');
+tooltip.id = 'abstract-tooltip';
+document.body.appendChild(tooltip);
+
+function reconstructAbstract(invIdx) {
+  if (!invIdx) return '';
+  let maxPos = -1;
+  for (const positions of Object.values(invIdx)) {
+    for (const p of positions) if (p > maxPos) maxPos = p;
+  }
+  const words = new Array(maxPos + 1).fill('');
+  for (const [word, positions] of Object.entries(invIdx)) {
+    for (const p of positions) if (p < words.length) words[p] = word;
+  }
+  return words.filter(w => w).join(' ');
+}
+
+function positionTooltip(rect) {
+  const tooltipW = 480, tooltipH = tooltip.offsetHeight || 200;
+  let left = rect.left;
+  let top = rect.bottom + 6;
+  if (left + tooltipW > window.innerWidth - 10) left = window.innerWidth - tooltipW - 10;
+  if (top + tooltipH > window.innerHeight - 10) top = Math.max(10, rect.top - tooltipH - 6);
+  tooltip.style.left = left + 'px';
+  tooltip.style.top = top + 'px';
+}
+
+function showTooltip(html, rect) {
+  tooltip.innerHTML = html;
+  tooltip.style.display = 'block';
+  positionTooltip(rect);
+}
+
+function hideTooltip() { tooltip.style.display = 'none'; }
+
+let hoverDoi = null;
+let hoverTimer = null;
+let hoverCtrl = null;
+
+function renderAbstract(abs, rect) {
+  if (!abs) {
+    showTooltip('<div class="tt-head">Abstract</div><em>Not available on OpenAlex</em>', rect);
+    return;
+  }
+  const MAX = 650;
+  const truncated = abs.length > MAX ? escapeHtml(abs.slice(0, MAX)) + '…' : escapeHtml(abs);
+  showTooltip(`<div class="tt-head">Abstract</div>${truncated}`, rect);
+}
+
+function handleEnter(a) {
+  const doi = a.dataset.doi;
+  if (!doi) return;
+  if (hoverCtrl) { hoverCtrl.abort(); hoverCtrl = null; }
+  clearTimeout(hoverTimer);
+  hoverDoi = doi;
+  const rect = a.getBoundingClientRect();
+
+  hoverTimer = setTimeout(async () => {
+    if (hoverDoi !== doi) return;
+    if (abstractCache.has(doi)) { renderAbstract(abstractCache.get(doi), rect); return; }
+    showTooltip('<div class="tt-head">Abstract</div><em>Loading…</em>', rect);
+    hoverCtrl = new AbortController();
+    try {
+      const r = await fetch(
+        `https://api.openalex.org/works/doi:${doi}?select=abstract_inverted_index&mailto=gisbi.kim@gmail.com`,
+        { signal: hoverCtrl.signal }
+      );
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const data = await r.json();
+      const abs = reconstructAbstract(data.abstract_inverted_index);
+      abstractCache.set(doi, abs);
+      if (hoverDoi === doi) renderAbstract(abs, a.getBoundingClientRect());
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        abstractCache.set(doi, '');
+        if (hoverDoi === doi) renderAbstract('', a.getBoundingClientRect());
+      }
+    }
+  }, 220);
+}
+
+function handleLeave(e) {
+  const to = e.relatedTarget;
+  if (to && to.closest && to.closest('a[data-doi]')) return;
+  clearTimeout(hoverTimer);
+  if (hoverCtrl) { hoverCtrl.abort(); hoverCtrl = null; }
+  hoverDoi = null;
+  hideTooltip();
+}
+
+document.getElementById('tbody').addEventListener('mouseover', (e) => {
+  const a = e.target.closest('a[data-doi]');
+  if (a) handleEnter(a);
+});
+document.getElementById('tbody').addEventListener('mouseout', handleLeave);
 </script>
 
 </body>
