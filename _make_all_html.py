@@ -153,6 +153,8 @@ HTML = r"""<!DOCTYPE html>
   .venue-RSS  { color: #9467bd; font-weight: 600; }
   .venue-also { color: #888; font-weight: 400; font-size: 10px; }
   td.authors { color: #555; font-size: 11px; white-space: nowrap; }
+  .author-click { cursor: pointer; }
+  .author-click:hover { color: #1f77b4; text-decoration: underline; }
   a { color: inherit; text-decoration: none; }
   a:hover { text-decoration: underline; color: #1f77b4; }
   a[data-doi] { border-bottom: 1px dotted #bbb; }
@@ -547,13 +549,20 @@ function renderTable() {
     const title = r[5]
       ? `<a href="https://doi.org/${r[5]}" data-doi="${r[5]}" target="_blank" rel="noopener">${escapeHtml(r[2])}</a>`
       : escapeHtml(r[2]);
+    const authorsHtml = r[3]
+      ? r[3].split(';').map(a => {
+          const name = a.trim();
+          if (!name) return '';
+          return `<span class="author-click" data-author="${escapeAttr(name)}">${escapeHtml(name)}</span>`;
+        }).filter(Boolean).join('; ')
+      : '';
     rows.push(
       `<tr>`
       + `<td class="rank">${i + 1}</td>`
       + `<td>${renderVenueCell(r)}</td>`
       + `<td class="year">${r[1]}</td>`
       + `<td>${title}</td>`
-      + `<td class="authors" title="${escapeAttr(r[3])}">${escapeHtml(r[3])}</td>`
+      + `<td class="authors" title="${escapeAttr(r[3])}">${authorsHtml}</td>`
       + `<td class="cites">${r[4].toLocaleString()}</td>`
       + `</tr>`
     );
@@ -860,6 +869,17 @@ document.getElementById('tbody').addEventListener('mouseover', (e) => {
   if (a) handleEnter(a);
 });
 document.getElementById('tbody').addEventListener('mouseout', handleLeave);
+
+// Clicking an author in the paper list populates the Author filter
+document.getElementById('tbody').addEventListener('click', (e) => {
+  const s = e.target.closest('.author-click');
+  if (!s) return;
+  e.preventDefault();
+  document.getElementById('f-author').value = s.dataset.author;
+  ['f-title-1','f-title-2','f-title-3'].forEach(id => document.getElementById(id).value = '');
+  applyFilters();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 </script>
 
 </body>
