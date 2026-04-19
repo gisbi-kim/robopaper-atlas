@@ -8,6 +8,8 @@
 import json
 import sys
 
+from _checkpoint import load_checkpoint, save_checkpoint
+
 if len(sys.argv) != 2:
     print("Usage: python refresh_recent.py <from_year>")
     print("  e.g., python refresh_recent.py 2019")
@@ -36,11 +38,9 @@ for p in papers:
 
 print(f"{from_year}년 이후 DOI: {len(target_dois)}개")
 
-try:
-    with open('enriched_checkpoint.json', encoding='utf-8') as f:
-        cp = json.load(f)
-except FileNotFoundError:
-    print("enriched_checkpoint.json이 없음 — step2 처음 실행하면 전체 조회됨")
+cp = load_checkpoint()
+if not cp:
+    print("enriched_checkpoint shards가 없음 — step2 처음 실행하면 전체 조회됨")
     sys.exit(0)
 
 before = len(cp)
@@ -49,7 +49,6 @@ for d in list(cp.keys()):
         del cp[d]
 removed = before - len(cp)
 
-with open('enriched_checkpoint.json', 'w', encoding='utf-8') as f:
-    json.dump(cp, f, ensure_ascii=False)
+save_checkpoint(cp)
 
 print(f"체크포인트: {before} → {len(cp)} ({removed}개 제거, 다음 step2에서 재조사됨)")

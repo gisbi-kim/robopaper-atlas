@@ -17,9 +17,10 @@ import time
 import json
 import os
 
+from _checkpoint import load_checkpoint, save_checkpoint
+
 INPUT = "all_dblp.json"
 OUT_FILE = "all_enriched.json"
-CHECKPOINT = "enriched_checkpoint.json"
 BATCH_SIZE = 50  # OpenAlex DOI 필터 한 번에 최대 50개
 
 # !!! 여기에 본인 이메일 넣으세요 (polite pool용) !!!
@@ -94,13 +95,10 @@ def main():
     print(f"With DOI: {len(doi_to_paper)}")
     print(f"No DOI:   {len(no_doi)}")
 
-    # 체크포인트 로드
-    processed_dois = set()
-    enriched = {}
-    if os.path.exists(CHECKPOINT):
-        with open(CHECKPOINT, encoding='utf-8') as f:
-            enriched = json.load(f)
-        processed_dois = set(enriched.keys())
+    # 체크포인트 로드 (샤드로 분할 저장됨 — _checkpoint.py 참조)
+    enriched = load_checkpoint()
+    processed_dois = set(enriched.keys())
+    if processed_dois:
         print(f"Resuming from checkpoint: {len(processed_dois)} already processed")
 
     # 배치 처리
@@ -139,15 +137,13 @@ def main():
 
         # 10 배치마다 체크포인트 저장 (500편)
         if (i // BATCH_SIZE) % 10 == 9:
-            with open(CHECKPOINT, 'w', encoding='utf-8') as f:
-                json.dump(enriched, f, ensure_ascii=False)
+            save_checkpoint(enriched)
             print(f"    checkpoint saved ({len(enriched)} entries)")
 
         time.sleep(0.2)  # ~5 req/sec, polite
 
     # 최종 저장
-    with open(CHECKPOINT, 'w', encoding='utf-8') as f:
-        json.dump(enriched, f, ensure_ascii=False)
+    save_checkpoint(enriched)
 
     # 병합: 원본 papers에 enriched 필드 추가
     for p in papers:
