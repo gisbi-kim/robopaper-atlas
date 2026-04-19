@@ -290,11 +290,29 @@ HTML = r"""<!DOCTYPE html>
 </div>
 
 <script>
-const DATA = __DATA__;
+const canvas = document.getElementById('net');
+const ctx = canvas.getContext('2d');
+let width = canvas.width = window.innerWidth;
+let height = canvas.height = window.innerHeight;
+
+const metaEl = document.getElementById('meta-text');
+metaEl.innerHTML = '<div class="count">Loading…</div><div class="params">fetching coauthor_network.json</div>';
+
+(async function boot() {
+let DATA;
+try {
+  const res = await fetch('coauthor_network.json');
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  DATA = await res.json();
+} catch (err) {
+  metaEl.innerHTML = '<div class="count" style="color:#f87171;">Failed to load</div>'
+    + '<div class="params">' + (err.message || err) + '</div>'
+    + '<div class="params" style="margin-top:4px;color:#6b7280;">Local preview requires an HTTP server (e.g. <code>python -m http.server</code>).</div>';
+  return;
+}
 const META = DATA.meta;
 
 {
-  const metaEl = document.getElementById('meta-text');
   const venueStr = (META.venues && META.venues.length) ? META.venues.join(' / ') : '—';
   const yearStr = (META.paper_year_min && META.paper_year_max)
     ? `${META.paper_year_min}–${META.paper_year_max}` : '—';
@@ -308,15 +326,12 @@ const META = DATA.meta;
     + `</div>`;
 }
 
-const canvas = document.getElementById('net');
-const ctx = canvas.getContext('2d');
-let width = canvas.width = window.innerWidth;
-let height = canvas.height = window.innerHeight;
-
-// --- Build working data (copies we can filter on) ---
+// --- Build working data ---
+// DATA.nodes/DATA.edges are read-only aliases; filtered `nodes`/`edges` below
+// are fresh copies that the simulation is free to mutate.
 const INITIAL_EDGE_THRESHOLD = __DEFAULT_EDGE__;
-const allNodes = DATA.nodes.map(d => ({ ...d }));
-const allEdges = DATA.edges.map(d => ({ ...d }));  // source/target are ids here
+const allNodes = DATA.nodes;
+const allEdges = DATA.edges;  // source/target are ids here
 const nodeById = new Map(allNodes.map(n => [n.id, n]));
 
 // Initial filter to default threshold so the page opens at a sensible view
@@ -854,13 +869,13 @@ window.addEventListener('resize', () => {
   simulation.force('center', d3.forceCenter(width / 2, height / 2));
   simulation.alpha(0.3).restart();
 });
+})();
 </script>
 </body>
 </html>
 """
 
 html_out = (HTML
-            .replace('__DATA__', json.dumps(out, ensure_ascii=False))
             .replace('__MIN_EDGE__', str(MIN_EDGE_COLLABS))
             .replace('__DEFAULT_EDGE__', str(DEFAULT_EDGE_VIEW)))
 
