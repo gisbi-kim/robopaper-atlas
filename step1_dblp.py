@@ -4,9 +4,13 @@ Step 1: DBLP에서 ICRA/IROS 전체 논문 메타데이터 수집
 - 중단되어도 이미 받은 연도는 스킵
 - 최종 all_dblp.json 합본 생성
 
-실행: python step1_dblp.py
+실행:
+    python step1_dblp.py                  # core 6 venues (ICRA/IROS/RA-L/T-RO/RSS/IJRR)
+    python step1_dblp.py --include-optional   # + Science Robotics
+
 예상 소요: 30분~1시간 (연결 속도 따라)
 """
+import argparse
 import requests
 import time
 import json
@@ -89,16 +93,30 @@ def fetch_dblp_year(stream, venue_label, year):
     return results
 
 
+# (cache_key, dblp_stream, venue_label, year_range)
+CORE_VENUES = [
+    ('icra', 'conf/icra',     'ICRA', range(1984, 2026)),
+    ('iros', 'conf/iros',     'IROS', range(1988, 2026)),
+    ('ral',  'journals/ral',  'RA-L', range(2016, 2026)),  # RA-L 창간 2016
+    ('tro',  'journals/trob', 'T-RO', range(2004, 2026)),  # T-RO: 2004~ (이전 T-RA는 제외)
+    ('rss',  'conf/rss',      'RSS',  range(2005, 2026)),  # Robotics: Science and Systems
+    ('ijrr', 'journals/ijrr', 'IJRR', range(1982, 2026)),  # Int. J. of Robotics Research (창간 1982)
+]
+
+# DBLP에 색인된 optional venues. (Soft Robotics, IEEE TMech은 DBLP 미색인 →
+# step1_extra_openalex.py에서 OpenAlex로 수집)
+OPTIONAL_VENUES = [
+    ('scirob', 'journals/scirobotics', 'Sci-Rob', range(2016, 2026)),  # Science Robotics 창간 2016
+]
+
+
 def main():
-    # (cache_key, dblp_stream, venue_label, year_range)
-    venues_config = [
-        ('icra', 'conf/icra',     'ICRA', range(1984, 2026)),
-        ('iros', 'conf/iros',     'IROS', range(1988, 2026)),
-        ('ral',  'journals/ral',  'RA-L', range(2016, 2026)),  # RA-L 창간 2016
-        ('tro',  'journals/trob', 'T-RO', range(2004, 2026)),  # T-RO: 2004~ (이전 T-RA는 제외)
-        ('rss',  'conf/rss',      'RSS',  range(2005, 2026)),  # Robotics: Science and Systems
-        ('ijrr', 'journals/ijrr', 'IJRR', range(1982, 2026)),  # Int. J. of Robotics Research (창간 1982)
-    ]
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--include-optional', action='store_true',
+                    help='also fetch optional DBLP venues (Science Robotics)')
+    args = ap.parse_args()
+
+    venues_config = CORE_VENUES + (OPTIONAL_VENUES if args.include_optional else [])
 
     jobs = []
     for key, stream, label, years in venues_config:

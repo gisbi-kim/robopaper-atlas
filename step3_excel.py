@@ -23,10 +23,12 @@ try:
 except OSError:
     AS_OF = datetime.now().date().isoformat()
 print(f"Citations as of: {AS_OF}")
-OUT_XLSX = "icra_iros_ral_tro_rss_ijrr_all.xlsx"
+OUT_XLSX = "robopaper_atlas_all.xlsx"
 
-# DOI 중복 시 어느 venue를 남길지 우선순위 (저널/선택도 높은 conf 우선)
-VENUE_PRIORITY = {'T-RO': 0, 'IJRR': 1, 'RA-L': 2, 'RSS': 3, 'ICRA': 4, 'IROS': 5}
+# DOI 중복 시 어느 venue를 남길지 우선순위 (저널/선택도 높은 conf 우선).
+# 순서 = summary 시트 표시 순서. 데이터에 등장하는데 여기 없는 venue는 default priority 99.
+VENUE_LABELS = ['T-RO', 'IJRR', 'Sci-Rob', 'SoRo', 'T-Mech', 'RA-L', 'RSS', 'ICRA', 'IROS']
+VENUE_PRIORITY = {v: i for i, v in enumerate(VENUE_LABELS)}
 
 with open(INPUT, encoding='utf-8') as f:
     papers = json.load(f)
@@ -137,12 +139,14 @@ total = len(df)
 summary_rows = [
     ('Citations as of', AS_OF),
     ('Total papers', total),
-    ('ICRA', int((df['venue'] == 'ICRA').sum())),
-    ('IROS', int((df['venue'] == 'IROS').sum())),
-    ('RA-L', int((df['venue'] == 'RA-L').sum())),
-    ('T-RO', int((df['venue'] == 'T-RO').sum())),
-    ('RSS',  int((df['venue'] == 'RSS').sum())),
-    ('IJRR', int((df['venue'] == 'IJRR').sum())),
+]
+# 알려진 venue는 VENUE_LABELS 순서로, 그 외 데이터에만 있는 venue는 뒤에 덧붙임
+seen_venues = set(df['venue'].astype(str).unique())
+ordered = [v for v in VENUE_LABELS if v in seen_venues]
+extras  = sorted(v for v in seen_venues if v and v not in VENUE_PRIORITY)
+for v in ordered + extras:
+    summary_rows.append((v, int((df['venue'] == v).sum())))
+summary_rows += [
     ('Year range', f"{df['year'].min()} ~ {df['year'].max()}"),
     ('With DOI', f"{int(df['doi'].astype(bool).sum())} ({100*df['doi'].astype(bool).mean():.1f}%)"),
     ('With abstract', f"{int((df['abstract'].astype(str).str.len() > 0).sum())} ({100*(df['abstract'].astype(str).str.len() > 0).mean():.1f}%)"),

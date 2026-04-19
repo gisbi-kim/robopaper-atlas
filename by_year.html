@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ICRA / IROS / RA-L / T-RO / RSS / IJRR / Sci-Rob / SoRo / T-Mech Papers by Year</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  body { font-family: -apple-system, "Segoe UI", sans-serif; margin: 24px; background: #fafafa; color: #222; }
+  .brand { font-size: 12px; letter-spacing: 0.5px; color: #888; margin-bottom: 4px; }
+  .brand a { color: inherit; text-decoration: none; font-weight: 600; }
+  .brand a:hover { color: #1f77b4; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 20px; }
+  .controls { margin-bottom: 12px; }
+  .controls button {
+    border: 1px solid #ccc; background: #fff; padding: 6px 14px; margin-right: 6px;
+    border-radius: 6px; cursor: pointer; font-size: 13px;
+  }
+  .controls button.active { background: #1f77b4; color: #fff; border-color: #1f77b4; }
+  .wrap { background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 16px; }
+  canvas { max-height: 520px; }
+  .summary { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin-top: 20px; }
+  .card { min-width: 0; background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 14px 18px; }
+  .card .num { font-size: 24px; font-weight: 600; }
+  .card .label { color: #666; font-size: 12px; }
+  .card.v-icra { border-top: 3px solid #1f77b4; }
+  .card.v-iros { border-top: 3px solid #ff7f0e; }
+  .card.v-ral { border-top: 3px solid #2ca02c; }
+  .card.v-tro { border-top: 3px solid #d62728; }
+  .card.v-rss { border-top: 3px solid #9467bd; }
+  .card.v-ijrr { border-top: 3px solid #8c564b; }
+  .card.v-scirob { border-top: 3px solid #17becf; }
+  .card.v-soro { border-top: 3px solid #e377c2; }
+  .card.v-tmech { border-top: 3px solid #bcbd22; }
+  table { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 12px; }
+  th, td { border-bottom: 1px solid #eee; padding: 6px 10px; text-align: right; }
+  th:first-child, td:first-child { text-align: left; }
+  th { background: #f4f4f4; font-weight: 600; }
+  td.c-icra { color: #1f77b4; font-variant-numeric: tabular-nums; }
+  td.c-iros { color: #ff7f0e; font-variant-numeric: tabular-nums; }
+  td.c-ral { color: #2ca02c; font-variant-numeric: tabular-nums; }
+  td.c-tro { color: #d62728; font-variant-numeric: tabular-nums; }
+  td.c-rss { color: #9467bd; font-variant-numeric: tabular-nums; }
+  td.c-ijrr { color: #8c564b; font-variant-numeric: tabular-nums; }
+  td.c-scirob { color: #17becf; font-variant-numeric: tabular-nums; }
+  td.c-soro { color: #e377c2; font-variant-numeric: tabular-nums; }
+  td.c-tmech { color: #bcbd22; font-variant-numeric: tabular-nums; }
+  td.c-total { font-weight: 600; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+<div class="brand"><a href="index.html">RoboPaper Atlas</a></div>
+<h1>ICRA / IROS / RA-L / T-RO / RSS / IJRR / Sci-Rob / SoRo / T-Mech Papers by Year</h1>
+<div class="sub" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+  <span>DBLP + OpenAlex · 1984 ~ 2025 · 81,522 papers (DOI-deduped)</span>
+  <span style="color:#888; text-align:right; line-height:1.4;">
+    <a href="REFRESH.md" style="color:#1f77b4; text-decoration:none; font-size:11px;">How to refresh? ↻</a><br>
+    Data as of 2026-04-19
+  </span>
+</div>
+
+<div class="summary">
+  <div class="card v-icra"><div class="num">30,604</div><div class="label">ICRA (1984~)</div></div>
+  <div class="card v-iros"><div class="num">26,586</div><div class="label">IROS (1988~)</div></div>
+  <div class="card v-ral"><div class="num">9,405</div><div class="label">RA-L (2016~)</div></div>
+  <div class="card v-tro"><div class="num">3,353</div><div class="label">T-RO (2004~)</div></div>
+  <div class="card v-rss"><div class="num">1,321</div><div class="label">RSS (2005~)</div></div>
+  <div class="card v-ijrr"><div class="num">2,661</div><div class="label">IJRR (1982~)</div></div>
+  <div class="card v-scirob"><div class="num">857</div><div class="label">Sci-Rob (2016~)</div></div>
+  <div class="card v-soro"><div class="num">784</div><div class="label">SoRo (2014~)</div></div>
+  <div class="card v-tmech"><div class="num">5,951</div><div class="label">T-Mech (1996~)</div></div>
+  <div class="card"><div class="num">81,522</div><div class="label">Grand total</div></div>
+  <div class="card"><div class="num">2025 (6,459)</div><div class="label">Peak year</div></div>
+</div>
+
+<div style="margin-top: 24px;">
+  <div class="controls">
+    <button id="btn-stacked" class="active">Stacked</button>
+    <button id="btn-grouped">Grouped</button>
+    <button id="btn-line">Line</button>
+  </div>
+  <div class="wrap"><canvas id="chart"></canvas></div>
+</div>
+
+<table>
+  <thead><tr><th>Year</th><th>ICRA</th><th>IROS</th><th>RA-L</th><th>T-RO</th><th>RSS</th><th>IJRR</th><th>Sci-Rob</th><th>SoRo</th><th>T-Mech</th><th>Total</th></tr></thead>
+  <tbody id="tbody"></tbody>
+</table>
+
+<script>
+// rows: [year, ...counts in VENUES order]
+const VENUES = ["ICRA", "IROS", "RA-L", "T-RO", "RSS", "IJRR", "Sci-Rob", "SoRo", "T-Mech"];
+const VENUE_COLOR = {"ICRA": "#1f77b4", "IROS": "#ff7f0e", "RA-L": "#2ca02c", "T-RO": "#d62728", "RSS": "#9467bd", "IJRR": "#8c564b", "Sci-Rob": "#17becf", "SoRo": "#e377c2", "T-Mech": "#bcbd22"};
+const VENUE_IDS = {"ICRA": "icra", "IROS": "iros", "RA-L": "ral", "T-RO": "tro", "RSS": "rss", "IJRR": "ijrr", "Sci-Rob": "scirob", "SoRo": "soro", "T-Mech": "tmech"};
+const raw = [[1984, 74, 0, 0, 0, 0, 0, 0, 0, 0], [1985, 158, 0, 0, 0, 0, 0, 0, 0, 0], [1986, 339, 0, 0, 0, 0, 0, 0, 0, 0], [1987, 329, 0, 0, 0, 0, 0, 0, 0, 0], [1988, 329, 129, 0, 0, 0, 33, 0, 0, 0], [1989, 281, 89, 0, 0, 0, 36, 0, 0, 0], [1990, 331, 139, 0, 0, 0, 42, 0, 0, 0], [1991, 390, 255, 0, 0, 0, 55, 0, 0, 0], [1992, 428, 289, 0, 0, 0, 0, 0, 0, 0], [1993, 452, 311, 0, 0, 0, 43, 0, 0, 0], [1994, 533, 309, 0, 0, 0, 41, 0, 0, 0], [1995, 499, 265, 0, 0, 0, 41, 0, 0, 0], [1996, 587, 238, 0, 0, 0, 35, 0, 0, 34], [1997, 573, 288, 0, 0, 0, 50, 0, 0, 32], [1998, 593, 318, 0, 0, 0, 86, 0, 0, 39], [1999, 519, 311, 0, 0, 0, 84, 0, 0, 46], [2000, 641, 378, 0, 0, 0, 76, 0, 0, 49], [2001, 676, 379, 0, 0, 0, 58, 0, 0, 58], [2002, 689, 499, 0, 0, 0, 62, 0, 0, 58], [2003, 714, 620, 0, 0, 0, 58, 0, 0, 60], [2004, 853, 660, 0, 112, 0, 73, 0, 0, 66], [2005, 765, 662, 0, 127, 49, 67, 0, 0, 85], [2006, 679, 1001, 0, 120, 39, 74, 0, 0, 84], [2007, 807, 688, 0, 124, 42, 71, 0, 0, 82], [2008, 663, 687, 0, 137, 41, 76, 0, 0, 82], [2009, 712, 948, 0, 139, 40, 100, 0, 0, 144], [2010, 869, 992, 0, 99, 41, 98, 0, 0, 135], [2011, 1016, 786, 0, 107, 47, 103, 0, 0, 168], [2012, 835, 853, 0, 124, 61, 103, 0, 0, 139], [2013, 873, 913, 0, 119, 56, 95, 0, 0, 167], [2014, 1036, 749, 0, 133, 58, 99, 0, 25, 273], [2015, 940, 970, 0, 124, 50, 91, 0, 47, 256], [2016, 694, 830, 158, 119, 48, 86, 6, 30, 240], [2017, 795, 878, 302, 116, 76, 83, 48, 48, 250], [2018, 815, 1086, 573, 122, 72, 88, 67, 68, 261], [2019, 1024, 933, 598, 111, 81, 84, 81, 73, 325], [2020, 1073, 1128, 895, 120, 104, 89, 83, 98, 431], [2021, 1386, 1031, 1119, 148, 93, 78, 123, 78, 374], [2022, 929, 1213, 1610, 235, 75, 49, 90, 67, 438], [2023, 1341, 1195, 1083, 283, 113, 61, 95, 84, 427], [2024, 1760, 1581, 1490, 270, 135, 94, 134, 90, 524], [2025, 1604, 1985, 1577, 364, 0, 99, 130, 76, 624]];
+raw.sort((a, b) => a[0] - b[0]);
+const labels = raw.map(r => r[0]);
+// byVenue[i] = array of counts for VENUES[i] across years
+const byVenue = VENUES.map((_v, i) => raw.map(r => r[i + 1]));
+
+const tbody = document.getElementById('tbody');
+[...raw].reverse().forEach(r => {
+  const y = r[0];
+  const counts = r.slice(1);
+  const tot = counts.reduce((a, b) => a + b, 0);
+  const cells = counts.map((c, i) =>
+    `<td class="c-${VENUE_IDS[VENUES[i]]}">${c.toLocaleString()}</td>`
+  ).join('');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${y}</td>${cells}<td class="c-total">${tot.toLocaleString()}</td>`;
+  tbody.appendChild(tr);
+});
+
+const ctx = document.getElementById('chart').getContext('2d');
+let chart;
+
+function makeDatasets(mode) {
+  if (mode === 'line') {
+    return VENUES.map((v, i) => ({
+      label: v, data: byVenue[i],
+      borderColor: VENUE_COLOR[v],
+      backgroundColor: VENUE_COLOR[v] + '33',
+      tension: 0.25, fill: false,
+    }));
+  }
+  return VENUES.map((v, i) => ({
+    label: v, data: byVenue[i], backgroundColor: VENUE_COLOR[v],
+  }));
+}
+
+function render(mode) {
+  if (chart) chart.destroy();
+  const common = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'top' },
+      tooltip: { mode: 'index', intersect: false }
+    },
+    interaction: { mode: 'index', intersect: false },
+    scales: {
+      x: { title: { display: true, text: 'Year' } },
+      y: { title: { display: true, text: 'Papers' }, beginAtZero: true }
+    }
+  };
+  if (mode === 'line') {
+    chart = new Chart(ctx, {
+      type: 'line',
+      data: { labels, datasets: makeDatasets('line') },
+      options: common,
+    });
+  } else {
+    const stacked = mode === 'stacked';
+    chart = new Chart(ctx, {
+      type: 'bar',
+      data: { labels, datasets: makeDatasets(mode) },
+      options: {
+        ...common,
+        scales: {
+          x: { ...common.scales.x, stacked },
+          y: { ...common.scales.y, stacked }
+        }
+      }
+    });
+  }
+}
+
+render('stacked');
+
+const btns = { stacked: 'btn-stacked', grouped: 'btn-grouped', line: 'btn-line' };
+Object.entries(btns).forEach(([mode, id]) => {
+  document.getElementById(id).addEventListener('click', () => {
+    Object.values(btns).forEach(x => document.getElementById(x).classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    render(mode);
+  });
+});
+</script>
+
+</body>
+</html>

@@ -116,7 +116,12 @@ edges = [
 ]
 
 # Order venues by the canonical atlas order; append any extras alphabetically.
-_VENUE_ORDER = ['ICRA', 'IROS', 'RA-L', 'RAL', 'T-RO', 'TRO', 'RSS', 'IJRR']
+_VENUE_ORDER = [
+    'ICRA', 'IROS', 'RA-L', 'RAL', 'T-RO', 'TRO', 'RSS', 'IJRR',
+    'SCI-ROB', 'SCIROB', 'SCI. ROB.', 'SCIENCE ROBOTICS',
+    'SORO', 'SOFT ROBOTICS',
+    'T-MECH', 'TMECH', 'IEEE/ASME TMECH',
+]
 def _venue_sort_key(v):
     u = v.upper()
     return (_VENUE_ORDER.index(u), u) if u in _VENUE_ORDER else (len(_VENUE_ORDER), u)
@@ -159,6 +164,10 @@ HTML = r"""<!DOCTYPE html>
   #info { top: 14px; left: 14px; max-width: 280px; }
   #info h1 { font-size: 15px; margin: 0 0 6px; font-weight: 600; color: #f3f4f6; }
   #info .meta { color: #9ca3af; font-size: 11px; margin-bottom: 8px; line-height: 1.6; }
+  #info .meta .count  { color: #e5e7eb; font-size: 12.5px; font-weight: 600; line-height: 1.35; }
+  #info .meta .params { color: #6b7280; font-size: 10.5px; margin-top: 2px; }
+  #info .meta .scope  { margin-top: 6px; padding-top: 6px; border-top: 1px solid #2a2f3a; font-size: 10.5px; line-height: 1.55; color: #9ca3af; }
+  #info .meta .scope .k { color: #6b7280; margin-right: 5px; }
   #info .controls { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
   #info button, #info select, #info input {
     font-size: 11px; padding: 4px 8px; background: #1f2937; color: #e5e7eb;
@@ -286,16 +295,17 @@ const META = DATA.meta;
 
 {
   const metaEl = document.getElementById('meta-text');
-  const lines = [
-    `${META.nodes.toLocaleString()} authors · ${META.edges.toLocaleString()} co-author pairs`,
-    `(≥ ${META.min_author_papers} papers, ≥ ${META.min_edge_collabs} collabs)`,
-  ];
-  const venueStr = (META.venues && META.venues.length) ? META.venues.join('/') : '—';
+  const venueStr = (META.venues && META.venues.length) ? META.venues.join(' / ') : '—';
   const yearStr = (META.paper_year_min && META.paper_year_max)
     ? `${META.paper_year_min}–${META.paper_year_max}` : '—';
-  lines.push(`Papers: ${venueStr} · Years ${yearStr} · Built ${META.built_at || '—'}`);
-  metaEl.textContent = lines.join('\n');
-  metaEl.style.whiteSpace = 'pre-line';
+  metaEl.innerHTML =
+    `<div class="count">${META.nodes.toLocaleString()} authors · ${META.edges.toLocaleString()} co-author pairs</div>`
+    + `<div class="params">(≥ ${META.min_author_papers} papers, ≥ ${META.min_edge_collabs} collabs)</div>`
+    + `<div class="scope">`
+    +   `<div><span class="k">Papers</span>${venueStr}</div>`
+    +   `<div><span class="k">Years</span>${yearStr}</div>`
+    +   `<div><span class="k">Built</span>${META.built_at || '—'}</div>`
+    + `</div>`;
 }
 
 const canvas = document.getElementById('net');

@@ -38,10 +38,11 @@ step2는 체크포인트 없는 항목만 조회하므로 위 방식으로 자�
 ### 3) 산출물 재생성 (전부 돌림)
 
 ```bash
-python step3_excel.py          # xlsx
-python _make_word_book.py      # word_book.json / word_book.csv
-python _make_all_html.py       # icra_iros_ral_tro_rss_explorer.html
-python _make_by_year_html.py   # icra_iros_ral_tro_rss_by_year.html
+python step3_excel.py             # robopaper_atlas_all.xlsx
+python _make_word_book.py         # word_book.json / word_book.csv
+python _make_all_html.py          # explorer.html
+python _make_by_year_html.py      # by_year.html
+python _make_coauthor_network.py  # coauthor_network.html
 ```
 
 ### 4) 검증
@@ -58,27 +59,37 @@ python _make_by_year_html.py   # icra_iros_ral_tro_rss_by_year.html
 |---|---|
 | `step1_dblp.py` | DBLP에서 venue별 연도별 메타데이터 수집 (캐시: `dblp_raw/`) |
 | `step2_openalex.py` | OpenAlex로 초록·인용수·concepts 보강 (체크포인트: `enriched_checkpoint.json`) |
-| `step3_excel.py` | 정제·dedup 후 xlsx/csv 생성 |
+| `step1_extra_openalex.py` | DBLP 미색인 저널(SoRo/TMech)을 OpenAlex ISSN으로 수집 |
+| `step3_excel.py` | 정제·dedup 후 xlsx 생성 |
 | `_make_all_html.py` | 전체 탐색기 HTML |
 | `_make_by_year_html.py` | 연도별 편수 HTML |
-| `_make_top100_html.py` | Top 100 HTML |
+| `_make_coauthor_network.py` | 공저자 네트워크 HTML |
 | `refresh_recent.py` | 체크포인트에서 특정 연도 이후 항목 제거 (선택적 refresh용) |
 
 ## 수집 venue 현황
 
-| venue | DBLP stream | 시작 연도 |
+| venue | Source | 시작 연도 |
 |---|---|---|
-| ICRA | `conf/icra` | 1984 |
-| IROS | `conf/iros` | 1988 |
-| RA-L | `journals/ral` | 2016 |
-| T-RO | `journals/trob` | 2004 |
-| RSS  | `conf/rss` | 2005 |
+| ICRA | DBLP `conf/icra` | 1984 |
+| IROS | DBLP `conf/iros` | 1988 |
+| RA-L | DBLP `journals/ral` | 2016 |
+| T-RO | DBLP `journals/trob` | 2004 |
+| RSS  | DBLP `conf/rss` | 2005 |
+| IJRR | DBLP `journals/ijrr` | 1982 |
+| Sci-Rob | DBLP `journals/scirobotics` | 2016 |
+| SoRo | OpenAlex ISSN `2169-5172` | 2014 |
+| T-Mech | OpenAlex ISSN `1083-4435` | 1996 |
 
 ## 새 venue 추가하려면
 
-`step1_dblp.py`의 `venues_config`에 한 줄 추가:
+**DBLP에 색인된 경우** — `step1_dblp.py`의 `CORE_VENUES` 또는 `OPTIONAL_VENUES`에 한 줄 추가:
 ```python
 ('key', 'dblp/stream', 'LABEL', range(start_year, 2026)),
 ```
-그 후 step1 → step2 → step3 → HTML 생성 순서로 실행.
-각 HTML 생성기에 venue 색/필터/카드 추가 필요 (ICRA/IROS/RA-L/T-RO/RSS가 어떻게 들어있는지 참고).
+
+**DBLP에 없는 저널** — `step1_extra_openalex.py`의 `EXTRA_VENUES`에 한 줄 추가:
+```python
+('key', 'LABEL', 'ISSN-NUMBER', range(start_year, 2026)),
+```
+
+그 후 step1 → step2 → step3 → HTML 생성 순서로 실행. 각 `_make_*.py` 상단의 `VENUES_CFG` 리스트에 `{'label', 'id', 'color'}` 한 줄 추가하면 모든 카드/차트/필터에 자동 반영.

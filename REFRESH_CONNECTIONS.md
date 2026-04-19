@@ -35,21 +35,22 @@ python _make_coauthor_network.py
 현재 기준 파라미터 (스크립트 상단에서 조정):
 ```python
 MIN_AUTHOR_PAPERS = 5   # 저자당 최소 편수
-MIN_EDGE_COLLABS  = 5   # 두 저자 공저 최소 횟수
+MIN_EDGE_COLLABS  = 2   # 데이터에 포함되는 최소 공저 횟수 (슬라이더 하한)
+DEFAULT_EDGE_VIEW = 5   # HTML 슬라이더 초기값
 ```
 
 ### 3) 데이터가 많이 늘면 임계치 튜닝
 
 노드 개수가 너무 많아지면 브라우저가 버벅이므로 아래 가이드대로 올립니다:
 
-| 전체 논문 수 | `MIN_AUTHOR_PAPERS` | `MIN_EDGE_COLLABS` | 예상 노드 수 |
+| 전체 논문 수 | `MIN_AUTHOR_PAPERS` | `MIN_EDGE_COLLABS` | 실제 노드 수 |
 |---|---:|---:|---:|
-| ~75k (현재) | 5 | 5 | ~8,000 |
-| ~100k       | 6 | 6 | ~8,500 |
-| ~150k       | 8 | 8 | ~9,000 |
-| ~200k       | 10 | 8 | ~9,500 |
+| ~82k (현재, 9 venues) | 5 | 2 | 13,146 |
+| ~100k                 | 6 | 3 | ~11,000 |
+| ~150k                 | 8 | 3 | ~10,000 |
+| ~200k                 | 10 | 4 | ~9,500 |
 
-브라우저 쾌적성 기준: 노드 ≤ 10k, 엣지 ≤ 20k.
+브라우저 쾌적성 기준: 노드 ≤ 15k, 엣지 ≤ 50k (기본 슬라이더 5 이상 뷰에서).
 
 ### 4) 결과 검증
 
@@ -80,7 +81,9 @@ git push
 - **검색 패널**: 저자명 부분 일치 25명 (Enter 시 첫 결과 이동)
 - **Top 100 hubs**: 현재 뷰 기준 공저자 수 내림차순 (엣지 threshold 변경 시 자동 재계산)
 - **2/3차 연결 토글** (기본 off): emerald → indigo → amber 3단계 시각화
-- **Edge threshold 슬라이더**: 5~30 범위, 실시간으로 subgraph 축소/확장
+- **Edge threshold 슬라이더**: 2~30 범위 (기본 5), 실시간으로 subgraph 축소/확장
+- **Layout spread 슬라이더**: 1~10 범위 (기본 3.5), 레이아웃의 반발력·링크 거리 조정 (데이터 영향 없음)
+- **Meta 표기**: 좌상단 패널에 대상 venue 목록 · 연도 범위 · 빌드일 표시
 
 ## 관련 파일
 - [`_make_coauthor_network.py`](./_make_coauthor_network.py) — 이 네트워크 생성기

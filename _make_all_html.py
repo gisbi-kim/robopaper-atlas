@@ -1,4 +1,4 @@
-"""전체 논문 시각화 HTML 생성 (ICRA·IROS·RA-L, 필터·정렬·페이지네이션, DOI dedup)"""
+"""전체 논문 시각화 HTML 생성 (venue-config driven, DOI dedup)"""
 import json
 import html
 import os
@@ -6,7 +6,25 @@ import re
 from datetime import datetime
 import pandas as pd
 
-VENUE_PRIORITY = {'T-RO': 0, 'IJRR': 1, 'RA-L': 2, 'RSS': 3, 'ICRA': 4, 'IROS': 5}
+# Single source of truth for venues — priority order = display order.
+# Adding a venue: append a dict here; HTML/JS sections regenerate automatically.
+VENUES_CFG = [
+    {'label': 'ICRA',    'id': 'icra',   'color': '#1f77b4'},
+    {'label': 'IROS',    'id': 'iros',   'color': '#ff7f0e'},
+    {'label': 'RA-L',    'id': 'ral',    'color': '#2ca02c'},
+    {'label': 'T-RO',    'id': 'tro',    'color': '#d62728'},
+    {'label': 'RSS',     'id': 'rss',    'color': '#9467bd'},
+    {'label': 'IJRR',    'id': 'ijrr',   'color': '#8c564b'},
+    {'label': 'Sci-Rob', 'id': 'scirob', 'color': '#17becf'},
+    {'label': 'SoRo',    'id': 'soro',   'color': '#e377c2'},
+    {'label': 'T-Mech',  'id': 'tmech',  'color': '#bcbd22'},
+]
+
+VENUE_PRIORITY = {v['label']: i for i, v in enumerate(VENUES_CFG)}
+VENUE_LABELS   = [v['label'] for v in VENUES_CFG]
+VENUE_COLORS   = {v['label']: v['color'] for v in VENUES_CFG}
+VENUE_IDS      = {v['label']: v['id'] for v in VENUES_CFG}
+TITLE_STR      = ' / '.join(VENUE_LABELS) + ' Paper Explorer'
 
 # 인용수 기준일: all_enriched.json의 mtime (step2 마지막 실행일)
 try:
@@ -34,7 +52,7 @@ before = len(slim)
 slim = slim[slim['authors'].str.strip() != ''].reset_index(drop=True)
 print(f"proceedings 표제 제외: {before - len(slim)}건")
 
-# DOI 기반 dedup (RA-L > ICRA > IROS 우선순위)
+# DOI 기반 dedup — 우선순위는 VENUE_PRIORITY
 before = len(slim)
 with_doi = slim[slim['doi'] != ''].copy()
 without_doi = slim[slim['doi'] == ''].copy()
@@ -49,7 +67,7 @@ without_doi['venues_all'] = without_doi['venue']
 slim = pd.concat([with_doi, without_doi], ignore_index=True)
 print(f"DOI dedup: {before} → {len(slim)} ({before - len(slim)}건 병합)")
 
-# 제목+연도 기반 추가 dedup (DOI는 다르지만 같은 논문이 RA-L과 ICRA/IROS에 교차 게재)
+# 제목+연도 기반 추가 dedup (DOI는 다르지만 같은 논문이 여러 venue에 교차 게재)
 def _norm_title(s):
     return re.sub(r'[^a-z0-9]', '', str(s).lower())
 before = len(slim)
@@ -88,11 +106,41 @@ except FileNotFoundError:
     wb_vocab = []
     wb_papers_slim = {}
 
+
+def _class_key(label: str) -> str:
+    """Mirror JS venueClass(): strip non-alphanumerics, uppercase. 'RA-L' → 'RAL'."""
+    return re.sub(r'[^A-Za-z0-9]', '', label).upper()
+
+
+# HTML fragments — generated once from VENUES_CFG and injected via placeholders.
+CARD_BORDER_CSS = ''.join(
+    f'  .card.v-{v["id"]} {{ border-top: 3px solid {v["color"]}; }}\n'
+    for v in VENUES_CFG
+)
+VENUE_TEXT_CSS = ''.join(
+    f'  .venue-{_class_key(v["label"])} {{ color: {v["color"]}; font-weight: 600; }}\n'
+    for v in VENUES_CFG
+)
+SUMMARY_CARDS = ''.join(
+    f'  <div class="card v-{v["id"]}"><div class="num" id="c-{v["id"]}">-</div>'
+    f'<div class="label">{v["label"]}</div></div>\n'
+    for v in VENUES_CFG
+)
+FILTER_A_CHECKBOXES = ''.join(
+    f'    <label><input type="checkbox" id="f-{v["id"]}" checked> {v["label"]}</label>\n'
+    for v in VENUES_CFG
+)
+FILTER_B_CHECKBOXES = ''.join(
+    f'    <label><input type="checkbox" id="f-{v["id"]}-b" checked> {v["label"]}</label>\n'
+    for v in VENUES_CFG
+)
+
+
 HTML = r"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>ICRA / IROS / RA-L / T-RO / RSS / IJRR Paper Explorer</title>
+<title>__TITLE_STR__</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.js"></script>
 <style>
@@ -109,17 +157,11 @@ HTML = r"""<!DOCTYPE html>
   h2 { font-size: 14px; margin: 0 0 10px; color: #333; }
   canvas { max-height: 340px; }
 
-  .summary { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
-  .card { flex: 1; min-width: 120px; background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 10px 14px; }
+  .summary { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .card { min-width: 0; background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 10px 14px; }
   .card .num { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
   .card .label { color: #666; font-size: 11px; margin-top: 2px; }
-  .card.v-icra { border-top: 3px solid #1f77b4; }
-  .card.v-iros { border-top: 3px solid #ff7f0e; }
-  .card.v-ral  { border-top: 3px solid #2ca02c; }
-  .card.v-tro  { border-top: 3px solid #d62728; }
-  .card.v-rss  { border-top: 3px solid #9467bd; }
-  .card.v-ijrr { border-top: 3px solid #8c564b; }
-
+__CARD_BORDER_CSS__
   .controls { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
   .controls label { font-size: 13px; color: #555; display: inline-flex; align-items: center; gap: 6px; }
   .controls input[type="number"] { width: 78px; padding: 4px 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; }
@@ -147,13 +189,7 @@ HTML = r"""<!DOCTYPE html>
   td.rank, td.cites, td.year { text-align: right; font-variant-numeric: tabular-nums; }
   td.cites { font-weight: 600; }
   td.rank { color: #999; }
-  .venue-ICRA { color: #1f77b4; font-weight: 600; }
-  .venue-IROS { color: #ff7f0e; font-weight: 600; }
-  .venue-RAL  { color: #2ca02c; font-weight: 600; }
-  .venue-TRO  { color: #d62728; font-weight: 600; }
-  .venue-RSS  { color: #9467bd; font-weight: 600; }
-  .venue-IJRR { color: #8c564b; font-weight: 600; }
-  .venue-also { color: #888; font-weight: 400; font-size: 10px; }
+__VENUE_TEXT_CSS__  .venue-also { color: #888; font-weight: 400; font-size: 10px; }
   td.authors { color: #555; font-size: 11px; white-space: nowrap; }
   .author-click { cursor: pointer; }
   .author-click:hover { color: #1f77b4; text-decoration: underline; }
@@ -203,7 +239,7 @@ HTML = r"""<!DOCTYPE html>
 <body>
 
 <div class="brand"><a href="index.html">RoboPaper Atlas</a></div>
-<h1>ICRA / IROS / RA-L / T-RO / RSS / IJRR Paper Explorer</h1>
+<h1>__TITLE_STR__</h1>
 <div class="sub">
   <span>DBLP + OpenAlex · __TOTAL_FMT__ papers (DOI-deduped) · __YMIN__ ~ __YMAX__ · Filter · Sort · Search</span>
   <span style="color:#888; text-align:right; line-height:1.4;">
@@ -214,13 +250,7 @@ HTML = r"""<!DOCTYPE html>
 
 <div class="summary">
   <div class="card"><div class="num" id="c-total">-</div><div class="label">Total</div></div>
-  <div class="card v-icra"><div class="num" id="c-icra">-</div><div class="label">ICRA</div></div>
-  <div class="card v-iros"><div class="num" id="c-iros">-</div><div class="label">IROS</div></div>
-  <div class="card v-ral"><div class="num" id="c-ral">-</div><div class="label">RA-L</div></div>
-  <div class="card v-tro"><div class="num" id="c-tro">-</div><div class="label">T-RO</div></div>
-  <div class="card v-rss"><div class="num" id="c-rss">-</div><div class="label">RSS</div></div>
-  <div class="card v-ijrr"><div class="num" id="c-ijrr">-</div><div class="label">IJRR</div></div>
-  <div class="card"><div class="num" id="c-maxcite">-</div><div class="label">Max citations</div></div>
+__SUMMARY_CARDS__  <div class="card"><div class="num" id="c-maxcite">-</div><div class="label">Max citations</div></div>
   <div class="card"><div class="num" id="c-meancite">-</div><div class="label">Mean citations</div></div>
 </div>
 
@@ -240,13 +270,7 @@ HTML = r"""<!DOCTYPE html>
       ~
       <input type="number" id="f-year-to" min="__YMIN__" max="__YMAX__" value="__YMAX__">
     </label>
-    <label><input type="checkbox" id="f-icra" checked> ICRA</label>
-    <label><input type="checkbox" id="f-iros" checked> IROS</label>
-    <label><input type="checkbox" id="f-ral" checked> RA-L</label>
-    <label><input type="checkbox" id="f-tro" checked> T-RO</label>
-    <label><input type="checkbox" id="f-rss" checked> RSS</label>
-    <label><input type="checkbox" id="f-ijrr" checked> IJRR</label>
-    <label>Min citations
+__FILTER_A_CHECKBOXES__    <label>Min citations
       <input type="number" id="f-mincite" min="0" value="0">
     </label>
     <label>Title:
@@ -275,13 +299,7 @@ HTML = r"""<!DOCTYPE html>
       ~
       <input type="number" id="f-year-to-b" min="__YMIN__" max="__YMAX__" value="__YMAX__">
     </label>
-    <label><input type="checkbox" id="f-icra-b" checked> ICRA</label>
-    <label><input type="checkbox" id="f-iros-b" checked> IROS</label>
-    <label><input type="checkbox" id="f-ral-b" checked> RA-L</label>
-    <label><input type="checkbox" id="f-tro-b" checked> T-RO</label>
-    <label><input type="checkbox" id="f-rss-b" checked> RSS</label>
-    <label><input type="checkbox" id="f-ijrr-b" checked> IJRR</label>
-    <label>Min citations
+__FILTER_B_CHECKBOXES__    <label>Min citations
       <input type="number" id="f-mincite-b" min="0" value="0">
     </label>
     <label>Title:
@@ -303,7 +321,7 @@ HTML = r"""<!DOCTYPE html>
 </div>
 
 <div class="wrap">
-  <h2>Papers per year (stacked ICRA / IROS / RA-L / T-RO / RSS / IJRR, filtered)</h2>
+  <h2>Papers per year (stacked by venue, filtered)</h2>
   <div id="bar-grid" style="display: flex; gap: 16px; align-items: flex-start;">
     <div style="flex: 1; min-width: 0;">
       <div class="chart-label" id="chart-label-a" style="display:none;"><span class="zone-label">A</span></div>
@@ -398,12 +416,24 @@ const WB_PAPERS = __WB_PAPERS__;
 const KEYS = { venue: 0, year: 1, title: 2, authors: 3, cites: 4, doi: 5 };
 const YMIN = __YMIN__, YMAX = __YMAX__;
 
-const VENUE_COLOR = { 'ICRA': '#1f77b4', 'IROS': '#ff7f0e', 'RA-L': '#2ca02c', 'T-RO': '#d62728', 'RSS': '#9467bd', 'IJRR': '#8c564b' };
-const VENUES = ['ICRA', 'IROS', 'RA-L', 'T-RO', 'RSS', 'IJRR'];
+const VENUE_COLOR = __VENUE_COLOR_JSON__;
+const VENUES      = __VENUES_JSON__;
+const VENUE_IDS   = __VENUE_IDS_JSON__;  // venue label → id-suffix (e.g. 'RA-L' → 'ral')
+
+function emptyVenueCounts() {
+  const m = {};
+  for (const v of VENUES) m[v] = 0;
+  return m;
+}
+function allVenuesTrue() {
+  const m = {};
+  for (const v of VENUES) m[v] = true;
+  return m;
+}
 
 const state = {
   yearFrom: YMIN, yearTo: YMAX,
-  venueFilter: { 'ICRA': true, 'IROS': true, 'RA-L': true, 'T-RO': true, 'RSS': true, 'IJRR': true },
+  venueFilter: allVenuesTrue(),
   minCite: 0,
   titleTerms: ['', '', ''],
   titleOp: 'AND',
@@ -415,7 +445,7 @@ const state = {
   shareYAxis: false,
   filterB: {
     yearFrom: YMIN, yearTo: YMAX,
-    venueFilter: { 'ICRA': true, 'IROS': true, 'RA-L': true, 'T-RO': true, 'RSS': true, 'IJRR': true },
+    venueFilter: allVenuesTrue(),
     minCite: 0,
     titleTerms: ['', '', ''],
     titleOp: 'AND',
@@ -451,7 +481,7 @@ function stdDev(vals, mean) {
 function buildHistBins(cites) {
   if (!cites.length) return { labels: [], counts: [] };
   const step = 10;
-  const cap = 200;  // 10단위로 0~200까지 세분, 그 이상은 overflow bin
+  const cap = 200;
   let max = 0;
   for (const c of cites) if (c > max) max = c;
   const nFine = max <= cap ? Math.ceil((max + 1) / step) : cap / step;
@@ -518,19 +548,17 @@ function filterAndSort() {
 function renderStats() {
   const f = state.filtered;
   document.getElementById('c-total').textContent = f.length.toLocaleString();
-  const counts = { 'ICRA': 0, 'IROS': 0, 'RA-L': 0, 'T-RO': 0, 'RSS': 0, 'IJRR': 0 };
+  const counts = emptyVenueCounts();
   let maxC = 0, sumC = 0;
   for (const r of f) {
     if (counts[r[0]] !== undefined) counts[r[0]]++;
     if (r[4] > maxC) maxC = r[4];
     sumC += r[4];
   }
-  document.getElementById('c-icra').textContent = counts['ICRA'].toLocaleString();
-  document.getElementById('c-iros').textContent = counts['IROS'].toLocaleString();
-  document.getElementById('c-ral').textContent  = counts['RA-L'].toLocaleString();
-  document.getElementById('c-tro').textContent  = counts['T-RO'].toLocaleString();
-  document.getElementById('c-rss').textContent  = counts['RSS'].toLocaleString();
-  document.getElementById('c-ijrr').textContent = counts['IJRR'].toLocaleString();
+  for (const v of VENUES) {
+    const el = document.getElementById('c-' + VENUE_IDS[v]);
+    if (el) el.textContent = counts[v].toLocaleString();
+  }
   if (f.length === 0) {
     document.getElementById('c-maxcite').textContent = '-';
     document.getElementById('c-meancite').textContent = '-';
@@ -553,7 +581,7 @@ function yearTotalMax(filteredArr) {
 function drawBarChart(canvasId, filteredArr, which, yMax) {
   const counts = {};
   for (const r of filteredArr) {
-    if (!counts[r[1]]) counts[r[1]] = { 'ICRA': 0, 'IROS': 0, 'RA-L': 0, 'T-RO': 0, 'RSS': 0, 'IJRR': 0 };
+    if (!counts[r[1]]) counts[r[1]] = emptyVenueCounts();
     if (counts[r[1]][r[0]] !== undefined) counts[r[1]][r[0]]++;
   }
   const years = [];
@@ -638,7 +666,8 @@ function renderScatter() {
   if (pool.length > MAX_POINTS) {
     pool = pool.slice().sort((a, b) => b[4] - a[4]).slice(0, MAX_POINTS);
   }
-  const byVenue = { 'ICRA': [], 'IROS': [], 'RA-L': [], 'T-RO': [], 'RSS': [], 'IJRR': [] };
+  const byVenue = {};
+  for (const v of VENUES) byVenue[v] = [];
   for (const r of pool) {
     if (byVenue[r[0]]) byVenue[r[0]].push({ x: r[1], y: r[4], t: r[2], a: r[3] });
   }
@@ -672,11 +701,7 @@ function renderScatter() {
 }
 
 function venueClass(v) {
-  if (v === 'RA-L') return 'venue-RAL';
-  if (v === 'T-RO') return 'venue-TRO';
-  if (v === 'RSS')  return 'venue-RSS';
-  if (v === 'IJRR') return 'venue-IJRR';
-  return 'venue-' + v;
+  return 'venue-' + String(v).replace(/[^A-Za-z0-9]/g, '').toUpperCase();
 }
 
 function renderVenueCell(r) {
@@ -854,8 +879,7 @@ function rerenderAll() {
   renderScatter();
   renderCitationStats();
   renderTable();
-  // Word cloud is the slowest render — debounce so rapid filter toggles
-  // don't re-layout for every click.
+  // Word cloud layout is the slowest — debounce so rapid filter clicks don't relayout repeatedly.
   clearTimeout(wcDebounceTimer);
   wcDebounceTimer = setTimeout(renderWordCloud, 180);
 }
@@ -865,12 +889,9 @@ function applyFilters() {
   const yt = parseInt(document.getElementById('f-year-to').value) || YMAX;
   state.yearFrom = Math.min(yf, yt);
   state.yearTo = Math.max(yf, yt);
-  state.venueFilter['ICRA'] = document.getElementById('f-icra').checked;
-  state.venueFilter['IROS'] = document.getElementById('f-iros').checked;
-  state.venueFilter['RA-L'] = document.getElementById('f-ral').checked;
-  state.venueFilter['T-RO'] = document.getElementById('f-tro').checked;
-  state.venueFilter['RSS']  = document.getElementById('f-rss').checked;
-  state.venueFilter['IJRR'] = document.getElementById('f-ijrr').checked;
+  for (const v of VENUES) {
+    state.venueFilter[v] = document.getElementById('f-' + VENUE_IDS[v]).checked;
+  }
   state.minCite = parseInt(document.getElementById('f-mincite').value) || 0;
   state.titleTerms = [
     document.getElementById('f-title-1').value,
@@ -885,12 +906,9 @@ function applyFilters() {
 function resetFilters() {
   document.getElementById('f-year-from').value = YMIN;
   document.getElementById('f-year-to').value = YMAX;
-  document.getElementById('f-icra').checked = true;
-  document.getElementById('f-iros').checked = true;
-  document.getElementById('f-ral').checked = true;
-  document.getElementById('f-tro').checked = true;
-  document.getElementById('f-rss').checked = true;
-  document.getElementById('f-ijrr').checked = true;
+  for (const v of VENUES) {
+    document.getElementById('f-' + VENUE_IDS[v]).checked = true;
+  }
   document.getElementById('f-mincite').value = 0;
   ['f-title-1','f-title-2','f-title-3','f-author'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-title-op').value = 'AND';
@@ -919,7 +937,10 @@ document.getElementById('page-size').onchange = (e) => {
 
 document.getElementById('btn-apply').onclick = applyFilters;
 document.getElementById('btn-reset').onclick = resetFilters;
-['f-year-from', 'f-year-to', 'f-icra', 'f-iros', 'f-ral', 'f-tro', 'f-rss', 'f-ijrr', 'f-mincite', 'f-title-op'].forEach(id =>
+
+const _aChangeIds = ['f-year-from', 'f-year-to', 'f-mincite', 'f-title-op']
+  .concat(VENUES.map(v => 'f-' + VENUE_IDS[v]));
+_aChangeIds.forEach(id =>
   document.getElementById(id).addEventListener('change', applyFilters)
 );
 ['f-title-1', 'f-title-2', 'f-title-3', 'f-author'].forEach(id => {
@@ -934,12 +955,9 @@ function applyFiltersB() {
   const yt = parseInt(document.getElementById('f-year-to-b').value) || YMAX;
   state.filterB.yearFrom = Math.min(yf, yt);
   state.filterB.yearTo = Math.max(yf, yt);
-  state.filterB.venueFilter['ICRA'] = document.getElementById('f-icra-b').checked;
-  state.filterB.venueFilter['IROS'] = document.getElementById('f-iros-b').checked;
-  state.filterB.venueFilter['RA-L'] = document.getElementById('f-ral-b').checked;
-  state.filterB.venueFilter['T-RO'] = document.getElementById('f-tro-b').checked;
-  state.filterB.venueFilter['RSS']  = document.getElementById('f-rss-b').checked;
-  state.filterB.venueFilter['IJRR'] = document.getElementById('f-ijrr-b').checked;
+  for (const v of VENUES) {
+    state.filterB.venueFilter[v] = document.getElementById('f-' + VENUE_IDS[v] + '-b').checked;
+  }
   state.filterB.minCite = parseInt(document.getElementById('f-mincite-b').value) || 0;
   state.filterB.titleTerms = [
     document.getElementById('f-title-1-b').value,
@@ -951,13 +969,15 @@ function applyFiltersB() {
   state.filteredB = computeFiltered(state.filterB);
   document.getElementById('result-info-b').textContent =
     `Showing ${state.filteredB.length.toLocaleString()} / ${ALL.length.toLocaleString()} papers`;
-  if (state.compareMode) renderBarChart();  // A·B·overlay 모두 다시 그림
+  if (state.compareMode) renderBarChart();
 }
 
 function resetFiltersB() {
   document.getElementById('f-year-from-b').value = YMIN;
   document.getElementById('f-year-to-b').value = YMAX;
-  ['f-icra-b','f-iros-b','f-ral-b','f-tro-b','f-rss-b','f-ijrr-b'].forEach(id => document.getElementById(id).checked = true);
+  for (const v of VENUES) {
+    document.getElementById('f-' + VENUE_IDS[v] + '-b').checked = true;
+  }
   document.getElementById('f-mincite-b').value = 0;
   ['f-title-1-b','f-title-2-b','f-title-3-b','f-author-b'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-title-op-b').value = 'AND';
@@ -967,9 +987,10 @@ function resetFiltersB() {
 function copyFilterAtoBInputs() {
   document.getElementById('f-year-from-b').value = document.getElementById('f-year-from').value;
   document.getElementById('f-year-to-b').value = document.getElementById('f-year-to').value;
-  ['icra','iros','ral','tro','rss','ijrr'].forEach(v => {
-    document.getElementById('f-' + v + '-b').checked = document.getElementById('f-' + v).checked;
-  });
+  for (const v of VENUES) {
+    const id = VENUE_IDS[v];
+    document.getElementById('f-' + id + '-b').checked = document.getElementById('f-' + id).checked;
+  }
   document.getElementById('f-mincite-b').value = document.getElementById('f-mincite').value;
   [1,2,3].forEach(i => document.getElementById('f-title-' + i + '-b').value = document.getElementById('f-title-' + i).value);
   document.getElementById('f-title-op-b').value = document.getElementById('f-title-op').value;
@@ -1019,7 +1040,9 @@ window.addEventListener('resize', () => {
   clearTimeout(wcResizeTimer);
   wcResizeTimer = setTimeout(renderWordCloud, 200);
 });
-['f-year-from-b', 'f-year-to-b', 'f-icra-b', 'f-iros-b', 'f-ral-b', 'f-tro-b', 'f-rss-b', 'f-ijrr-b', 'f-mincite-b', 'f-title-op-b'].forEach(id =>
+const _bChangeIds = ['f-year-from-b', 'f-year-to-b', 'f-mincite-b', 'f-title-op-b']
+  .concat(VENUES.map(v => 'f-' + VENUE_IDS[v] + '-b'));
+_bChangeIds.forEach(id =>
   document.getElementById(id).addEventListener('change', applyFiltersB)
 );
 ['f-title-1-b', 'f-title-2-b', 'f-title-3-b', 'f-author-b'].forEach(id => {
@@ -1145,6 +1168,15 @@ document.getElementById('tbody').addEventListener('click', (e) => {
 """
 
 html_out = (HTML
+            .replace('__TITLE_STR__', TITLE_STR)
+            .replace('__CARD_BORDER_CSS__', CARD_BORDER_CSS)
+            .replace('__VENUE_TEXT_CSS__', VENUE_TEXT_CSS)
+            .replace('__SUMMARY_CARDS__', SUMMARY_CARDS)
+            .replace('__FILTER_A_CHECKBOXES__', FILTER_A_CHECKBOXES)
+            .replace('__FILTER_B_CHECKBOXES__', FILTER_B_CHECKBOXES)
+            .replace('__VENUES_JSON__', json.dumps(VENUE_LABELS))
+            .replace('__VENUE_COLOR_JSON__', json.dumps(VENUE_COLORS))
+            .replace('__VENUE_IDS_JSON__', json.dumps(VENUE_IDS))
             .replace('__TOTAL_FMT__', f'{total:,}')
             .replace('__YMIN__', str(year_min))
             .replace('__YMAX__', str(year_max))
@@ -1153,7 +1185,7 @@ html_out = (HTML
             .replace('__WB_VOCAB__', json.dumps(wb_vocab, ensure_ascii=False))
             .replace('__WB_PAPERS__', json.dumps(wb_papers_slim, ensure_ascii=False)))
 
-OUT = 'icra_iros_ral_tro_rss_ijrr_explorer.html'
+OUT = 'explorer.html'
 with open(OUT, 'w', encoding='utf-8') as f:
     f.write(html_out)
 print(f'wrote {OUT} ({len(html_out)/1024/1024:.1f} MB, {total:,} papers)')
