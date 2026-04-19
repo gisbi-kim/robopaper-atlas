@@ -13,6 +13,7 @@ import html as htmllib
 import json
 import os
 import re
+from datetime import datetime, timezone
 from itertools import combinations
 
 INPUT = 'all_enriched.json'
@@ -33,6 +34,8 @@ with open(INPUT, encoding='utf-8') as f:
 per_author = collections.Counter()  # author -> paper count
 author_max_year = {}
 paper_authors = []  # list of (authors, year, title, cites)
+venues_seen = set()
+paper_years = []
 
 for p in papers:
     a_str = (p.get('authors') or '').strip()
@@ -51,6 +54,11 @@ for p in papers:
         cites = int(p.get('cited_by_count') or 0)
     except (ValueError, TypeError):
         cites = 0
+    venue = (p.get('venue') or '').strip()
+    if venue:
+        venues_seen.add(venue)
+    if y > 0:
+        paper_years.append(y)
     paper_authors.append((authors, y, title, cites))
     per_author.update(authors)
     for a in authors:
@@ -107,6 +115,13 @@ edges = [
     for a, b, w in edges_raw
 ]
 
+# Order venues by the canonical atlas order; append any extras alphabetically.
+_VENUE_ORDER = ['ICRA', 'IROS', 'RA-L', 'RAL', 'T-RO', 'TRO', 'RSS', 'IJRR']
+def _venue_sort_key(v):
+    u = v.upper()
+    return (_VENUE_ORDER.index(u), u) if u in _VENUE_ORDER else (len(_VENUE_ORDER), u)
+venues_sorted = sorted(venues_seen, key=_venue_sort_key)
+
 meta = {
     'min_author_papers': MIN_AUTHOR_PAPERS,
     'min_edge_collabs': MIN_EDGE_COLLABS,
@@ -114,6 +129,10 @@ meta = {
     'eligible_authors': len(eligible),
     'nodes': len(nodes),
     'edges': len(edges),
+    'venues': venues_sorted,
+    'paper_year_min': min(paper_years) if paper_years else None,
+    'paper_year_max': max(paper_years) if paper_years else None,
+    'built_at': datetime.now(timezone.utc).strftime('%Y-%m-%d'),
 }
 
 out = {'nodes': nodes, 'edges': edges, 'meta': meta}
@@ -214,7 +233,7 @@ HTML = r"""<!DOCTYPE html>
     <span class="val" id="edge-val">__DEFAULT_EDGE__</span>
   </div>
   <div class="slider-row">
-    <span style="font-size:11px;">Sparsity</span>
+    <span style="font-size:11px;">Layout spread</span>
     <input type="range" id="sparsity-slider" min="1" max="10" step="0.5" value="3.5">
     <span class="val" id="sparsity-val">3.5</span>
   </div>
@@ -265,9 +284,19 @@ HTML = r"""<!DOCTYPE html>
 const DATA = __DATA__;
 const META = DATA.meta;
 
-document.getElementById('meta-text').textContent =
-  `${META.nodes.toLocaleString()} authors · ${META.edges.toLocaleString()} co-author pairs\n`
-  + `(≥ ${META.min_author_papers} papers, ≥ ${META.min_edge_collabs} collabs)`;
+{
+  const metaEl = document.getElementById('meta-text');
+  const lines = [
+    `${META.nodes.toLocaleString()} authors · ${META.edges.toLocaleString()} co-author pairs`,
+    `(≥ ${META.min_author_papers} papers, ≥ ${META.min_edge_collabs} collabs)`,
+  ];
+  const venueStr = (META.venues && META.venues.length) ? META.venues.join('/') : '—';
+  const yearStr = (META.paper_year_min && META.paper_year_max)
+    ? `${META.paper_year_min}–${META.paper_year_max}` : '—';
+  lines.push(`Papers: ${venueStr} · Years ${yearStr} · Built ${META.built_at || '—'}`);
+  metaEl.textContent = lines.join('\n');
+  metaEl.style.whiteSpace = 'pre-line';
+}
 
 const canvas = document.getElementById('net');
 const ctx = canvas.getContext('2d');
