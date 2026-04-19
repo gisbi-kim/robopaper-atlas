@@ -20,7 +20,7 @@ INPUT = 'all_enriched.json'
 OUT_JSON = 'coauthor_network.json'
 OUT_HTML = 'coauthor_network.html'
 
-MIN_AUTHOR_PAPERS = 5
+MIN_AUTHOR_PAPERS = 3
 MIN_EDGE_COLLABS  = 2   # 데이터에 포함되는 최소 공저 횟수
 DEFAULT_EDGE_VIEW = 5   # HTML 슬라이더 초기값 (≤ MIN_EDGE_COLLABS 이상)
 
