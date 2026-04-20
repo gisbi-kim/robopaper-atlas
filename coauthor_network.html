@@ -770,11 +770,20 @@ function populateComms() {
   const sizes = named.map(c => c.size).sort((a, b) => a - b);
   const med = sizes.length ? sizes[Math.floor(sizes.length / 2)] : 0;
   const miscC = (META.communities || []).find(c => c.misc);
-  commsSummary.textContent =
+  commsSummary.innerHTML =
     `${named.length} communities · sizes ${sizes[0] || 0}–${sizes[sizes.length - 1] || 0}`
     + ` · median ${med}`
-    + (miscC ? ` · +${miscC.size.toLocaleString()} in misc` : '');
+    + (miscC ? ` · +${miscC.size.toLocaleString()} in misc` : '')
+    + `<div style="color:#6b7280; font-size:10px; margin-top:3px;">counts show <b style="color:#9ca3af;">visible in current view</b> / <b style="color:#9ca3af;">total in community</b> — lower the edge slider to reveal more.</div>`;
   drawCommsHist();
+
+  // How many community members are rendered right now? Depends on edge threshold.
+  const visibleByComm = new Map();
+  for (const n of nodes) {
+    if (n.community != null) {
+      visibleByComm.set(n.community, (visibleByComm.get(n.community) || 0) + 1);
+    }
+  }
 
   const rows = [];
   (META.communities || []).forEach((c) => {
@@ -785,10 +794,13 @@ function populateComms() {
       ? '<div class="kw">many small labs, &lt; 10 members each</div>'
       : (kw ? `<div class="kw">${escHtml(kw)}</div>` : '');
     const selCls = (selectedCommunity === c.id) ? ' sel' : '';
+    const vis = visibleByComm.get(c.id) || 0;
+    const countStr = `${vis.toLocaleString()} / ${c.size.toLocaleString()}`;
     rows.push(
-      `<div class="comm-item${selCls}" data-cid="${c.id}" style="border-left-color:${c.color};">`
+      `<div class="comm-item${selCls}" data-cid="${c.id}" style="border-left-color:${c.color};" `
+      + `title="${vis} of ${c.size} currently visible at edge threshold ${slider ? slider.value : ''}">`
       + `<div class="hd"><span class="name">${escHtml(title)}</span>`
-      + `<span class="count">${c.size.toLocaleString()}</span></div>`
+      + `<span class="count">${countStr}</span></div>`
       + note
       + `</div>`
     );
@@ -947,6 +959,8 @@ slider.oninput = (e) => {
   recomputeEdgeTiers();
   // Refresh hub list if open (degrees change with threshold)
   if (hubsList.style.display === 'block') populateHubs();
+  // Refresh community list counts too (visible-per-community changes with threshold)
+  if (commsPanel && commsPanel.style.display !== 'none') populateComms();
 };
 
 // Checkbox: show 2nd/3rd degree connections
