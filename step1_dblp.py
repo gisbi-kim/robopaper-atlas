@@ -127,8 +127,9 @@ def main():
     for i, (key, stream, label, year) in enumerate(jobs):
         fpath = f"{OUT_DIR}/{key}_{year}.json"
 
-        # 이미 수집했으면 스킵
-        if os.path.exists(fpath):
+        # 이미 수집했으면 스킵 — 단 비어있는(0편) 캐시는 상류(DBLP)가
+        # 당시 해당 연도를 아직 인덱싱 안 했던 경우이므로 재시도.
+        if os.path.exists(fpath) and os.path.getsize(fpath) > 2:
             with open(fpath, encoding='utf-8') as f:
                 papers = json.load(f)
             print(f"[{i+1}/{len(jobs)}] {label} {year}: cached ({len(papers)})")

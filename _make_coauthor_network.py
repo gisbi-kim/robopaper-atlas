@@ -229,7 +229,7 @@ HTML = r"""<!DOCTYPE html>
   .comm-item .name { flex: 1; color: #e5e7eb; font-weight: 500; }
   .comm-item .count { color: #9ca3af; font-variant-numeric: tabular-nums; font-size: 10.5px; }
   .comm-item .kw { color: #9ca3af; font-size: 10px; margin-top: 2px; }
-  #legend { bottom: 14px; left: 14px; font-size: 11px; color: #9ca3af; }
+  #legend { bottom: 14px; right: 14px; font-size: 11px; color: #9ca3af; max-width: 420px; }
   #tooltip {
     position: fixed; background: #1f2937; color: #e5e7eb; padding: 8px 10px;
     border-radius: 4px; font-size: 12px; pointer-events: none;
