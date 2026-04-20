@@ -355,35 +355,41 @@ __FILTER_B_CHECKBOXES__    <label>Min citations
   </h2>
 
   <!-- max 3 columns per row — with 4 charts this naturally wraps 3+1 -->
+  <style>
+    .vcol { display: flex; flex-direction: column; }
+    .vcol h3 { font-size: 13px; margin: 0 0 4px; color: #333; min-height: 32px; display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+    .vcol .desc { color: #888; font-size: 11px; margin-bottom: 6px; min-height: 30px; line-height: 1.45; }
+    .vcol .canv { position: relative; height: 220px; margin-top: auto; }
+  </style>
   <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
 
-    <div>
-      <h3 style="font-size:13px; margin: 0 0 4px; color:#333;">1 · Total citations per venue</h3>
-      <div style="color:#888; font-size:11px; margin-bottom: 6px;">Σ cited_by_count. Volume metric — a single big hit can dominate.</div>
-      <div style="position: relative; height: 220px;"><canvas id="chart-vtot"></canvas></div>
+    <div class="vcol">
+      <h3>1 · Total citations per venue</h3>
+      <div class="desc">Σ cited_by_count. Volume metric — a single big hit can dominate.</div>
+      <div class="canv"><canvas id="chart-vtot"></canvas></div>
     </div>
 
-    <div>
-      <h3 style="font-size:13px; margin: 0 0 4px; color:#333;">2 · Avg citations per paper</h3>
-      <div style="color:#888; font-size:11px; margin-bottom: 6px;">Σ citations / # papers. Normalises for venue size; still rewards a few mega-hits.</div>
-      <div style="position: relative; height: 220px;"><canvas id="chart-vavg"></canvas></div>
+    <div class="vcol">
+      <h3>2 · Avg citations per paper</h3>
+      <div class="desc">Σ citations / # papers. Normalises for venue size; still rewards a few mega-hits.</div>
+      <div class="canv"><canvas id="chart-vavg"></canvas></div>
     </div>
 
-    <div>
-      <h3 style="font-size:13px; margin: 0 0 4px; color:#333;">
+    <div class="vcol">
+      <h3>
         3 · Top-K composition
-        <select id="topk-select" style="margin-left:6px; padding:2px 6px; font-size: 12px; border:1px solid #ccc; border-radius: 4px; background: #fff;">
+        <select id="topk-select" style="padding:2px 6px; font-size: 12px; border:1px solid #ccc; border-radius: 4px; background: #fff;">
           <option>10</option><option>50</option><option selected>100</option><option>500</option><option>1000</option>
         </select>
       </h3>
-      <div style="color:#888; font-size:11px; margin-bottom: 6px;">How many of the top-K most-cited papers come from each venue — where the hits concentrate.</div>
-      <div style="position: relative; height: 220px;"><canvas id="chart-vtopk"></canvas></div>
+      <div class="desc">How many of the top-K most-cited papers come from each venue — where the hits concentrate.</div>
+      <div class="canv"><canvas id="chart-vtopk"></canvas></div>
     </div>
 
-    <div>
-      <h3 style="font-size:13px; margin: 0 0 4px; color:#333;">4 · h-index per venue</h3>
-      <div style="color:#888; font-size:11px; margin-bottom: 6px;">Largest h such that the venue has h papers each with ≥ h citations. Robust to single outliers.</div>
-      <div style="position: relative; height: 220px;"><canvas id="chart-vh"></canvas></div>
+    <div class="vcol">
+      <h3>4 · h-index per venue</h3>
+      <div class="desc">Largest h such that the venue has h papers each with ≥ h citations. Robust to single outliers.</div>
+      <div class="canv"><canvas id="chart-vh"></canvas></div>
     </div>
   </div>
 </div>
