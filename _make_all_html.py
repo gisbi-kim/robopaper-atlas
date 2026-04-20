@@ -6,6 +6,8 @@ import re
 from datetime import datetime
 import pandas as pd
 
+from _clean import is_front_matter
+
 # Single source of truth for venues — priority order = display order.
 # Adding a venue: append a dict here; HTML/JS sections regenerate automatically.
 VENUES_CFG = [
@@ -51,6 +53,11 @@ slim['year'] = pd.to_numeric(slim['year'], errors='coerce').fillna(0).astype(int
 before = len(slim)
 slim = slim[slim['authors'].str.strip() != ''].reset_index(drop=True)
 print(f"proceedings 표제 제외: {before - len(slim)}건")
+
+# 저널 front-matter 제거 (Editorial, Table of Contents, Publication Info 등)
+before = len(slim)
+slim = slim[~slim['title'].map(is_front_matter)].reset_index(drop=True)
+print(f"front-matter 제외: {before - len(slim)}건")
 
 # DOI 기반 dedup — 우선순위는 VENUE_PRIORITY
 before = len(slim)

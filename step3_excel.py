@@ -15,6 +15,8 @@ import re
 from datetime import datetime
 import pandas as pd
 
+from _clean import is_front_matter
+
 INPUT = "all_enriched.json"
 
 # 인용수 기준일: all_enriched.json의 최종 수정일 (step2가 마지막으로 돈 시점)
@@ -58,6 +60,12 @@ df['title'] = df['title'].str.rstrip('.').str.strip()
 before = len(df)
 df = df[df['authors'].str.strip() != ''].reset_index(drop=True)
 print(f"제외된 proceedings 표제 행: {before - len(df)}개")
+
+# 2b) 저널 front-matter 제거 (Editorial, Table of Contents, Publication Info 등).
+# OpenAlex가 이런 엔트리를 편집자 이름으로 귀속시켜 허브 저자를 부풀림.
+before = len(df)
+df = df[~df['title'].map(is_front_matter)].reset_index(drop=True)
+print(f"제외된 front-matter 행: {before - len(df)}개")
 
 # 3) DOI 기반 중복 제거 (같은 DOI가 RA-L·ICRA·IROS에 중복 등장하면 RA-L 우선으로 남김)
 df['doi'] = df['doi'].fillna('').astype(str).str.strip().str.lower()

@@ -16,6 +16,8 @@ import re
 from datetime import datetime, timezone
 from itertools import combinations
 
+from _clean import is_front_matter
+
 INPUT = 'all_enriched.json'
 OUT_JSON = 'coauthor_network.json'
 OUT_HTML = 'coauthor_network.html'
@@ -41,6 +43,12 @@ for p in papers:
     a_str = (p.get('authors') or '').strip()
     if not a_str:
         continue
+    raw_title = htmllib.unescape((p.get('title') or '').strip()).rstrip('.').strip()
+    # Skip journal front-matter (Editorial, Table of Contents, Publication Info, ...).
+    # OpenAlex attributes those to editors, which otherwise inflates hubs and
+    # pollutes the per-author top-cited lists.
+    if is_front_matter(raw_title):
+        continue
     authors = [clean_author(a) for a in a_str.split(';')]
     authors = [a for a in authors if a]
     if not authors:
@@ -49,7 +57,7 @@ for p in papers:
         y = int(p.get('year') or 0)
     except (ValueError, TypeError):
         y = 0
-    title = htmllib.unescape((p.get('title') or '').strip()).rstrip('.').strip()
+    title = raw_title
     try:
         cites = int(p.get('cited_by_count') or 0)
     except (ValueError, TypeError):
