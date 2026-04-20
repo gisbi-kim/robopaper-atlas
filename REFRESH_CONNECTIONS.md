@@ -22,15 +22,20 @@ REFRESH_CONNECTIONS.md 보고 co-author network 업데이트 해줘.
 
 `coauthor_network.json` 은 `all_enriched.json` 을 입력으로 쓰므로 그쪽이 먼저 최신이어야 합니다.
 
-### 2) 네트워크 재생성
+### 2) 네트워크 재생성 (두 단계)
 
 ```bash
-python _make_coauthor_network.py
+python _make_coauthor_network.py   # 그래프 빌드
+python _enrich_communities.py      # Leiden 커뮤니티 + TF-IDF 토픽 라벨 주입
 ```
 
+> `_enrich_communities.py`는 네트워크 JSON을 **in-place로 수정**합니다. 반드시
+> `_make_coauthor_network.py` 다음에 실행해야 커뮤니티 색/라벨이 복구됩니다.
+> 필요 패키지: `networkx · leidenalg · igraph · scikit-learn`.
+
 출력:
-- `coauthor_network.json` — nodes / edges / meta
-- `coauthor_network.html` — d3-force 기반 인터랙티브 viz (데이터 임베드)
+- `coauthor_network.json` — nodes / edges / meta + 각 노드 `community` id + `meta.communities` (id, size, top_authors, label_words, color)
+- `coauthor_network.html` — d3-force 기반 인터랙티브 viz (runtime에 JSON fetch)
 
 현재 기준 파라미터 (스크립트 상단에서 조정):
 ```python
@@ -55,18 +60,22 @@ DEFAULT_EDGE_VIEW = 5   # HTML 슬라이더 초기값 — 기본 뷰는 공저 5
 
 ### 4) 결과 검증
 
-`coauthor_network.html` 을 브라우저에서 열어 확인:
-- 좌측 패널 하단의 meta: `nodes · edges` 수 증가 확인
+`coauthor_network.html` 을 브라우저에서 열어 확인 (서버 띄워야 함 — `python -m http.server`):
+- 좌측 패널 상단 meta: `nodes · edges` · Papers · Years · Built 날짜 정상
+- **Communities 패널**: 토글하면 히스토그램 + 93개 동네 리스트. 각 항목 `visible / total` 두 숫자 표시 (문서 하단 설명 참조)
 - 검색창에 아무 저자 이름(예: `Thrun`) 쳐서 중앙 이동 정상
 - Top 100 hubs 토글 → 순위 변화
 - 체크박스 "Show 2nd/3rd degree connections" → 색상 표시 정상
   - 1차 emerald `#34d399` / 2차 indigo `#818cf8` / 3차 amber `#f59e0b`
-- Edge threshold 슬라이더 동작
+- Edge threshold · Layout spread 슬라이더 동작
+- Color 라디오(community/year) 전환 정상
+- 우하단 legend에 "How this works →" 링크 → methods 페이지 열림
 
 ### 5) 커밋·푸시
 
 ```bash
-git add _make_coauthor_network.py coauthor_network.json coauthor_network.html
+git add _make_coauthor_network.py _enrich_communities.py \
+        coauthor_network.json coauthor_network.html
 git commit -m "Refresh co-author network (<N> authors, <M> edges as of <date>)"
 git push
 ```

@@ -42,8 +42,14 @@ python step3_excel.py             # robopaper_atlas_all.xlsx
 python _make_word_book.py         # word_book.json / word_book.csv
 python _make_all_html.py          # explorer.html
 python _make_by_year_html.py      # by_year.html
-python _make_coauthor_network.py  # coauthor_network.html
+python _make_xlsx_preview.py      # dataset_preview.html
+python _make_coauthor_network.py  # coauthor_network.{html,json}
+python _enrich_communities.py     # Leiden + TF-IDF → community 필드 주입
 ```
+
+> `_enrich_communities.py`는 `_make_coauthor_network.py`가 만든
+> `coauthor_network.json`을 in-place로 수정합니다. 반드시 네트워크 생성 **다음**에
+> 실행하세요. 필요 패키지: `networkx · leidenalg · igraph · scikit-learn`.
 
 ### 4) 검증
 
@@ -63,7 +69,9 @@ python _make_coauthor_network.py  # coauthor_network.html
 | `step3_excel.py` | 정제·dedup 후 xlsx 생성 |
 | `_make_all_html.py` | 전체 탐색기 HTML |
 | `_make_by_year_html.py` | 연도별 편수 HTML |
-| `_make_coauthor_network.py` | 공저자 네트워크 HTML |
+| `_make_xlsx_preview.py` | xlsx 시트 미리보기 HTML |
+| `_make_coauthor_network.py` | 공저자 네트워크 HTML + JSON |
+| `_enrich_communities.py` | 네트워크 JSON에 Leiden 커뮤니티·토픽 라벨 주입 |
 | `refresh_recent.py` | 체크포인트에서 특정 연도 이후 항목 제거 (선택적 refresh용) |
 
 ## 수집 venue 현황

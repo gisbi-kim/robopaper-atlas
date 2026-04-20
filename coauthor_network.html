@@ -13,7 +13,7 @@
     border: 1px solid #374151; border-radius: 8px; padding: 12px 14px;
     font-size: 12.5px; backdrop-filter: blur(6px);
   }
-  #info { top: 14px; left: 14px; max-width: 280px; }
+  #info { top: 14px; left: 14px; max-width: 320px; }
   #info h1 { font-size: 15px; margin: 0 0 6px; font-weight: 600; color: #f3f4f6; }
   #info .meta { color: #9ca3af; font-size: 11px; margin-bottom: 8px; line-height: 1.6; }
   #info .meta .count  { color: #e5e7eb; font-size: 12.5px; font-weight: 600; line-height: 1.35; }
@@ -133,7 +133,7 @@
     <button id="btn-comms" class="toggle-small">▸ Communities</button>
     <div id="comms-panel" style="display:none;">
       <div id="comms-summary" style="font-size:11px; color:#9ca3af; margin: 6px 0 3px;"></div>
-      <canvas id="comms-hist" width="252" height="74" style="display:block; width:100%; max-width:252px;"></canvas>
+      <canvas id="comms-hist" width="300" height="78" style="display:block; width:100%; max-width:300px;"></canvas>
       <div id="comms-list" style="max-height:260px; overflow-y:auto; margin-top:6px;"></div>
     </div>
   </div>
@@ -716,12 +716,15 @@ const commsBaseLabel = `Communities${META.communities ? ' (' + META.communities.
 btnComms.textContent = '▸ ' + commsBaseLabel;
 
 const HIST_BINS = [
-  { lo: 10,  hi: 20,       label: '10-19' },
-  { lo: 20,  hi: 50,       label: '20-49' },
-  { lo: 50,  hi: 100,      label: '50-99' },
+  { lo:  10, hi:  20,      label: '10-19' },
+  { lo:  20, hi:  50,      label: '20-49' },
+  { lo:  50, hi: 100,      label: '50-99' },
   { lo: 100, hi: 200,      label: '100-199' },
-  { lo: 200, hi: 500,      label: '200-499' },
-  { lo: 500, hi: Infinity, label: '500+' },
+  { lo: 200, hi: 300,      label: '200-299' },
+  { lo: 300, hi: 400,      label: '300-399' },
+  { lo: 400, hi: 500,      label: '400-499' },
+  { lo: 500, hi: 600,      label: '500-599' },
+  { lo: 600, hi: Infinity, label: '600+' },
 ];
 
 function drawCommsHist() {
@@ -737,11 +740,10 @@ function drawCommsHist() {
     }
   }
   const maxCount = Math.max(1, ...bins.map(b => b.count));
-  const topPad = 14, bottomPad = 18, leftPad = 2, rightPad = 2, gap = 4;
+  const topPad = 14, bottomPad = 20, leftPad = 2, rightPad = 2, gap = 2;
   const chartH = H - topPad - bottomPad;
   const totalGaps = (bins.length - 1) * gap;
   const barW = Math.floor((W - leftPad - rightPad - totalGaps) / bins.length);
-  ctx.font = '9px -apple-system, "Segoe UI", sans-serif';
   ctx.textBaseline = 'alphabetic';
   bins.forEach((b, i) => {
     const x = leftPad + i * (barW + gap);
@@ -753,14 +755,16 @@ function drawCommsHist() {
     ctx.fillRect(x, topPad + chartH - h, barW, h);
     // count on top of bar
     if (b.count > 0) {
+      ctx.font = '9.5px -apple-system, "Segoe UI", sans-serif';
       ctx.fillStyle = '#e5e7eb';
       ctx.textAlign = 'center';
       ctx.fillText(String(b.count), x + barW / 2, topPad + chartH - h - 3);
     }
-    // x label below
+    // x label below — slightly smaller so 9 ranges fit at ~30 px each
+    ctx.font = '8.5px -apple-system, "Segoe UI", sans-serif';
     ctx.fillStyle = '#9ca3af';
     ctx.textAlign = 'center';
-    ctx.fillText(b.label, x + barW / 2, H - 4);
+    ctx.fillText(b.label, x + barW / 2, H - 5);
   });
 }
 
