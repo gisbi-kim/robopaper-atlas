@@ -354,7 +354,8 @@ __FILTER_B_CHECKBOXES__    <label>Min citations
     </span>
   </h2>
 
-  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
+  <!-- max 3 columns per row — with 4 charts this naturally wraps 3+1 -->
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
 
     <div>
       <h3 style="font-size:13px; margin: 0 0 4px; color:#333;">1 · Total citations per venue</h3>
@@ -363,8 +364,14 @@ __FILTER_B_CHECKBOXES__    <label>Min citations
     </div>
 
     <div>
+      <h3 style="font-size:13px; margin: 0 0 4px; color:#333;">2 · Avg citations per paper</h3>
+      <div style="color:#888; font-size:11px; margin-bottom: 6px;">Σ citations / # papers. Normalises for venue size; still rewards a few mega-hits.</div>
+      <div style="position: relative; height: 220px;"><canvas id="chart-vavg"></canvas></div>
+    </div>
+
+    <div>
       <h3 style="font-size:13px; margin: 0 0 4px; color:#333;">
-        2 · Top-K composition
+        3 · Top-K composition
         <select id="topk-select" style="margin-left:6px; padding:2px 6px; font-size: 12px; border:1px solid #ccc; border-radius: 4px; background: #fff;">
           <option>10</option><option>50</option><option selected>100</option><option>500</option><option>1000</option>
         </select>
@@ -374,7 +381,7 @@ __FILTER_B_CHECKBOXES__    <label>Min citations
     </div>
 
     <div>
-      <h3 style="font-size:13px; margin: 0 0 4px; color:#333;">3 · h-index per venue</h3>
+      <h3 style="font-size:13px; margin: 0 0 4px; color:#333;">4 · h-index per venue</h3>
       <div style="color:#888; font-size:11px; margin-bottom: 6px;">Largest h such that the venue has h papers each with ≥ h citations. Robust to single outliers.</div>
       <div style="position: relative; height: 220px;"><canvas id="chart-vh"></canvas></div>
     </div>
@@ -698,15 +705,18 @@ function renderBarChart() {
   }
 }
 
-let vtotChart, vtopkChart, vhChart;
+let vtotChart, vavgChart, vtopkChart, vhChart;
 
 function venueStats(filtered, topK) {
-  const sum = {}, cites = {};
-  for (const v of VENUES) { sum[v] = 0; cites[v] = []; }
+  const sum = {}, count = {}, cites = {};
+  for (const v of VENUES) { sum[v] = 0; count[v] = 0; cites[v] = []; }
   for (const r of filtered) {
     const v = r[0], c = r[4];
-    if (sum[v] !== undefined) { sum[v] += c; cites[v].push(c); }
+    if (sum[v] !== undefined) { sum[v] += c; count[v]++; cites[v].push(c); }
   }
+  // Average citations per paper (0 when no papers)
+  const avg = {};
+  for (const v of VENUES) avg[v] = count[v] ? (sum[v] / count[v]) : 0;
   // h-index per venue
   const hidx = {};
   for (const v of VENUES) {
@@ -722,15 +732,16 @@ function venueStats(filtered, topK) {
   const topN = {};
   for (const v of VENUES) topN[v] = 0;
   for (const r of sorted) if (topN[r[0]] !== undefined) topN[r[0]]++;
-  return { sum, hidx, topN, topK: sorted.length };
+  return { sum, avg, hidx, topN, topK: sorted.length };
 }
 
-function _venueBar(canvasId, chartVar, data, yTitle) {
-  // data: object venue -> value
+function _venueBar(data, xTitle, formatValue) {
+  // data: object venue -> value. Sort venues by value descending.
   const labels = VENUES.slice().sort((a, b) => (data[b] || 0) - (data[a] || 0));
   const vals = labels.map(v => data[v] || 0);
   const colors = labels.map(v => VENUE_COLOR[v]);
-  const cfg = {
+  const fmt = formatValue || ((v) => Number(v).toLocaleString());
+  return {
     type: 'bar',
     data: {
       labels,
@@ -741,17 +752,15 @@ function _venueBar(canvasId, chartVar, data, yTitle) {
       indexAxis: 'y',
       plugins: {
         legend: { display: false },
-        tooltip: {
-          callbacks: { label: (ctx) => ' ' + Number(ctx.raw).toLocaleString() },
-        },
+        tooltip: { callbacks: { label: (ctx) => ' ' + fmt(ctx.raw) } },
       },
       scales: {
-        x: { title: { display: true, text: yTitle }, beginAtZero: true, ticks: { callback: (v) => v.toLocaleString() } },
+        x: { title: { display: true, text: xTitle }, beginAtZero: true,
+             ticks: { callback: (v) => fmt(v) } },
         y: { ticks: { autoSkip: false } },
       },
     },
   };
-  return cfg;
 }
 
 function renderVenueComparison() {
@@ -760,15 +769,20 @@ function renderVenueComparison() {
 
   if (vtotChart) vtotChart.destroy();
   vtotChart = new Chart(document.getElementById('chart-vtot'),
-    _venueBar('chart-vtot', 'vtot', stats.sum, 'Σ citations'));
+    _venueBar(stats.sum, 'Σ citations'));
+
+  if (vavgChart) vavgChart.destroy();
+  vavgChart = new Chart(document.getElementById('chart-vavg'),
+    _venueBar(stats.avg, 'cites / paper',
+              (v) => Number(v).toFixed(1)));
 
   if (vtopkChart) vtopkChart.destroy();
   vtopkChart = new Chart(document.getElementById('chart-vtopk'),
-    _venueBar('chart-vtopk', 'vtopk', stats.topN, `# in top ${stats.topK}`));
+    _venueBar(stats.topN, `# in top ${stats.topK}`));
 
   if (vhChart) vhChart.destroy();
   vhChart = new Chart(document.getElementById('chart-vh'),
-    _venueBar('chart-vh', 'vh', stats.hidx, 'h-index'));
+    _venueBar(stats.hidx, 'h-index'));
 }
 
 function venueClass(v) {
