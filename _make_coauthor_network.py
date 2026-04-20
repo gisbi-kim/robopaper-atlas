@@ -169,7 +169,7 @@ HTML = r"""<!DOCTYPE html>
     border: 1px solid #374151; border-radius: 8px; padding: 12px 14px;
     font-size: 12.5px; backdrop-filter: blur(6px);
   }
-  #info { top: 14px; left: 14px; max-width: 320px; }
+  #info { top: 14px; left: 14px; max-width: 320px; max-height: calc(100vh - 28px); overflow-y: auto; }
   #info h1 { font-size: 15px; margin: 0 0 6px; font-weight: 600; color: #f3f4f6; }
   #info .meta { color: #9ca3af; font-size: 11px; margin-bottom: 8px; line-height: 1.6; }
   #info .meta .count  { color: #e5e7eb; font-size: 12.5px; font-weight: 600; line-height: 1.35; }
