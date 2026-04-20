@@ -405,7 +405,7 @@ __FILTER_B_CHECKBOXES__    <label>Min citations
     <span id="page-info"></span>
     <label>per page
       <select id="page-size">
-        <option>50</option><option selected>100</option><option>200</option><option>500</option>
+        <option>50</option><option>100</option><option>200</option><option selected>500</option>
       </select>
     </label>
     <button id="page-first">« First</button>
@@ -446,7 +446,7 @@ const state = {
   titleOp: 'AND',
   author: '',
   sortKey: 'cites', sortDesc: true,
-  page: 1, pageSize: 100,
+  page: 1, pageSize: 500,
   filtered: [],
   compareMode: false,
   shareYAxis: false,
