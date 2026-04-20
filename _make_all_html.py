@@ -259,11 +259,15 @@ __VENUE_TEXT_CSS__  .venue-also { color: #888; font-weight: 400; font-size: 10px
   </span>
 </div>
 
-<div class="summary">
+<!-- Row 1: aggregate stats (no venue colour bar) -->
+<div class="summary" style="margin-bottom: 8px;">
   <div class="card"><div class="num" id="c-total">-</div><div class="label">Total</div></div>
-__SUMMARY_CARDS__  <div class="card"><div class="num" id="c-maxcite">-</div><div class="label">Max citations</div></div>
+  <div class="card"><div class="num" id="c-maxcite">-</div><div class="label">Max citations</div></div>
   <div class="card"><div class="num" id="c-meancite">-</div><div class="label">Mean citations</div></div>
 </div>
+<!-- Row 2: per-venue cards (each with its own colour stripe) -->
+<div class="summary">
+__SUMMARY_CARDS__</div>
 
 <div style="margin-bottom: 12px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
   <button id="btn-compare" class="toggle-btn">+ Compare mode</button>
