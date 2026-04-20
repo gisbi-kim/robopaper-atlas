@@ -224,6 +224,7 @@ HTML = r"""<!DOCTYPE html>
     border-radius: 2px; margin-bottom: 2px; font-size: 11.5px; line-height: 1.35;
   }
   .comm-item:hover { background: #374151; }
+  .comm-item.sel { background: #1e3a5f; outline: 1px solid #38bdf8; }
   .comm-item .hd { display: flex; align-items: baseline; gap: 6px; }
   .comm-item .name { flex: 1; color: #e5e7eb; font-weight: 500; }
   .comm-item .count { color: #9ca3af; font-variant-numeric: tabular-nums; font-size: 10.5px; }
@@ -399,7 +400,11 @@ const hasCommunities = communityPalette.size > 0;
 
 // Color mode — 'community' (if detection ran) or 'year'.
 let colorMode = hasCommunities ? 'community' : 'year';
+let selectedCommunity = null;   // cid when a community is chosen from the list — non-members are dimmed
 function nodeColor(n) {
+  if (selectedCommunity != null && n.community !== selectedCommunity) {
+    return 'rgba(100, 100, 105, 0.22)';  // dim grey for non-members
+  }
   if (colorMode === 'community') {
     const c = communityPalette.get(n.community);
     return c || '#555';
@@ -537,7 +542,28 @@ function draw() {
     2: { color: '#818cf8', alpha: 0.85, w: 1.5 },  // indigo — medium
     3: { color: '#f59e0b', alpha: 0.45, w: 0.9 },  // amber (yellow-orange) — distant
   };
-  if (!selectedNode) {
+  if (!selectedNode && selectedCommunity != null) {
+    // Community-focus mode: edges inside that community keep colour,
+    // cross-community and outside edges fade to near-invisible.
+    ctx.strokeStyle = 'rgba(156, 163, 175, 0.06)';
+    for (const e of edges) {
+      if (e.source.community === selectedCommunity && e.target.community === selectedCommunity) continue;
+      ctx.beginPath();
+      ctx.lineWidth = eScale(e.weight) * wMult;
+      ctx.moveTo(e.source.x, e.source.y);
+      ctx.lineTo(e.target.x, e.target.y);
+      ctx.stroke();
+    }
+    ctx.strokeStyle = 'rgba(156, 163, 175, 0.55)';
+    for (const e of edges) {
+      if (!(e.source.community === selectedCommunity && e.target.community === selectedCommunity)) continue;
+      ctx.beginPath();
+      ctx.lineWidth = eScale(e.weight) * wMult;
+      ctx.moveTo(e.source.x, e.source.y);
+      ctx.lineTo(e.target.x, e.target.y);
+      ctx.stroke();
+    }
+  } else if (!selectedNode) {
     ctx.strokeStyle = 'rgba(156, 163, 175, 0.35)';
     for (const e of edges) {
       ctx.beginPath();
@@ -734,6 +760,13 @@ function centerOnNode(n, scale = 1.8) {
 canvas.addEventListener('click', (e) => {
   const n = nodeAtScreen(e.clientX, e.clientY);
   selectedNode = n;
+  // Selecting a node (or clicking blank canvas) clears any community dim.
+  if (selectedCommunity != null) {
+    selectedCommunity = null;
+    if (commsList) {
+      commsList.querySelectorAll('.comm-item.sel').forEach(el => el.classList.remove('sel'));
+    }
+  }
   updateSelectedPanel(n);
   recomputeEdgeTiers();
   draw();
@@ -907,8 +940,9 @@ function populateComms() {
     const note = c.misc
       ? '<div class="kw">many small labs, &lt; 10 members each</div>'
       : (kw ? `<div class="kw">${escHtml(kw)}</div>` : '');
+    const selCls = (selectedCommunity === c.id) ? ' sel' : '';
     rows.push(
-      `<div class="comm-item" data-cid="${c.id}" style="border-left-color:${c.color};">`
+      `<div class="comm-item${selCls}" data-cid="${c.id}" style="border-left-color:${c.color};">`
       + `<div class="hd"><span class="name">${escHtml(title)}</span>`
       + `<span class="count">${c.size.toLocaleString()}</span></div>`
       + note
@@ -934,16 +968,37 @@ commsList.addEventListener('click', (e) => {
   const item = e.target.closest('.comm-item');
   if (!item) return;
   const cid = parseInt(item.dataset.cid);
-  const c = communityInfo.get(cid);
-  if (!c || !c.top_authors || !c.top_authors[0]) return;
-  const hubLabel = c.top_authors[0];
-  const target = nodes.find(n => n.label === hubLabel);
-  if (target) {
-    centerOnNode(target);
-  } else {
-    // Hub isn't in the current edge-threshold view; tell the user
-    alert(`Community #${cid} hub "${hubLabel}" is below the current edge threshold — lower the slider to see them.`);
+  // Toggle: clicking the already-selected community clears the selection.
+  if (selectedCommunity === cid) {
+    selectedCommunity = null;
+    item.classList.remove('sel');
+    selectedNode = null;
+    updateSelectedPanel(null);
+    recomputeEdgeTiers();
+    draw();
+    return;
   }
+  // Select this community — dim everything else.
+  selectedCommunity = cid;
+  commsList.querySelectorAll('.comm-item.sel').forEach(el => el.classList.remove('sel'));
+  item.classList.add('sel');
+  // Centre on the community's top hub (when visible in the current view).
+  const c = communityInfo.get(cid);
+  const hubLabel = c && c.top_authors && c.top_authors[0];
+  const target = hubLabel ? nodes.find(n => n.label === hubLabel) : null;
+  selectedNode = null;     // community-mode takes precedence over node-tier highlight
+  updateSelectedPanel(null);
+  edgeTier.clear();
+  if (target) {
+    // Pan/zoom to the hub without setting selectedNode (we want the
+    // community-dim view, not the BFS tier view).
+    const scale = 1.8;
+    const tx = width / 2 - target.x * scale;
+    const ty = height / 2 - target.y * scale;
+    d3.select(canvas).transition().duration(500)
+      .call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
+  }
+  draw();
 });
 
 // Drag node
@@ -963,6 +1018,7 @@ let frozen = false;
 function fullReset() {
   // Clear user state
   selectedNode = null;
+  selectedCommunity = null;
   frozen = false;
   showDegrees = false;
   document.getElementById('show-degrees').checked = false;

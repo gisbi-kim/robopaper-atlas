@@ -197,6 +197,100 @@
   <tr><td class="tl">Sensitive to edge threshold?</td><td>yes (ranking recomputed)</td><td>no (assignment fixed at build time)</td></tr>
 </table>
 
+<h2>Findings &amp; discussion</h2>
+
+<h3>The robotics community is textbook-modular</h3>
+<p>
+  On the mainland, Leiden finds a partition with modularity <b>Q = 0.94</b>.
+  To calibrate: Q > 0.3 is usually considered "a clear community structure" in
+  the literature; Q > 0.7 is rare outside small engineered networks. Robotics
+  sits right at the high end — labs really are labs. Collaboration happens
+  overwhelmingly inside the group with only occasional cross-community edges
+  (advisor → new appointee, sabbatical, big collaborations, dual appointments).
+</p>
+<p>
+  Size distribution of the 92 non-misc communities:
+</p>
+<table>
+  <tr><th>size band</th><th>count</th><th>rough analogue</th></tr>
+  <tr><td class="tl">500+ authors</td><td>15</td><td>megacity — multi-decade flagship labs with many sub-teams</td></tr>
+  <tr><td class="tl">200–499</td><td>18</td><td>big city — established research groups</td></tr>
+  <tr><td class="tl">100–199</td><td>26</td><td>mid city — active single-PI or small-PI groups</td></tr>
+  <tr><td class="tl">50–99</td><td>12</td><td>town</td></tr>
+  <tr><td class="tl">10–49</td><td>19</td><td>village — niche lab or national-institute group</td></tr>
+  <tr><td class="tl">&lt; 10 (misc)</td><td>1,655 people</td><td>hamlets — one-off or very small teams lumped together</td></tr>
+</table>
+
+<h3>Six degrees of separation — in our data</h3>
+<p>
+  <b>"Six degrees of separation"</b> is the claim that any two people in the
+  world are connected by at most six acquaintance-links. It originated in a
+  1929 short story by Hungarian writer <b>Frigyes Karinthy</b> ("Chains") and
+  was empirically tested by psychologist <b>Stanley Milgram (1967)</b>: letters
+  forwarded hand-to-hand across the US reached their target in a median of 5.2
+  steps. Popular culture knows it as the <i>Kevin Bacon game</i> (actor
+  co-starring distance, median ≈ 3) and the <i>Erdős number</i> (mathematician
+  co-authorship distance, median ≈ 5). Facebook (2011) measured
+  <b>4.7</b> hops between arbitrary users worldwide.
+</p>
+<p>
+  We measured the same quantity on the weight ≥ 2 giant component (22,043
+  authors, 66,866 edges) using 2,000 random node pairs:
+</p>
+<div class="formula">
+mean shortest path = 5.94 hops
+median            = 6
+diameter (2-sweep) ≈ 17 hops
+&nbsp;
+  1 hop:  0.1%
+  2:      0.2%
+  3:      1.9%
+  4:      8.6%  ███
+  5:     26.2%  ██████████
+  6:     34.1%  █████████████
+  7:     18.1%  ███████
+  8:      7.7%  ███
+  9:      2.2%
+ 10+:     0.9%</div>
+<p>
+  Robotics researchers are on average <b>6 hops apart</b> — the same "six
+  degrees" Karinthy guessed in 1929 for all of humanity, reproduced within a
+  single research field. The field is a textbook
+  <a class="ref" href="https://en.wikipedia.org/wiki/Watts%E2%80%93Strogatz_model" target="_blank" rel="noopener">small-world
+  network</a>: mostly-local clustering plus a handful of long-range shortcuts.
+  For context, log(22,043) ≈ 9.9, so the observed 5.94 is tighter than what
+  pure-random short-cutting would predict — the hub structure (big labs
+  collaborating widely) pulls everyone closer together.
+</p>
+
+<h3>Why "Show 2nd/3rd degree connections" leaves gaps</h3>
+<p>
+  The <i>Show 2nd/3rd degree connections</i> toggle highlights neighbours up
+  to 3 hops from the selected author. But the path-length distribution above
+  shows that only about <b>11%</b> of author pairs are within 3 hops — the
+  remaining 89% are 4 hops or more. Inside a community, too, members are often
+  5–8 hops apart (think PhD student → advisor → co-author → long-time
+  collaborator → …). So when you select an author and their same-community
+  peers don't light up, it's not a bug — it's the small-world structure at
+  work. To actually visually bridge to everyone in the community, the toggle
+  would need to go to roughly 6 hops, at which point almost the entire
+  mainland lights up.
+</p>
+
+<h3>The "academic family" analogy</h3>
+<p>
+  A community is best thought of as a <b>research family tree</b>: not everyone
+  shares an edge with the patriarch, but everyone is connected via advisor /
+  co-author chains to a few top hubs at the centre. The
+  <i>hubs</i> field in the tooltip lists the patriarchs; the rest are
+  second/third/fourth-cousins who inherited the lab's style through their
+  supervisors. This is related to the established concept of
+  <a class="ref" href="https://academictree.org/" target="_blank" rel="noopener">academic
+  genealogy</a>, which traces explicit advisor-advisee links — our network
+  recovers a noisier version of the same structure from pure publication
+  co-authorship.
+</p>
+
 <h2>Repo &amp; source code</h2>
 <p>
   All of the above is implemented in two scripts:
