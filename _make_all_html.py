@@ -11,18 +11,22 @@ from _clean import is_front_matter
 # Single source of truth for venues — priority order = display order.
 # Adding a venue: append a dict here; HTML/JS sections regenerate automatically.
 VENUES_CFG = [
-    {'label': 'ICRA',    'id': 'icra',   'color': '#1f77b4'},
-    {'label': 'IROS',    'id': 'iros',   'color': '#ff7f0e'},
-    {'label': 'RA-L',    'id': 'ral',    'color': '#2ca02c'},
-    {'label': 'T-RO',    'id': 'tro',    'color': '#d62728'},
-    {'label': 'RSS',     'id': 'rss',    'color': '#9467bd'},
-    {'label': 'IJRR',    'id': 'ijrr',   'color': '#8c564b'},
-    {'label': 'Sci-Rob', 'id': 'scirob', 'color': '#17becf'},
-    {'label': 'SoRo',    'id': 'soro',   'color': '#e377c2'},
-    {'label': 'T-Mech',  'id': 'tmech',  'color': '#bcbd22'},
+    {'label': 'ICRA',    'id': 'icra',   'color': '#1f77b4', 'since': 1984},
+    {'label': 'IROS',    'id': 'iros',   'color': '#ff7f0e', 'since': 1988},
+    {'label': 'RA-L',    'id': 'ral',    'color': '#2ca02c', 'since': 2016},
+    {'label': 'T-RO',    'id': 'tro',    'color': '#d62728', 'since': 2004},
+    {'label': 'RSS',     'id': 'rss',    'color': '#9467bd', 'since': 2005},
+    {'label': 'IJRR',    'id': 'ijrr',   'color': '#8c564b', 'since': 1982},
+    {'label': 'Sci-Rob', 'id': 'scirob', 'color': '#17becf', 'since': 2016},
+    {'label': 'SoRo',    'id': 'soro',   'color': '#e377c2', 'since': 2014},
+    {'label': 'T-Mech',  'id': 'tmech',  'color': '#bcbd22', 'since': 1996},
 ]
 
-VENUE_PRIORITY = {v['label']: i for i, v in enumerate(VENUES_CFG)}
+# Dedup priority: when one paper is cross-listed (RA-L→ICRA, etc.) we keep
+# the JOURNAL version as the primary venue. Order MUST match step3_excel.py
+# so summary cards / by_year totals stay consistent across pages.
+_DEDUP_ORDER = ['T-RO', 'IJRR', 'Sci-Rob', 'SoRo', 'T-Mech', 'RA-L', 'RSS', 'ICRA', 'IROS']
+VENUE_PRIORITY = {v: i for i, v in enumerate(_DEDUP_ORDER)}
 VENUE_LABELS   = [v['label'] for v in VENUES_CFG]
 VENUE_COLORS   = {v['label']: v['color'] for v in VENUES_CFG}
 VENUE_IDS      = {v['label']: v['id'] for v in VENUES_CFG}
@@ -130,15 +134,15 @@ VENUE_TEXT_CSS = ''.join(
 )
 SUMMARY_CARDS = ''.join(
     f'  <div class="card v-{v["id"]}"><div class="num" id="c-{v["id"]}">-</div>'
-    f'<div class="label">{v["label"]}</div></div>\n'
+    f'<div class="label">{v["label"]} ({v["since"]}~)</div></div>\n'
     for v in VENUES_CFG
 )
 FILTER_A_CHECKBOXES = ''.join(
-    f'    <label><input type="checkbox" id="f-{v["id"]}" checked> {v["label"]}</label>\n'
+    f'    <label><input type="checkbox" id="f-{v["id"]}" checked> {v["label"]} <span style="color:#999; font-size:11px;">({v["since"]}~)</span></label>\n'
     for v in VENUES_CFG
 )
 FILTER_B_CHECKBOXES = ''.join(
-    f'    <label><input type="checkbox" id="f-{v["id"]}-b" checked> {v["label"]}</label>\n'
+    f'    <label><input type="checkbox" id="f-{v["id"]}-b" checked> {v["label"]} <span style="color:#999; font-size:11px;">({v["since"]}~)</span></label>\n'
     for v in VENUES_CFG
 )
 
@@ -277,7 +281,8 @@ __SUMMARY_CARDS__  <div class="card"><div class="num" id="c-maxcite">-</div><div
       ~
       <input type="number" id="f-year-to" min="__YMIN__" max="__YMAX__" value="__YMAX__">
     </label>
-__FILTER_A_CHECKBOXES__    <label>Min citations
+__FILTER_A_CHECKBOXES__    <div style="flex-basis: 100%; height: 0;"></div>
+    <label>Min citations
       <input type="number" id="f-mincite" min="0" value="0">
     </label>
     <label>Title:
@@ -306,7 +311,8 @@ __FILTER_A_CHECKBOXES__    <label>Min citations
       ~
       <input type="number" id="f-year-to-b" min="__YMIN__" max="__YMAX__" value="__YMAX__">
     </label>
-__FILTER_B_CHECKBOXES__    <label>Min citations
+__FILTER_B_CHECKBOXES__    <div style="flex-basis: 100%; height: 0;"></div>
+    <label>Min citations
       <input type="number" id="f-mincite-b" min="0" value="0">
     </label>
     <label>Title:
@@ -343,6 +349,12 @@ __FILTER_B_CHECKBOXES__    <label>Min citations
       <div style="position: relative; height: 340px;"><canvas id="chart-bar-overlay"></canvas></div>
     </div>
   </div>
+  <div style="margin-top: 18px;">
+    <div style="font-size:12px; color:#666; margin-bottom: 4px;">
+      Per-venue lines (overlaid) — easier to compare growth curves than the stack.
+    </div>
+    <div style="position: relative; height: 320px;"><canvas id="chart-line"></canvas></div>
+  </div>
 </div>
 
 <div class="wrap">
@@ -364,32 +376,44 @@ __FILTER_B_CHECKBOXES__    <label>Min citations
   <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
 
     <div class="vcol">
-      <h3>1 · Total citations per venue</h3>
-      <div class="desc">Σ cited_by_count. Volume metric — a single big hit can dominate.</div>
+      <h3>1 · Total citations</h3>
+      <div class="desc">Σ cited_by_count. Volume — a single big hit can dominate.</div>
       <div class="canv"><canvas id="chart-vtot"></canvas></div>
     </div>
 
     <div class="vcol">
-      <h3>2 · Avg citations per paper</h3>
-      <div class="desc">Σ citations / # papers. Normalises for venue size; still rewards a few mega-hits.</div>
+      <h3>2 · Avg citations / paper</h3>
+      <div class="desc">Σ / #. Normalises for venue size; still biased by mega-hits.</div>
       <div class="canv"><canvas id="chart-vavg"></canvas></div>
     </div>
 
     <div class="vcol">
+      <h3>3 · Median citations</h3>
+      <div class="desc">Middle paper's cites. Outlier-resistant — the "typical paper".</div>
+      <div class="canv"><canvas id="chart-vmed"></canvas></div>
+    </div>
+
+    <div class="vcol">
+      <h3>4 · h-index</h3>
+      <div class="desc">Largest h with h papers each ≥ h cites. Consistent depth.</div>
+      <div class="canv"><canvas id="chart-vh"></canvas></div>
+    </div>
+
+    <div class="vcol">
       <h3>
-        3 · Top-K composition
+        5 · Top-K composition
         <select id="topk-select" style="padding:2px 6px; font-size: 12px; border:1px solid #ccc; border-radius: 4px; background: #fff;">
           <option>10</option><option>50</option><option selected>100</option><option>500</option><option>1000</option>
         </select>
       </h3>
-      <div class="desc">How many of the top-K most-cited papers come from each venue — where the hits concentrate.</div>
+      <div class="desc"># of top-K most-cited papers from each venue — where the hits concentrate.</div>
       <div class="canv"><canvas id="chart-vtopk"></canvas></div>
     </div>
 
     <div class="vcol">
-      <h3>4 · h-index per venue</h3>
-      <div class="desc">Largest h such that the venue has h papers each with ≥ h citations. Robust to single outliers.</div>
-      <div class="canv"><canvas id="chart-vh"></canvas></div>
+      <h3>6 · Avg authors / paper</h3>
+      <div class="desc">Team size culture. Low = solo / small-group, high = mass-collab culture.</div>
+      <div class="canv"><canvas id="chart-vauth"></canvas></div>
     </div>
   </div>
 </div>
@@ -505,7 +529,7 @@ const state = {
   filteredB: [],
 };
 
-let barChart, barChartB, overlayChart, histChart;
+let barChart, barChartB, overlayChart, lineChart, histChart;
 
 function hIndex(cites) {
   const s = cites.slice().sort((a, b) => b - a);
@@ -696,12 +720,52 @@ function drawOverlayChart(yMax) {
   });
 }
 
+function drawLineChart(filteredArr) {
+  // Per-venue lines on the same axes — easier to compare growth curves than the stack.
+  const counts = {};
+  for (const r of filteredArr) {
+    if (!counts[r[1]]) counts[r[1]] = {};
+    counts[r[1]][r[0]] = (counts[r[1]][r[0]] || 0) + 1;
+  }
+  const years = [];
+  for (let y = YMIN; y <= YMAX; y++) years.push(y);
+  const datasets = VENUES.map(v => ({
+    label: v,
+    data: years.map(y => (counts[y] && counts[y][v]) || 0),
+    borderColor: VENUE_COLOR[v],
+    backgroundColor: VENUE_COLOR[v] + '22',
+    tension: 0.25,
+    pointRadius: 0,
+    pointHoverRadius: 4,
+    borderWidth: 1.8,
+    fill: false,
+  }));
+  if (lineChart) lineChart.destroy();
+  lineChart = new Chart(document.getElementById('chart-line'), {
+    type: 'line',
+    data: { labels: years, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        tooltip: { mode: 'index', intersect: false },
+        legend: { position: 'top' },
+      },
+      scales: {
+        x: { title: { display: true, text: 'Year' } },
+        y: { title: { display: true, text: 'Papers' }, beginAtZero: true },
+      },
+    },
+  });
+}
+
 function renderBarChart() {
   let yMax = null;
   if (state.compareMode && state.shareYAxis) {
     yMax = Math.max(yearTotalMax(state.filtered), yearTotalMax(state.filteredB));
   }
   drawBarChart('chart-bar', state.filtered, 'A', yMax);
+  drawLineChart(state.filtered);
   if (state.compareMode) {
     drawBarChart('chart-bar-b', state.filteredB, 'B', yMax);
     drawOverlayChart(yMax);
@@ -711,25 +775,35 @@ function renderBarChart() {
   }
 }
 
-let vtotChart, vavgChart, vtopkChart, vhChart;
+let vtotChart, vavgChart, vmedChart, vhChart, vtopkChart, vauthChart;
 
 function venueStats(filtered, topK) {
-  const sum = {}, count = {}, cites = {};
-  for (const v of VENUES) { sum[v] = 0; count[v] = 0; cites[v] = []; }
+  const sum = {}, count = {}, cites = {}, authorsTot = {};
+  for (const v of VENUES) {
+    sum[v] = 0; count[v] = 0; cites[v] = []; authorsTot[v] = 0;
+  }
   for (const r of filtered) {
     const v = r[0], c = r[4];
-    if (sum[v] !== undefined) { sum[v] += c; count[v]++; cites[v].push(c); }
+    if (sum[v] === undefined) continue;
+    sum[v] += c; count[v]++; cites[v].push(c);
+    const nAuth = (r[3] || '').split(';').filter(s => s.trim()).length;
+    authorsTot[v] += nAuth;
   }
-  // Average citations per paper (0 when no papers)
-  const avg = {};
-  for (const v of VENUES) avg[v] = count[v] ? (sum[v] / count[v]) : 0;
-  // h-index per venue
-  const hidx = {};
+  const avg = {}, avgAuth = {}, med = {}, hidx = {};
   for (const v of VENUES) {
-    const s = cites[v].slice().sort((a, b) => b - a);
+    const n = count[v];
+    avg[v]     = n ? sum[v] / n : 0;
+    avgAuth[v] = n ? authorsTot[v] / n : 0;
+    // Median
+    const asc = cites[v].slice().sort((a, b) => a - b);
+    if (!asc.length) { med[v] = 0; }
+    else if (asc.length % 2) { med[v] = asc[(asc.length - 1) >> 1]; }
+    else { med[v] = (asc[asc.length / 2 - 1] + asc[asc.length / 2]) / 2; }
+    // h-index
+    const desc = cites[v].slice().sort((a, b) => b - a);
     let h = 0;
-    for (let i = 0; i < s.length; i++) {
-      if (s[i] >= i + 1) h = i + 1; else break;
+    for (let i = 0; i < desc.length; i++) {
+      if (desc[i] >= i + 1) h = i + 1; else break;
     }
     hidx[v] = h;
   }
@@ -738,7 +812,7 @@ function venueStats(filtered, topK) {
   const topN = {};
   for (const v of VENUES) topN[v] = 0;
   for (const r of sorted) if (topN[r[0]] !== undefined) topN[r[0]]++;
-  return { sum, avg, hidx, topN, topK: sorted.length };
+  return { sum, avg, med, hidx, topN, topK: sorted.length, avgAuth };
 }
 
 function _venueBar(data, xTitle, formatValue) {
@@ -771,25 +845,23 @@ function _venueBar(data, xTitle, formatValue) {
 
 function renderVenueComparison() {
   const topK = parseInt(document.getElementById('topk-select').value) || 100;
-  const stats = venueStats(state.filtered, topK);
+  const s = venueStats(state.filtered, topK);
+  const f1 = (v) => Number(v).toFixed(1);
 
-  if (vtotChart) vtotChart.destroy();
-  vtotChart = new Chart(document.getElementById('chart-vtot'),
-    _venueBar(stats.sum, 'Σ citations'));
-
-  if (vavgChart) vavgChart.destroy();
-  vavgChart = new Chart(document.getElementById('chart-vavg'),
-    _venueBar(stats.avg, 'cites / paper',
-              (v) => Number(v).toFixed(1)));
-
+  if (vtotChart)  vtotChart.destroy();
+  vtotChart  = new Chart(document.getElementById('chart-vtot'),   _venueBar(s.sum,     'Σ citations'));
+  if (vavgChart)  vavgChart.destroy();
+  vavgChart  = new Chart(document.getElementById('chart-vavg'),   _venueBar(s.avg,     'cites / paper',    f1));
+  if (vmedChart)  vmedChart.destroy();
+  vmedChart  = new Chart(document.getElementById('chart-vmed'),   _venueBar(s.med,     'median cites',     f1));
+  if (vhChart)    vhChart.destroy();
+  vhChart    = new Chart(document.getElementById('chart-vh'),     _venueBar(s.hidx,    'h-index'));
   if (vtopkChart) vtopkChart.destroy();
-  vtopkChart = new Chart(document.getElementById('chart-vtopk'),
-    _venueBar(stats.topN, `# in top ${stats.topK}`));
-
-  if (vhChart) vhChart.destroy();
-  vhChart = new Chart(document.getElementById('chart-vh'),
-    _venueBar(stats.hidx, 'h-index'));
+  vtopkChart = new Chart(document.getElementById('chart-vtopk'),  _venueBar(s.topN,    `# in top ${s.topK}`));
+  if (vauthChart) vauthChart.destroy();
+  vauthChart = new Chart(document.getElementById('chart-vauth'),  _venueBar(s.avgAuth, 'authors / paper',  f1));
 }
+
 
 function venueClass(v) {
   return 'venue-' + String(v).replace(/[^A-Za-z0-9]/g, '').toUpperCase();
