@@ -95,8 +95,8 @@
   </div>
   <div class="slider-row">
     <span style="font-size:11px;">Layout spread</span>
-    <input type="range" id="sparsity-slider" min="1" max="10" step="0.5" value="3.5">
-    <span class="val" id="sparsity-val">3.5</span>
+    <input type="range" id="sparsity-slider" min="1" max="10" step="0.5" value="5">
+    <span class="val" id="sparsity-val">5</span>
   </div>
   <div class="controls">
     <button id="restart">Restart</button>
@@ -267,7 +267,7 @@ function recomputeEdgeTiers() {
 }
 
 // --- Force simulation ---
-let sparsity = 3.5;  // controls overall spread (repulsion & link distance)
+let sparsity = 5;  // controls overall spread (repulsion & link distance)
 const CHARGE_BASE = -14;   // multiplied by sparsity
 const LINK_BASE = 30;
 const LINK_WEIGHT_INV = 70;
@@ -606,7 +606,7 @@ d3.select(canvas).call(d3.drag()
 );
 
 // --- Buttons ---
-const INITIAL_SPARSITY = 3.5;
+const INITIAL_SPARSITY = 5;
 let frozen = false;
 
 function fullReset() {
