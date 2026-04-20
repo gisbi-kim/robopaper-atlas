@@ -62,6 +62,16 @@
   .hub-item .rank { color: #6b7280; font-size: 10px; min-width: 22px; text-align: right; }
   .hub-item .name { flex: 1; }
   .hub-item .count { color: #9ca3af; font-variant-numeric: tabular-nums; font-size: 11px; }
+  #comms-list { max-height: 320px; overflow-y: auto; margin-top: 4px; }
+  .comm-item {
+    padding: 5px 6px 5px 8px; cursor: pointer; border-left: 3px solid transparent;
+    border-radius: 2px; margin-bottom: 2px; font-size: 11.5px; line-height: 1.35;
+  }
+  .comm-item:hover { background: #374151; }
+  .comm-item .hd { display: flex; align-items: baseline; gap: 6px; }
+  .comm-item .name { flex: 1; color: #e5e7eb; font-weight: 500; }
+  .comm-item .count { color: #9ca3af; font-variant-numeric: tabular-nums; font-size: 10.5px; }
+  .comm-item .kw { color: #9ca3af; font-size: 10px; margin-top: 2px; }
   #legend { bottom: 14px; left: 14px; font-size: 11px; color: #9ca3af; }
   #tooltip {
     position: fixed; background: #1f2937; color: #e5e7eb; padding: 8px 10px;
@@ -78,6 +88,8 @@
   #tooltip .tt-top .mc { color: #9ca3af; }
   #tooltip .tt-co { font-size: 11px; color: #cbd5e1; line-height: 1.55; margin-top: 6px; padding-top: 6px; border-top: 1px solid #374151; }
   #tooltip .tt-co b { color: #38bdf8; font-weight: 500; }
+  #tooltip .tt-comm { font-size: 11px; color: #cbd5e1; line-height: 1.55; margin-top: 6px; padding-top: 6px; border-top: 1px solid #374151; }
+  #tooltip .tt-comm .kw { color: #9ca3af; }
   .slider-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
   .slider-row input[type="range"] { flex: 1; }
   .slider-row .val { font-variant-numeric: tabular-nums; min-width: 22px; text-align: right; color: #9ca3af; }
@@ -98,6 +110,11 @@
     <input type="range" id="sparsity-slider" min="1" max="10" step="0.5" value="5">
     <span class="val" id="sparsity-val">5</span>
   </div>
+  <div class="slider-row" style="gap: 10px;">
+    <span style="font-size:11px;">Color</span>
+    <label style="font-size:11px;display:inline-flex;align-items:center;gap:4px;cursor:pointer;"><input type="radio" name="cmode" value="community" checked>community</label>
+    <label style="font-size:11px;display:inline-flex;align-items:center;gap:4px;cursor:pointer;"><input type="radio" name="cmode" value="year">year</label>
+  </div>
   <div class="controls">
     <button id="restart">Restart</button>
     <button id="freeze">Freeze</button>
@@ -110,6 +127,14 @@
   <div style="margin-top: 10px;">
     <button id="btn-hubs" class="toggle-small">▸ Top 100 hubs (most co-authors)</button>
     <div id="hubs-list" style="display:none;"></div>
+  </div>
+  <div style="margin-top: 10px;">
+    <button id="btn-comms" class="toggle-small">▸ Communities</button>
+    <div id="comms-panel" style="display:none;">
+      <div id="comms-summary" style="font-size:11px; color:#9ca3af; margin: 6px 0 3px;"></div>
+      <canvas id="comms-hist" width="252" height="74" style="display:block; width:100%; max-width:252px;"></canvas>
+      <div id="comms-list" style="max-height:260px; overflow-y:auto; margin-top:6px;"></div>
+    </div>
   </div>
   <div style="margin-top: 8px; font-size: 12px;">
     <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
@@ -125,18 +150,22 @@
   <div id="selected"></div>
 </div>
 <div class="panel" id="legend">
-  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 3px;">
+  <div id="legend-year" style="display: none; align-items: center; gap: 8px; margin-bottom: 3px;">
     <span style="color:#cbd5e1;">Node color = author's most recent year</span>
     <span id="year-min" style="color:#9ca3af; font-variant-numeric: tabular-nums;">—</span>
     <canvas id="color-bar" width="140" height="8" style="border-radius: 2px; display: block;"></canvas>
     <span id="year-max" style="color:#9ca3af; font-variant-numeric: tabular-nums;">—</span>
   </div>
+  <div id="legend-comm" style="color:#cbd5e1; margin-bottom: 3px;">
+    Node color = research community · <span id="comm-count" style="color:#e5e7eb;">—</span> communities detected via Leiden · hover a node for topic
+  </div>
   <div style="color:#9ca3af;">Node size = # papers · Edge thickness = # co-authored papers</div>
-  <div style="color:#6b7280; margin-top: 2px;">Drag to pan · wheel to zoom · click node to pin · drag node to reposition</div>
+  <div style="color:#6b7280; margin-top: 2px;">Drag to pan · wheel to zoom · click node to pin · drag node to reposition · <a href="coauthor_network_methods.html" style="color:#38bdf8; text-decoration:none; border-bottom:1px dotted #38bdf8;">How this works →</a></div>
 </div>
 <div id="tooltip">
   <div class="tt-name" id="tt-name"></div>
   <div class="tt-stat" id="tt-stat"></div>
+  <div class="tt-comm" id="tt-comm"></div>
   <div class="tt-top" id="tt-top"></div>
   <div class="tt-co" id="tt-co"></div>
 </div>
@@ -197,6 +226,38 @@ edges.forEach(e => { e.source = nodeById.get(e.source); e.target = nodeById.get(
 const years = nodes.map(n => n.last_year).filter(y => y > 0);
 const yMin = Math.min(...years), yMax = Math.max(...years);
 const colorScale = d3.scaleSequential(d3.interpolateInferno).domain([yMin - 5, yMax]);
+
+// Community palette from meta (populated by _enrich_communities.py). Authors
+// outside the giant component (at MIN_EDGE_COLLABS default) have community=null.
+const communityPalette = new Map();
+const communityInfo = new Map();
+if (META.communities) {
+  for (const c of META.communities) {
+    communityPalette.set(c.id, c.color);
+    communityInfo.set(c.id, c);
+  }
+  const ccEl = document.getElementById('comm-count');
+  if (ccEl) ccEl.textContent = META.communities.length;
+}
+const hasCommunities = communityPalette.size > 0;
+
+// Color mode — 'community' (if detection ran) or 'year'.
+let colorMode = hasCommunities ? 'community' : 'year';
+function nodeColor(n) {
+  if (colorMode === 'community') {
+    const c = communityPalette.get(n.community);
+    return c || '#555';
+  }
+  return n.last_year > 0 ? colorScale(n.last_year) : '#888';
+}
+function applyColorMode(mode) {
+  colorMode = mode;
+  const ly = document.getElementById('legend-year');
+  const lc = document.getElementById('legend-comm');
+  if (ly) ly.style.display = (mode === 'year') ? 'flex' : 'none';
+  if (lc) lc.style.display = (mode === 'community' && hasCommunities) ? 'block' : 'none';
+  draw();
+}
 
 // Draw legend color bar + set year labels
 (function drawLegend() {
@@ -362,7 +423,7 @@ function draw() {
   for (const n of nodes) {
     ctx.beginPath();
     ctx.arc(n.x, n.y, rScale(n.papers) * nodeMult, 0, Math.PI * 2);
-    ctx.fillStyle = n.last_year > 0 ? colorScale(n.last_year) : '#888';
+    ctx.fillStyle = nodeColor(n);
     ctx.fill();
     if (n === selectedNode) {
       ctx.strokeStyle = '#38bdf8';
@@ -421,6 +482,7 @@ function nodeAtScreen(sx, sy) {
 const tipEl = document.getElementById('tooltip');
 const ttName = document.getElementById('tt-name');
 const ttStat = document.getElementById('tt-stat');
+const ttComm = document.getElementById('tt-comm');
 const ttTop = document.getElementById('tt-top');
 const ttCo = document.getElementById('tt-co');
 
@@ -444,6 +506,22 @@ canvas.addEventListener('mousemove', (e) => {
     canvas.style.cursor = 'pointer';
     ttName.textContent = n.label;
     ttStat.textContent = `${n.papers} papers · last active ${n.last_year}`;
+    // Community + topic keywords
+    if (n.community != null && communityInfo.has(n.community)) {
+      const ci = communityInfo.get(n.community);
+      const topA = (ci.top_authors || []).slice(0, 3).map(escHtml).join(', ');
+      const words = (ci.label_words || []).map(escHtml).join(' · ');
+      const title = ci.misc ? 'Misc cluster' : `Community ${ci.id}`;
+      const note = ci.misc
+        ? ' <span class="kw">(many small labs, &lt; 10 each)</span>'
+        : ` <span class="kw">(${ci.size} members)</span>`;
+      ttComm.innerHTML = `<b style="color:${ci.color}">${title}</b>` + note
+        + (words ? `<br><span class="kw">keywords:</span> ${words}` : '')
+        + (topA ? `<br><span class="kw">hubs:</span> ${topA}` : '');
+      ttComm.style.display = '';
+    } else {
+      ttComm.style.display = 'none';
+    }
     // Top 3 most-cited papers
     if (n.top && n.top.length) {
       ttTop.innerHTML = '<b>Top cited papers:</b>'
@@ -595,6 +673,123 @@ hubsList.addEventListener('click', (e) => {
   if (node) centerOnNode(node);
 });
 
+// --- Communities panel ---
+const btnComms = document.getElementById('btn-comms');
+const commsPanel = document.getElementById('comms-panel');
+const commsList = document.getElementById('comms-list');
+const commsSummary = document.getElementById('comms-summary');
+const commsHist = document.getElementById('comms-hist');
+const commsBaseLabel = `Communities${META.communities ? ' (' + META.communities.length + ')' : ''}`;
+btnComms.textContent = '▸ ' + commsBaseLabel;
+
+const HIST_BINS = [
+  { lo: 10,  hi: 20,       label: '10-19' },
+  { lo: 20,  hi: 50,       label: '20-49' },
+  { lo: 50,  hi: 100,      label: '50-99' },
+  { lo: 100, hi: 200,      label: '100-199' },
+  { lo: 200, hi: 500,      label: '200-499' },
+  { lo: 500, hi: Infinity, label: '500+' },
+];
+
+function drawCommsHist() {
+  const ctx = commsHist.getContext('2d');
+  const W = commsHist.width, H = commsHist.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const bins = HIST_BINS.map(b => ({ ...b, count: 0 }));
+  for (const c of META.communities || []) {
+    if (c.misc) continue;
+    for (const b of bins) {
+      if (c.size >= b.lo && c.size < b.hi) { b.count++; break; }
+    }
+  }
+  const maxCount = Math.max(1, ...bins.map(b => b.count));
+  const topPad = 14, bottomPad = 18, leftPad = 2, rightPad = 2, gap = 4;
+  const chartH = H - topPad - bottomPad;
+  const totalGaps = (bins.length - 1) * gap;
+  const barW = Math.floor((W - leftPad - rightPad - totalGaps) / bins.length);
+  ctx.font = '9px -apple-system, "Segoe UI", sans-serif';
+  ctx.textBaseline = 'alphabetic';
+  bins.forEach((b, i) => {
+    const x = leftPad + i * (barW + gap);
+    const h = b.count > 0 ? Math.max(2, (b.count / maxCount) * chartH) : 0;
+    // bar color: lighter → darker blue-gray as bins grow
+    const t = i / (bins.length - 1);
+    const light = 55 - t * 28;
+    ctx.fillStyle = `hsl(210, 40%, ${light}%)`;
+    ctx.fillRect(x, topPad + chartH - h, barW, h);
+    // count on top of bar
+    if (b.count > 0) {
+      ctx.fillStyle = '#e5e7eb';
+      ctx.textAlign = 'center';
+      ctx.fillText(String(b.count), x + barW / 2, topPad + chartH - h - 3);
+    }
+    // x label below
+    ctx.fillStyle = '#9ca3af';
+    ctx.textAlign = 'center';
+    ctx.fillText(b.label, x + barW / 2, H - 4);
+  });
+}
+
+function populateComms() {
+  // summary line
+  const named = (META.communities || []).filter(c => !c.misc);
+  const sizes = named.map(c => c.size).sort((a, b) => a - b);
+  const med = sizes.length ? sizes[Math.floor(sizes.length / 2)] : 0;
+  const miscC = (META.communities || []).find(c => c.misc);
+  commsSummary.textContent =
+    `${named.length} communities · sizes ${sizes[0] || 0}–${sizes[sizes.length - 1] || 0}`
+    + ` · median ${med}`
+    + (miscC ? ` · +${miscC.size.toLocaleString()} in misc` : '');
+  drawCommsHist();
+
+  const rows = [];
+  (META.communities || []).forEach((c) => {
+    const hub = (c.top_authors && c.top_authors[0]) || '—';
+    const title = c.misc ? 'Misc cluster' : `#${c.id} · ${hub}`;
+    const kw = (c.label_words || []).slice(0, 4).join(' · ');
+    const note = c.misc
+      ? '<div class="kw">many small labs, &lt; 10 members each</div>'
+      : (kw ? `<div class="kw">${escHtml(kw)}</div>` : '');
+    rows.push(
+      `<div class="comm-item" data-cid="${c.id}" style="border-left-color:${c.color};">`
+      + `<div class="hd"><span class="name">${escHtml(title)}</span>`
+      + `<span class="count">${c.size.toLocaleString()}</span></div>`
+      + note
+      + `</div>`
+    );
+  });
+  commsList.innerHTML = rows.join('');
+}
+
+btnComms.addEventListener('click', () => {
+  const show = commsPanel.style.display === 'none';
+  if (show) {
+    populateComms();
+    commsPanel.style.display = 'block';
+    btnComms.textContent = '▾ ' + commsBaseLabel;
+  } else {
+    commsPanel.style.display = 'none';
+    btnComms.textContent = '▸ ' + commsBaseLabel;
+  }
+});
+
+commsList.addEventListener('click', (e) => {
+  const item = e.target.closest('.comm-item');
+  if (!item) return;
+  const cid = parseInt(item.dataset.cid);
+  const c = communityInfo.get(cid);
+  if (!c || !c.top_authors || !c.top_authors[0]) return;
+  const hubLabel = c.top_authors[0];
+  const target = nodes.find(n => n.label === hubLabel);
+  if (target) {
+    centerOnNode(target);
+  } else {
+    // Hub isn't in the current edge-threshold view; tell the user
+    alert(`Community #${cid} hub "${hubLabel}" is below the current edge threshold — lower the slider to see them.`);
+  }
+});
+
 // Drag node
 d3.select(canvas).call(d3.drag()
   .container(canvas)
@@ -721,6 +916,13 @@ window.addEventListener('resize', () => {
   simulation.force('center', d3.forceCenter(width / 2, height / 2));
   simulation.alpha(0.3).restart();
 });
+
+// Color mode radio handlers + sync initial UI state with `colorMode`.
+document.querySelectorAll('input[name="cmode"]').forEach(r => {
+  r.checked = (r.value === colorMode);
+  r.addEventListener('change', (e) => { if (e.target.checked) applyColorMode(e.target.value); });
+});
+applyColorMode(colorMode);
 })();
 </script>
 </body>

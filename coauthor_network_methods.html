@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Co-author Network — methods · RoboPaper Atlas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", "Helvetica Neue", sans-serif;
+    max-width: 760px; margin: 0 auto; padding: 40px 24px 80px;
+    background: #0f1117; color: #e5e7eb; line-height: 1.6;
+  }
+  .brand { font-size: 12px; letter-spacing: 0.5px; color: #6b7280; margin-bottom: 4px; }
+  .brand a { color: inherit; text-decoration: none; font-weight: 600; }
+  .brand a:hover { color: #38bdf8; }
+  h1 { font-size: 28px; margin: 0 0 6px; letter-spacing: -0.3px; }
+  .sub { color: #9ca3af; font-size: 14px; margin-bottom: 28px; }
+  .sub a { color: #38bdf8; text-decoration: none; }
+  .sub a:hover { text-decoration: underline; }
+
+  h2 {
+    font-size: 20px; margin: 40px 0 10px;
+    border-top: 1px solid #2a2f3a; padding-top: 22px;
+    color: #f3f4f6;
+  }
+  h3 { font-size: 15px; margin: 22px 0 6px; color: #cbd5e1; }
+  p { margin: 8px 0; color: #d1d5db; }
+  li { margin: 4px 0; color: #d1d5db; }
+  ul { padding-left: 20px; }
+
+  code {
+    background: #1f2937; padding: 1.5px 6px; border-radius: 3px;
+    font-size: 13px; color: #fcd34d;
+  }
+  .formula {
+    background: #1f2937; border: 1px solid #374151; border-radius: 6px;
+    padding: 10px 14px; margin: 10px 0; font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 12.5px; color: #cbd5e1; overflow-x: auto;
+  }
+  .note {
+    background: #1c2235; border-left: 3px solid #38bdf8;
+    padding: 10px 14px; margin: 14px 0; border-radius: 0 4px 4px 0;
+    color: #cbd5e1; font-size: 13.5px;
+  }
+  a.ref { color: #38bdf8; text-decoration: none; border-bottom: 1px dotted #38bdf8; }
+  a.ref:hover { color: #7dd3fc; border-bottom-style: solid; }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #2a2f3a; vertical-align: top; }
+  th { color: #9ca3af; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .tl { color: #e5e7eb; font-weight: 600; }
+
+  .back {
+    display: inline-block; margin-bottom: 24px; font-size: 13px;
+    color: #9ca3af; text-decoration: none;
+  }
+  .back:hover { color: #38bdf8; }
+</style>
+</head>
+<body>
+
+<div class="brand"><a href="index.html">RoboPaper Atlas</a></div>
+<a href="coauthor_network.html" class="back">← Back to the co-author network</a>
+<h1>How the co-author network works</h1>
+<div class="sub">
+  Two analyses share the same graph: <b>Top 100 hubs</b> ranks individuals,
+  <b>Communities</b> discovers groups. They answer different questions.
+</div>
+
+<h2>The underlying graph</h2>
+<p>
+  Authors are nodes. An undirected edge joins two authors if they co-published at
+  least one paper across the 9 venues indexed by the atlas (ICRA · IROS · RA-L ·
+  T-RO · RSS · IJRR · Sci-Rob · SoRo · T-Mech). Edge weight = <b>how many
+  papers they co-authored together</b>.
+</p>
+<p>Two thresholds prune the graph before visualisation:</p>
+<ul>
+  <li><code>MIN_AUTHOR_PAPERS = 3</code> — each author must have ≥ 3 papers in the dataset. Keeps students/one-off attendees out.</li>
+  <li><code>MIN_EDGE_COLLABS = 2</code> — each edge must represent ≥ 2 co-authored papers. Filters accidental single-paper collaborations.</li>
+</ul>
+<p>
+  Result: <b>23,806 authors</b> connected by <b>68,598 edges</b> in the exported
+  dataset. The <code>Edge threshold</code> slider on the viewer further filters
+  edges at render time (default = 5, i.e. only show pairs who co-wrote 5+ papers).
+</p>
+
+<h2>Top 100 hubs — who is the most connected?</h2>
+<p><b>Definition:</b> authors with the most distinct co-authors visible in the current view.</p>
+<div class="formula">
+  hub_score(author) = <b>degree</b>(author)
+  &nbsp; &nbsp; <span style="color:#9ca3af;">(= number of co-authors in the currently-visible subgraph)</span><br>
+  tie-break = <b>weighted degree</b>(author)
+  &nbsp; <span style="color:#9ca3af;">(= Σ edge weights = total collaborations)</span>
+</div>
+<p>
+  The ranking is <b>recomputed whenever the edge threshold changes</b> — a
+  researcher may be a top-5 hub at threshold 2 (lots of weak collaborations)
+  but drop out at threshold 10 (only a handful of deeply repeated co-authors).
+</p>
+<div class="note">
+  Hubs measure <b>individual reach</b>. A hub can bridge two unrelated research
+  communities (e.g. someone who writes occasionally with both an aerial lab and a
+  SLAM lab); that bridging role is not captured by community detection, which
+  must ultimately assign them to one side.
+</div>
+
+<h2>Communities — who are the research neighbourhoods?</h2>
+<p>
+  A community is a group of authors who collaborate more densely among
+  themselves than with the rest of the network. The atlas discovers 93 of them.
+</p>
+
+<h3>Step 1 — Detect the mainland with Leiden</h3>
+<p>
+  We extract the <b>giant component at edge weight ≥ 5</b> (6,375 authors
+  connected by 10,284 strong-tie edges) and run the
+  <a class="ref" href="https://arxiv.org/abs/1810.08473" target="_blank" rel="noopener">Leiden
+  algorithm (Traag, Waltman &amp; van Eck, 2019)</a> on it. Leiden is the
+  modern successor to
+  <a class="ref" href="https://arxiv.org/abs/0803.0476" target="_blank" rel="noopener">Louvain
+  (Blondel et al., 2008)</a>: it optimises <b>modularity</b>
+</p>
+<div class="formula">
+  Q = Σ<sub>communities</sub> [ (edges inside) − (expected edges under random rewiring) ]
+</div>
+<p>
+  and repairs Louvain's bug where a community can end up internally disconnected.
+  On the mainland we get:
+</p>
+<table>
+  <tr><th>algorithm</th><th>communities</th><th>modularity Q</th><th>agreement</th></tr>
+  <tr><td class="tl">Louvain</td><td>76</td><td>0.9398</td><td rowspan="2" style="vertical-align:middle;">ARI 0.875 · NMI 0.953 — virtually the same partition</td></tr>
+  <tr><td class="tl">Leiden (used)</td><td>83</td><td><b>0.9408</b></td></tr>
+</table>
+<p>
+  A Q above 0.3 is already considered strong community structure; 0.94 is
+  textbook-grade — robotics is an extremely well-clustered field.
+</p>
+
+<h3>Step 2 — Label propagation to absorb the fringe</h3>
+<p>
+  The mainland Leiden run only labels 6,375 authors. The remaining 17,431 have
+  only weak ties (edge weight 2–4). We iterate a weighted-majority vote: an
+  unlabelled author joins the community most represented among their
+  co-authors, weighted by collaboration count. Two to three passes converge.
+  15,000+ fringe authors get absorbed into their strongest-connected
+  mainland community.
+</p>
+
+<h3>Step 3 — Islands and the misc bucket</h3>
+<p>
+  The few thousand authors who are still unlabelled live on <b>islands</b> —
+  connected subgraphs with no weight-2+ path to the mainland (niche labs who
+  never collaborate outward):
+</p>
+<ul>
+  <li><b>Component size ≥ 10</b> → gets its own community id (9 such islands).</li>
+  <li><b>Component size &lt; 10</b> → merged into a single <b>Misc</b> community (1,655 authors, rendered in grey).</li>
+</ul>
+<p>Final: <b>83 mainland + 9 islands + 1 misc = 93 communities</b>. Every visible node has a community.</p>
+
+<h3>Step 4 — Topic labels (TF-IDF on paper titles)</h3>
+<p>
+  For each community we concatenate every paper title authored by a member into
+  one document. 93 documents are fed to
+  <a class="ref" href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html" target="_blank" rel="noopener">scikit-learn's
+  TF-IDF vectorizer</a>, which scores each word by
+</p>
+<div class="formula">
+  tfidf(word, community) = <b>tf</b>(word in this community)
+  × <b>log</b>(total communities / communities containing word)
+</div>
+<p>
+  The top 10 words by TF-IDF become the community's label — so we get
+  <i>quadrupedal · visual-inertial · racing</i> for ETH instead of generic
+  words like <i>robot</i> or <i>control</i>. Preprocessing: lower-case,
+  strip a hand-picked robotics stopword list (robot, system, control,
+  learning…), and require tokens to be ≥ 3 letters.
+</p>
+
+<h3>Step 5 — Hub authors per community</h3>
+<p>
+  Within each community we rank members by their <b>weighted degree in the full
+  (weight ≥ 2) graph</b> and keep the top 5. The tooltip shows the first 3. This
+  picks "the professor with the most collaboration mass inside their community".
+</p>
+
+<h2>When to use which</h2>
+<table>
+  <tr><th></th><th>Top 100 hubs</th><th>Communities</th></tr>
+  <tr><td class="tl">Unit</td><td>individual</td><td>group</td></tr>
+  <tr><td class="tl">Metric</td><td>degree (co-author count)</td><td>Leiden modularity + TF-IDF</td></tr>
+  <tr><td class="tl">Question</td><td>"Who is the most connected researcher?"</td><td>"Which research neighbourhoods exist?"</td></tr>
+  <tr><td class="tl">Overlap</td><td>one person can span two groups</td><td>partition (each author in exactly one)</td></tr>
+  <tr><td class="tl">Sensitive to edge threshold?</td><td>yes (ranking recomputed)</td><td>no (assignment fixed at build time)</td></tr>
+</table>
+
+<h2>Repo &amp; source code</h2>
+<p>
+  All of the above is implemented in two scripts:
+</p>
+<ul>
+  <li><code>_make_coauthor_network.py</code> — builds the graph and the HTML viewer.</li>
+  <li><code>_enrich_communities.py</code> — runs Leiden + label propagation + TF-IDF and writes the <code>community</code> field back into <code>coauthor_network.json</code>.</li>
+</ul>
+<p>
+  Source: <a class="ref" href="https://github.com/gisbi-kim/robopaper-atlas" target="_blank" rel="noopener">github.com/gisbi-kim/robopaper-atlas</a>.
+</p>
+
+<a href="coauthor_network.html" class="back">← Back to the co-author network</a>
+
+</body>
+</html>
