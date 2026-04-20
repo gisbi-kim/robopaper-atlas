@@ -346,8 +346,39 @@ __FILTER_B_CHECKBOXES__    <label>Min citations
 </div>
 
 <div class="wrap">
-  <h2>Year × Citations (max 5,000 points; top-cited sampled if more)</h2>
-  <canvas id="chart-scatter"></canvas>
+  <h2>Venue comparison
+    <span style="font-weight:normal; color:#888; font-size:12px;">
+      — three angles on venue impact for the current filter. 1 rewards any
+      one mega-cited paper; 2 asks where the biggest hits live; 3 asks for
+      consistent depth of high-cited work.
+    </span>
+  </h2>
+
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
+
+    <div>
+      <h3 style="font-size:13px; margin: 0 0 4px; color:#333;">1 · Total citations per venue</h3>
+      <div style="color:#888; font-size:11px; margin-bottom: 6px;">Σ cited_by_count. Volume metric — a single big hit can dominate.</div>
+      <div style="position: relative; height: 220px;"><canvas id="chart-vtot"></canvas></div>
+    </div>
+
+    <div>
+      <h3 style="font-size:13px; margin: 0 0 4px; color:#333;">
+        2 · Top-K composition
+        <select id="topk-select" style="margin-left:6px; padding:2px 6px; font-size: 12px; border:1px solid #ccc; border-radius: 4px; background: #fff;">
+          <option>10</option><option>50</option><option selected>100</option><option>500</option><option>1000</option>
+        </select>
+      </h3>
+      <div style="color:#888; font-size:11px; margin-bottom: 6px;">How many of the top-K most-cited papers come from each venue — where the hits concentrate.</div>
+      <div style="position: relative; height: 220px;"><canvas id="chart-vtopk"></canvas></div>
+    </div>
+
+    <div>
+      <h3 style="font-size:13px; margin: 0 0 4px; color:#333;">3 · h-index per venue</h3>
+      <div style="color:#888; font-size:11px; margin-bottom: 6px;">Largest h such that the venue has h papers each with ≥ h citations. Robust to single outliers.</div>
+      <div style="position: relative; height: 220px;"><canvas id="chart-vh"></canvas></div>
+    </div>
+  </div>
 </div>
 
 <div class="wrap">
@@ -461,7 +492,7 @@ const state = {
   filteredB: [],
 };
 
-let barChart, barChartB, overlayChart, scatterChart, histChart;
+let barChart, barChartB, overlayChart, histChart;
 
 function hIndex(cites) {
   const s = cites.slice().sort((a, b) => b - a);
@@ -667,44 +698,77 @@ function renderBarChart() {
   }
 }
 
-function renderScatter() {
-  const MAX_POINTS = 5000;
-  let pool = state.filtered;
-  if (pool.length > MAX_POINTS) {
-    pool = pool.slice().sort((a, b) => b[4] - a[4]).slice(0, MAX_POINTS);
+let vtotChart, vtopkChart, vhChart;
+
+function venueStats(filtered, topK) {
+  const sum = {}, cites = {};
+  for (const v of VENUES) { sum[v] = 0; cites[v] = []; }
+  for (const r of filtered) {
+    const v = r[0], c = r[4];
+    if (sum[v] !== undefined) { sum[v] += c; cites[v].push(c); }
   }
-  const byVenue = {};
-  for (const v of VENUES) byVenue[v] = [];
-  for (const r of pool) {
-    if (byVenue[r[0]]) byVenue[r[0]].push({ x: r[1], y: r[4], t: r[2], a: r[3] });
+  // h-index per venue
+  const hidx = {};
+  for (const v of VENUES) {
+    const s = cites[v].slice().sort((a, b) => b - a);
+    let h = 0;
+    for (let i = 0; i < s.length; i++) {
+      if (s[i] >= i + 1) h = i + 1; else break;
+    }
+    hidx[v] = h;
   }
-  const datasets = VENUES.map(v => ({
-    label: v, data: byVenue[v],
-    backgroundColor: VENUE_COLOR[v] + '99', borderColor: VENUE_COLOR[v], pointRadius: 4, pointHoverRadius: 7
-  }));
-  if (scatterChart) scatterChart.destroy();
-  scatterChart = new Chart(document.getElementById('chart-scatter'), {
-    type: 'scatter',
-    data: { datasets },
+  // Top-K composition
+  const sorted = filtered.slice().sort((a, b) => b[4] - a[4]).slice(0, topK);
+  const topN = {};
+  for (const v of VENUES) topN[v] = 0;
+  for (const r of sorted) if (topN[r[0]] !== undefined) topN[r[0]]++;
+  return { sum, hidx, topN, topK: sorted.length };
+}
+
+function _venueBar(canvasId, chartVar, data, yTitle) {
+  // data: object venue -> value
+  const labels = VENUES.slice().sort((a, b) => (data[b] || 0) - (data[a] || 0));
+  const vals = labels.map(v => data[v] || 0);
+  const colors = labels.map(v => VENUE_COLOR[v]);
+  const cfg = {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ data: vals, backgroundColor: colors, borderColor: colors, borderWidth: 0 }],
+    },
     options: {
       responsive: true, maintainAspectRatio: false, animation: false,
+      indexAxis: 'y',
       plugins: {
+        legend: { display: false },
         tooltip: {
-          callbacks: {
-            label: (ctx) => {
-              const d = ctx.raw;
-              const a = d.a ? (d.a.length > 60 ? d.a.slice(0, 60) + '...' : d.a) : '';
-              return [`${ctx.dataset.label} ${d.x} · ${d.y.toLocaleString()} cites`, d.t.slice(0, 80), a];
-            }
-          }
-        }
+          callbacks: { label: (ctx) => ' ' + Number(ctx.raw).toLocaleString() },
+        },
       },
       scales: {
-        x: { title: { display: true, text: 'Year' }, ticks: { stepSize: 1, callback: (v) => String(Math.round(v)) } },
-        y: { title: { display: true, text: 'Cited by count' }, beginAtZero: true }
-      }
-    }
-  });
+        x: { title: { display: true, text: yTitle }, beginAtZero: true, ticks: { callback: (v) => v.toLocaleString() } },
+        y: { ticks: { autoSkip: false } },
+      },
+    },
+  };
+  return cfg;
+}
+
+function renderVenueComparison() {
+  const topK = parseInt(document.getElementById('topk-select').value) || 100;
+  const stats = venueStats(state.filtered, topK);
+
+  if (vtotChart) vtotChart.destroy();
+  vtotChart = new Chart(document.getElementById('chart-vtot'),
+    _venueBar('chart-vtot', 'vtot', stats.sum, 'Σ citations'));
+
+  if (vtopkChart) vtopkChart.destroy();
+  vtopkChart = new Chart(document.getElementById('chart-vtopk'),
+    _venueBar('chart-vtopk', 'vtopk', stats.topN, `# in top ${stats.topK}`));
+
+  if (vhChart) vhChart.destroy();
+  vhChart = new Chart(document.getElementById('chart-vh'),
+    _venueBar('chart-vh', 'vh', stats.hidx, 'h-index'));
 }
 
 function venueClass(v) {
@@ -883,7 +947,7 @@ function rerenderAll() {
   filterAndSort();
   renderStats();
   renderBarChart();
-  renderScatter();
+  renderVenueComparison();
   renderCitationStats();
   renderTable();
   // Word cloud layout is the slowest — debounce so rapid filter clicks don't relayout repeatedly.
@@ -955,6 +1019,9 @@ _aChangeIds.forEach(id =>
     if (e.key === 'Enter') applyFilters();
   });
 });
+
+// Top-K selector — only affects chart 2 so just re-render the venue block
+document.getElementById('topk-select').addEventListener('change', renderVenueComparison);
 
 // --- Compare mode (filter B) ---
 function applyFiltersB() {
