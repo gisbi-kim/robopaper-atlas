@@ -21,7 +21,7 @@ VENUES_CFG = [
     {'label': 'SoRo',    'id': 'soro',   'color': '#e377c2', 'since': 2014},
     {'label': 'T-Mech',  'id': 'tmech',  'color': '#bcbd22', 'since': 1996},
     {'label': 'T-FR',    'id': 'tfr',    'color': '#7f7f7f', 'since': 2024},
-    {'label': 'RA-P',    'id': 'rap',    'color': '#d4a017', 'since': 2024},
+    {'label': 'RA-P',    'id': 'rap',    'color': '#d4a017', 'since': 2025},
 ]
 
 # Dedup priority: when one paper is cross-listed (RA-L→ICRA, etc.) we keep

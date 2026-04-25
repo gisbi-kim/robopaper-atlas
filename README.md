@@ -20,7 +20,7 @@ DBLP + OpenAlex로 82,000+ 편의 제목·저자·초록·인용수·키워드�
 | Sci-Rob | DBLP `journals/scirobotics` | 2016 | ~890 |
 | SoRo | OpenAlex ISSN `2169-5172` | 2014 | ~820 |
 | T-FR | OpenAlex ISSN `2997-1101` | 2024 | ~85 |
-| RA-P | OpenAlex ISSN `2995-4304` | 2024 | ~20 |
+| RA-P | OpenAlex ISSN `2995-4304` | 2025 | ~20 |
 | **합계** | | 1984 ~ 2026 | **~82,900** |
 
 DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 병합 (예: RA-L 논문이 ICRA에서 발표된 경우 1개 엔트리).
