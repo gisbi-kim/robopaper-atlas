@@ -98,6 +98,8 @@ python _enrich_communities.py     # Leiden + TF-IDF → community 필드 주입
 | Sci-Rob | DBLP `journals/scirobotics` | 2016 |
 | SoRo | OpenAlex ISSN `2169-5172` | 2014 |
 | T-Mech | OpenAlex ISSN `1083-4435` | 1996 |
+| T-FR | OpenAlex ISSN `2997-1101` | 2024 |
+| RA-P | OpenAlex ISSN `2995-4304` | 2024 |
 
 ## 새 venue 추가하려면
 

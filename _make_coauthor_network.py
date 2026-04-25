@@ -129,6 +129,8 @@ _VENUE_ORDER = [
     'SCI-ROB', 'SCIROB', 'SCI. ROB.', 'SCIENCE ROBOTICS',
     'SORO', 'SOFT ROBOTICS',
     'T-MECH', 'TMECH', 'IEEE/ASME TMECH',
+    'T-FR', 'TFR', 'IEEE TRANSACTIONS ON FIELD ROBOTICS',
+    'RA-P', 'RAP', 'IEEE ROBOTICS AND AUTOMATION PRACTICE',
 ]
 def _venue_sort_key(v):
     u = v.upper()
