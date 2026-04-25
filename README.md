@@ -57,11 +57,11 @@ OpenAlex 인용수는 시간이 지나면서 바뀝니다. 모든 HTML 상단 �
 
 ## 업데이트 (재조사)
 
-최신 인용수로 갱신하거나 새 연도 논문을 추가하고 싶으면 **[REFRESH.md](REFRESH.md)** 의 한 줄 프롬프트를 Claude에게 주세요. 아래 3가지를 자동 처리합니다:
+최신 인용수로 갱신하거나 새 연도 논문을 추가하고 싶으면 **[REFRESH.md](REFRESH.md)** 의 한 줄 프롬프트를 Claude에게 주세요. 다음 3 단계를 순서대로 진행합니다:
 
-1. **새 연도 확인** — DBLP에 새 데이터 있으면 사용자에게 물어보고 추가
-2. **인용수 갱신** — 최근 7년만 (빠름, ~5분) 또는 전체 (~1~3시간) 선택
-3. **산출물 재생성** — xlsx / csv / HTML 3개 모두 갱신
+1. [`REFRESH_step1_데이터업데이트.md`](REFRESH_step1_데이터업데이트.md) — DBLP 새 연도 + OpenAlex 인용수 + xlsx/HTML 재생성
+2. [`REFRESH_step2_공저자네트워크.md`](REFRESH_step2_공저자네트워크.md) — 공저자 그래프 + Leiden 커뮤니티 재계산
+3. [`REFRESH_step3_랜딩페이지.md`](REFRESH_step3_랜딩페이지.md) — `index.html`·`README.md` 수기 통계 동기화
 
 수동으로 돌리려면:
 ```bash

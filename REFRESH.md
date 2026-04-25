@@ -1,109 +1,78 @@
-# 인용수·데이터 재조사 가이드
+# 전체 리프레시 가이드 (top entry)
 
-OpenAlex의 인용수는 시간이 지나며 바뀌고, DBLP에도 새 연도 데이터가 추가됩니다.
-한번씩 이 파일을 Claude에게 주고 아래 프롬프트를 실행시키면 전체가 최신화됩니다.
+데이터 → 네트워크 → 랜딩까지 **3단계**를 순서대로 돌리는 오케스트레이터 문서.
+
+각 단계는 별도 가이드(`REFRESH_step{N}_*.md`)로 분리되어 있으며 단독 실행도 가능하지만,
+보통은 본 문서 한 줄 프롬프트로 시작해서 Claude가 셋을 차례로 진행합니다.
 
 ---
 
 ## 👉 Claude에게 줄 프롬프트 (아래 전체 복사)
 
 ```
-REFRESH.md 보고 인용수·데이터 재조사 해줘.
+REFRESH.md 보고 전체 리프레시 (데이터 → 네트워크 → 랜딩) 순서대로 진행해줘.
 ```
 
 ---
 
 ## Claude가 할 일 (체크리스트)
 
-### 1) 새 연도 확인 & 사용자에게 질문
+### Step 1 · 데이터 업데이트 — [REFRESH_step1_데이터업데이트.md](REFRESH_step1_데이터업데이트.md)
 
-- `step1_dblp.py`의 `venues_config`에서 각 venue의 현재 `range` 확인
-- 이번 년도(시스템의 today 기준) 이후 연도가 `range`에 없으면 사용자에게:
-  > "현재 수집 범위는 ~XXXX년까지입니다. 새 연도(YYYY)도 추가할까요?"
-- 사용자 답변에 따라:
-  - **예**: `venues_config`의 `range` 종료값을 확장 → `python step1_dblp.py` 실행 (캐시된 연도는 스킵, 새 연도만 수집)
-  - **아니오**: 이 단계 건너뛰기
+DBLP 새 연도 수집 + OpenAlex 인용수 갱신 + xlsx / explorer / by_year / dataset_preview / word_book 재생성.
 
-### 2) 인용수 갱신 방식 사용자에게 질문
+선행 질문: "새 연도 추가할지" / "인용수 갱신 범위(최근 7년 vs 전체)". 사용자 답에 따라 분기.
 
-> "인용수 갱신 범위를 선택해주세요:
->   - (1) **최근 7년** (2019~현재) — 약 5분, 주요 변동 논문 커버
->   - (2) **전체** — 약 1~3시간, 모든 71k 논문 다시 조회"
+산출물 변화:
+- `all_dblp.json`, `all_enriched.json`, `enriched_checkpoint_*.json`
+- `robopaper_atlas_all.xlsx`, `by_venue/*.xlsx`
+- `explorer.html`, `by_year.html`, `dataset_preview.html`
+- `word_book.{json,csv}`
 
-- **(1) 최근 7년**: `python refresh_recent.py 2019` 실행 → checkpoint에서 해당 연도 DOI 제거 → `python step2_openalex.py` 실행
-- **(2) 전체**: `enriched_checkpoint.json` 삭제 → `python step2_openalex.py` 실행
+### Step 2 · 공저자 네트워크 — [REFRESH_step2_공저자네트워크.md](REFRESH_step2_공저자네트워크.md)
 
-step2는 체크포인트 없는 항목만 조회하므로 위 방식으로 자동 선택적 refresh가 됨.
+`_make_coauthor_network.py` → `_enrich_communities.py` 순서로 실행.
+Step 1 의 `all_enriched.json` 이 입력이므로 **반드시 Step 1 다음에**.
 
-### 3) 산출물 재생성 (전부 돌림)
+산출물 변화:
+- `coauthor_network.json` (HTML은 정적 템플릿이라 보통 unchanged)
+
+### Step 3 · 랜딩 페이지·README 동기화 — [REFRESH_step3_랜딩페이지.md](REFRESH_step3_랜딩페이지.md)
+
+`index.html` 과 `README.md` 의 수기 통계(편수 / 연도 범위 / coverage / 네트워크 노드·엣지 수
+/ xlsx 크기 등)를 새 산출물의 실제 값과 맞춤. Step 1·2 가 끝난 후에 진행.
+
+산출물 변화:
+- `index.html`, `README.md`
+
+### 마무리 · 커밋·푸시 (한 큐로 묶어도 됨)
+
+각 step 가이드마다 별도 커밋 예시가 있지만, 한 번에 푸시할 거면 마지막에 일괄로:
 
 ```bash
-python step3_excel.py             # robopaper_atlas_all.xlsx
-python _make_word_book.py         # word_book.json / word_book.csv
-python _make_all_html.py          # explorer.html
-python _make_by_year_html.py      # by_year.html
-python _make_xlsx_preview.py      # dataset_preview.html
-python _make_coauthor_network.py  # coauthor_network.{html,json}
-python _enrich_communities.py     # Leiden + TF-IDF → community 필드 주입
+git add -u && git add dblp_raw/ openalex_raw/ REFRESH*.md
+git commit -m "Refresh: data → network → landing (<오늘 날짜>)"
+git push
 ```
 
-> `_enrich_communities.py`는 `_make_coauthor_network.py`가 만든
-> `coauthor_network.json`을 in-place로 수정합니다. 반드시 네트워크 생성 **다음**에
-> 실행하세요. 필요 패키지: `networkx · leidenalg · igraph · scikit-learn`.
-
-### 4) 검증
-
-- 재생성된 HTML 상단의 "Citations as of YYYY-MM-DD"가 오늘 날짜인지
-- xlsx `summary` 시트 첫 행 "인용수 기준일"도 오늘 날짜인지
-- 엑셀이 열려있어 저장 실패했다면 닫게 해달라고 요청
-
-### 5) Landing 페이지·README 통계 동기화
-
-`index.html` 과 `README.md` 는 자동 생성이 아니라 **수기 관리**입니다 — 총 편수 / 연도 범위 /
-abstract coverage / xlsx 크기 등 통계가 stale 해지므로 **[REFRESH_INDEX.md](REFRESH_INDEX.md)** 절차로
-이어서 갱신하세요. (네트워크도 다시 빌드한 경우 `REFRESH_CONNECTIONS.md` 도 함께.)
+> `git add -u` 는 추적 중인 변경만 잡으니 새 raw 캐시(`dblp_raw/*_YYYY.json` 등)와 신규 문서는
+> 명시적으로 추가. 민감 파일(.env, credentials) 없는 디렉터리만 골라 추가하세요.
 
 ---
 
-## 파일 구조
+## 단계 간 의존성
 
-| 파일 | 역할 |
-|---|---|
-| `step1_dblp.py` | DBLP에서 venue별 연도별 메타데이터 수집 (캐시: `dblp_raw/`) |
-| `step2_openalex.py` | OpenAlex로 초록·인용수·concepts 보강 (체크포인트: `enriched_checkpoint.json`) |
-| `step1_extra_openalex.py` | DBLP 미색인 저널(SoRo/TMech)을 OpenAlex ISSN으로 수집 |
-| `step3_excel.py` | 정제·dedup 후 xlsx 생성 |
-| `_make_all_html.py` | 전체 탐색기 HTML |
-| `_make_by_year_html.py` | 연도별 편수 HTML |
-| `_make_xlsx_preview.py` | xlsx 시트 미리보기 HTML |
-| `_make_coauthor_network.py` | 공저자 네트워크 HTML + JSON |
-| `_enrich_communities.py` | 네트워크 JSON에 Leiden 커뮤니티·토픽 라벨 주입 |
-| `refresh_recent.py` | 체크포인트에서 특정 연도 이후 항목 제거 (선택적 refresh용) |
-
-## 수집 venue 현황
-
-| venue | Source | 시작 연도 |
-|---|---|---|
-| ICRA | DBLP `conf/icra` | 1984 |
-| IROS | DBLP `conf/iros` | 1988 |
-| RA-L | DBLP `journals/ral` | 2016 |
-| T-RO | DBLP `journals/trob` | 2004 |
-| RSS  | DBLP `conf/rss` | 2005 |
-| IJRR | DBLP `journals/ijrr` | 1982 |
-| Sci-Rob | DBLP `journals/scirobotics` | 2016 |
-| SoRo | OpenAlex ISSN `2169-5172` | 2014 |
-| T-Mech | OpenAlex ISSN `1083-4435` | 1996 |
-
-## 새 venue 추가하려면
-
-**DBLP에 색인된 경우** — `step1_dblp.py`의 `CORE_VENUES` 또는 `OPTIONAL_VENUES`에 한 줄 추가:
-```python
-('key', 'dblp/stream', 'LABEL', range(start_year, 2027)),
+```
+Step 1 (데이터)  →  Step 2 (네트워크)
+       ↘                  ↘
+        →→→→→→→→→→  Step 3 (랜딩)
 ```
 
-**DBLP에 없는 저널** — `step1_extra_openalex.py`의 `EXTRA_VENUES`에 한 줄 추가:
-```python
-('key', 'LABEL', 'ISSN-NUMBER', range(start_year, 2027)),
-```
+- Step 2 는 Step 1 의 `all_enriched.json` 을 입력
+- Step 3 는 Step 1 의 `step3_excel.py` 출력 + Step 2 의 `coauthor_network.json` 메타를 모두 참조
+- 부분 실행도 가능: 네트워크만 다시 빌드하면 Step 2 → Step 3 (편수는 그대로지만 노드/엣지 카피 갱신)
 
-그 후 step1 → step2 → step3 → HTML 생성 순서로 실행. 각 `_make_*.py` 상단의 `VENUES_CFG` 리스트에 `{'label', 'id', 'color'}` 한 줄 추가하면 모든 카드/차트/필터에 자동 반영.
+## 관련 파일
+- [`REFRESH_step1_데이터업데이트.md`](./REFRESH_step1_데이터업데이트.md)
+- [`REFRESH_step2_공저자네트워크.md`](./REFRESH_step2_공저자네트워크.md)
+- [`REFRESH_step3_랜딩페이지.md`](./REFRESH_step3_랜딩페이지.md)

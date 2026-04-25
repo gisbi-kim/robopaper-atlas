@@ -1,15 +1,19 @@
-# Co-author Network 업데이트 가이드
+# Step 2 — Co-author Network 업데이트 가이드
+
+전체 리프레시 3단계 중 두 번째 단계 (공저자 그래프 + Leiden 커뮤니티 재계산).
 
 `coauthor_network.html` 의 노드(저자) · 엣지(공저 관계) 는 매년 논문이 쌓이면서
 새 노드가 등장하고 기존 노드의 연결이 확장됩니다. 이 문서를 Claude에게 주면
 최신 데이터로 재계산해줍니다.
+
+> 데이터/네트워크/랜딩까지 한 큐로 가려면 **[REFRESH.md](REFRESH.md)** 한 줄로 시작.
 
 ---
 
 ## 👉 Claude에게 줄 프롬프트
 
 ```
-REFRESH_CONNECTIONS.md 보고 co-author network 업데이트 해줘.
+REFRESH_step2_공저자네트워크.md 보고 co-author network 업데이트 해줘.
 ```
 
 ---
@@ -17,7 +21,7 @@ REFRESH_CONNECTIONS.md 보고 co-author network 업데이트 해줘.
 ## Claude가 할 일 (체크리스트)
 
 ### 1) 본체 데이터가 최신인지 확인
-`all_enriched.json` 의 수정일이 오래됐으면 먼저 **[REFRESH.md](REFRESH.md)** 절차로 메인
+`all_enriched.json` 의 수정일이 오래됐으면 먼저 **[REFRESH_step1_데이터업데이트.md](REFRESH_step1_데이터업데이트.md)** 절차로 메인
 파이프라인을 돌려야 합니다. (새 연도 / 인용수 갱신 / dedup)
 
 `coauthor_network.json` 은 `all_enriched.json` 을 입력으로 쓰므로 그쪽이 먼저 최신이어야 합니다.
@@ -97,5 +101,6 @@ git push
 
 ## 관련 파일
 - [`_make_coauthor_network.py`](./_make_coauthor_network.py) — 이 네트워크 생성기
-- [`REFRESH.md`](./REFRESH.md) — 메인 데이터(`all_enriched.json`) 업데이트 가이드
-- [`REFRESH_INDEX.md`](./REFRESH_INDEX.md) — 네트워크 노드/엣지 수가 바뀌면 `index.html`·`README.md` 의 "24k+ / 70k+" 같은 카피도 같이 갱신
+- [`REFRESH.md`](./REFRESH.md) — 3단계 전체 흐름을 관장하는 top 문서
+- [`REFRESH_step1_데이터업데이트.md`](./REFRESH_step1_데이터업데이트.md) — 메인 데이터(`all_enriched.json`) 업데이트 가이드
+- [`REFRESH_step3_랜딩페이지.md`](./REFRESH_step3_랜딩페이지.md) — 네트워크 노드/엣지 수가 바뀌면 `index.html`·`README.md` 의 "24k+ / 70k+" 같은 카피도 같이 갱신

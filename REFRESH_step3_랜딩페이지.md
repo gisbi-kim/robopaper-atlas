@@ -1,18 +1,24 @@
-# Landing 페이지 (index.html · README.md) 업데이트 가이드
+# Step 3 — Landing 페이지 (index.html · README.md) 업데이트 가이드
+
+전체 리프레시 3단계 중 마지막 단계 (수기 관리 파일의 통계를 새 데이터로 동기화).
 
 `explorer.html` · `by_year.html` · `coauthor_network.html` 은 `_make_*.py`가 자동 생성하지만,
-**`index.html` 과 `README.md` 는 수기 관리** 파일입니다. 데이터 파이프라인(REFRESH.md /
-REFRESH_CONNECTIONS.md)을 돌린 후, 화면에 표시되는 통계가 stale 해지므로 별도 갱신 필요.
+**`index.html` 과 `README.md` 는 수기 관리** 파일입니다. 데이터 파이프라인
+([REFRESH_step1_데이터업데이트.md](REFRESH_step1_데이터업데이트.md) /
+[REFRESH_step2_공저자네트워크.md](REFRESH_step2_공저자네트워크.md))을 돌린 후, 화면에 표시되는 통계가
+stale 해지므로 별도 갱신 필요.
+
+> 데이터/네트워크/랜딩까지 한 큐로 가려면 **[REFRESH.md](REFRESH.md)** 한 줄로 시작.
 
 ---
 
 ## 👉 Claude에게 줄 프롬프트
 
 ```
-REFRESH_INDEX.md 보고 landing/README 통계 업데이트 해줘.
+REFRESH_step3_랜딩페이지.md 보고 landing/README 통계 업데이트 해줘.
 ```
 
-전제: REFRESH.md 와 REFRESH_CONNECTIONS.md 가 이미 실행되어 산출물이 최신이어야 합니다.
+전제: Step 1·2 가 이미 실행되어 산출물이 최신이어야 합니다.
 
 ---
 
@@ -83,7 +89,7 @@ print('nodes:', m['nodes'], 'edges:', m['edges'], 'built:', m['built_at'])
 ### 5) 커밋·푸시
 
 ```bash
-git add index.html README.md REFRESH.md REFRESH_INDEX.md \
+git add index.html README.md \
         step1_dblp.py step1_extra_openalex.py
 git commit -m "Refresh landing & README stats (<N> papers, <Y> range)"
 git push
@@ -104,6 +110,7 @@ git push
 | **`README.md`** | **수기** | **본 문서** |
 
 ## 관련 파일
-- [`REFRESH.md`](./REFRESH.md) — 메인 데이터 파이프라인 (raw → enriched → xlsx + 자동 HTML)
-- [`REFRESH_CONNECTIONS.md`](./REFRESH_CONNECTIONS.md) — 공저자 네트워크 재계산
-- 본 문서 — 두 파이프라인 후 landing 페이지·README 의 수기 통계 동기화
+- [`REFRESH.md`](./REFRESH.md) — 3단계 전체 흐름을 관장하는 top 문서
+- [`REFRESH_step1_데이터업데이트.md`](./REFRESH_step1_데이터업데이트.md) — 메인 데이터 파이프라인 (raw → enriched → xlsx + 자동 HTML)
+- [`REFRESH_step2_공저자네트워크.md`](./REFRESH_step2_공저자네트워크.md) — 공저자 네트워크 재계산
+- 본 문서 — 위 두 단계 후 landing 페이지·README 의 수기 통계 동기화
