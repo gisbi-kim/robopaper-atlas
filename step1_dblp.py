@@ -97,16 +97,16 @@ def fetch_dblp_year(stream, venue_label, year):
 CORE_VENUES = [
     ('icra', 'conf/icra',     'ICRA', range(1984, 2026)),
     ('iros', 'conf/iros',     'IROS', range(1988, 2026)),
-    ('ral',  'journals/ral',  'RA-L', range(2016, 2026)),  # RA-L 창간 2016
-    ('tro',  'journals/trob', 'T-RO', range(2004, 2026)),  # T-RO: 2004~ (이전 T-RA는 제외)
+    ('ral',  'journals/ral',  'RA-L', range(2016, 2027)),  # RA-L 창간 2016
+    ('tro',  'journals/trob', 'T-RO', range(2004, 2027)),  # T-RO: 2004~ (이전 T-RA는 제외)
     ('rss',  'conf/rss',      'RSS',  range(2005, 2026)),  # Robotics: Science and Systems
-    ('ijrr', 'journals/ijrr', 'IJRR', range(1982, 2026)),  # Int. J. of Robotics Research (창간 1982)
+    ('ijrr', 'journals/ijrr', 'IJRR', range(1982, 2027)),  # Int. J. of Robotics Research (창간 1982)
 ]
 
 # DBLP에 색인된 optional venues. (Soft Robotics, IEEE TMech은 DBLP 미색인 →
 # step1_extra_openalex.py에서 OpenAlex로 수집)
 OPTIONAL_VENUES = [
-    ('scirob', 'journals/scirobotics', 'Sci-Rob', range(2016, 2026)),  # Science Robotics 창간 2016
+    ('scirob', 'journals/scirobotics', 'Sci-Rob', range(2016, 2027)),  # Science Robotics 창간 2016
 ]
 
 

@@ -1,7 +1,7 @@
 # RoboPaper Atlas
 
 **40여 년치 로봇공학 논문(ICRA · IROS · RA-L · T-RO · RSS · IJRR · Sci-Rob · SoRo · T-Mech)을 한 곳에 모은 인터랙티브 아틀라스.**
-DBLP + OpenAlex로 80,000+ 편의 제목·저자·초록·인용수·키워드를 긁어와서
+DBLP + OpenAlex로 82,000+ 편의 제목·저자·초록·인용수·키워드를 긁어와서
 중복 제거하고, 바로 탐색·정렬·필터할 수 있는 웹 페이지와 엑셀로 정리합니다.
 
 🔗 **Live demo**: https://gisbi-kim.github.io/robopaper-atlas/
@@ -12,21 +12,21 @@ DBLP + OpenAlex로 80,000+ 편의 제목·저자·초록·인용수·키워드�
 |---|---|---:|---:|
 | ICRA | DBLP `conf/icra` | 1984 | ~30,600 |
 | IROS | DBLP `conf/iros` | 1988 | ~26,600 |
-| RA-L | DBLP `journals/ral` | 2016 | ~9,400 |
-| T-Mech | OpenAlex ISSN `1083-4435` | 1996 | ~5,950 |
-| T-RO | DBLP `journals/trob` | 2004 | ~3,350 |
-| IJRR | DBLP `journals/ijrr` | 1982 | ~2,650 |
-| RSS | DBLP `conf/rss` | 2005 | ~1,320 |
-| Sci-Rob | DBLP `journals/scirobotics` | 2016 | ~860 |
-| SoRo | OpenAlex ISSN `2169-5172` | 2014 | ~780 |
-| **합계** | | 1982 ~ 2025 | **~81,500** |
+| RA-L | DBLP `journals/ral` | 2016 | ~10,200 |
+| T-Mech | OpenAlex ISSN `1083-4435` | 1996 | ~6,100 |
+| T-RO | DBLP `journals/trob` | 2004 | ~3,400 |
+| IJRR | DBLP `journals/ijrr` | 1982 | ~2,700 |
+| RSS | DBLP `conf/rss` | 2005 | ~1,500 |
+| Sci-Rob | DBLP `journals/scirobotics` | 2016 | ~890 |
+| SoRo | OpenAlex ISSN `2169-5172` | 2014 | ~820 |
+| **합계** | | 1984 ~ 2026 | **~82,800** |
 
 DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 병합 (예: RA-L 논문이 ICRA에서 발표된 경우 1개 엔트리).
 
 ## 무엇을 할 수 있나
 
 ### 🔍 [Full Explorer](explorer.html)
-80,000+편 전체 탐색기. 한 페이지에서:
+82,000+편 전체 탐색기. 한 페이지에서:
 - **연도 범위** / **venue** / **최소 인용수** / **제목·저자 검색** 복합 필터
 - 모든 컬럼(venue, year, cites 등) **클릭 정렬**
 - 페이지당 50/100/200/500 선택 가능한 페이지네이션
@@ -40,7 +40,7 @@ DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 �
 연도별 venue별 편수 추이. Stacked / Grouped / Line 세 가지 뷰로 토글.
 
 ### 🕸️ [Co-author Network](coauthor_network.html)
-저자 13k+, 공저 엣지 43k+ 인터랙티브 그래프.
+저자 24k+, 공저 엣지 70k+ 인터랙티브 그래프.
 
 ### 🌐 [Conference Location Globe](https://gisbi-kim.github.io/icra-iros-globe/src/icra_iros_globe.html)
 ICRA / IROS 개최지를 3D 지구본에 시각화 (별도 프로젝트).
@@ -163,7 +163,7 @@ python _make_coauthor_network.py  # coauthor_network.html — 공저자 그래�
 
 `step1_dblp.py`의 `venues_config`에 한 줄:
 ```python
-('key', 'dblp/stream', 'LABEL', range(start_year, 2026)),
+('key', 'dblp/stream', 'LABEL', range(start_year, 2027)),
 ```
 그 후 step1 → step2 → step3 순서로 실행. 각 `_make_*.py` 생성기의 `VENUES` 리스트·색·필터 체크박스에도 LABEL 추가 필요.
 

@@ -98,3 +98,4 @@ git push
 ## 관련 파일
 - [`_make_coauthor_network.py`](./_make_coauthor_network.py) — 이 네트워크 생성기
 - [`REFRESH.md`](./REFRESH.md) — 메인 데이터(`all_enriched.json`) 업데이트 가이드
+- [`REFRESH_INDEX.md`](./REFRESH_INDEX.md) — 네트워크 노드/엣지 수가 바뀌면 `index.html`·`README.md` 의 "24k+ / 70k+" 같은 카피도 같이 갱신

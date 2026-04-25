@@ -5,6 +5,8 @@ download the 43 MB file.
 Runs after step3_excel.py. No new deps; just pandas + openpyxl (already in
 the pipeline).
 """
+from __future__ import annotations
+
 import html
 import os
 from datetime import datetime

@@ -31,8 +31,8 @@ OPENALEX_WORKS = "https://api.openalex.org/works"
 
 # (cache_key, venue_label, issn, year_range)
 EXTRA_VENUES = [
-    ('soro',  'SoRo',   '2169-5172', range(2014, 2026)),  # Soft Robotics (Liebert) 창간 2014
-    ('tmech', 'T-Mech', '1083-4435', range(1996, 2026)),  # IEEE/ASME TMech 창간 1996
+    ('soro',  'SoRo',   '2169-5172', range(2014, 2027)),  # Soft Robotics (Liebert) 창간 2014
+    ('tmech', 'T-Mech', '1083-4435', range(1996, 2027)),  # IEEE/ASME TMech 창간 1996
 ]
 
 

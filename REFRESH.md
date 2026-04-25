@@ -57,6 +57,12 @@ python _enrich_communities.py     # Leiden + TF-IDF → community 필드 주입
 - xlsx `summary` 시트 첫 행 "인용수 기준일"도 오늘 날짜인지
 - 엑셀이 열려있어 저장 실패했다면 닫게 해달라고 요청
 
+### 5) Landing 페이지·README 통계 동기화
+
+`index.html` 과 `README.md` 는 자동 생성이 아니라 **수기 관리**입니다 — 총 편수 / 연도 범위 /
+abstract coverage / xlsx 크기 등 통계가 stale 해지므로 **[REFRESH_INDEX.md](REFRESH_INDEX.md)** 절차로
+이어서 갱신하세요. (네트워크도 다시 빌드한 경우 `REFRESH_CONNECTIONS.md` 도 함께.)
+
 ---
 
 ## 파일 구조
@@ -92,12 +98,12 @@ python _enrich_communities.py     # Leiden + TF-IDF → community 필드 주입
 
 **DBLP에 색인된 경우** — `step1_dblp.py`의 `CORE_VENUES` 또는 `OPTIONAL_VENUES`에 한 줄 추가:
 ```python
-('key', 'dblp/stream', 'LABEL', range(start_year, 2026)),
+('key', 'dblp/stream', 'LABEL', range(start_year, 2027)),
 ```
 
 **DBLP에 없는 저널** — `step1_extra_openalex.py`의 `EXTRA_VENUES`에 한 줄 추가:
 ```python
-('key', 'LABEL', 'ISSN-NUMBER', range(start_year, 2026)),
+('key', 'LABEL', 'ISSN-NUMBER', range(start_year, 2027)),
 ```
 
 그 후 step1 → step2 → step3 → HTML 생성 순서로 실행. 각 `_make_*.py` 상단의 `VENUES_CFG` 리스트에 `{'label', 'id', 'color'}` 한 줄 추가하면 모든 카드/차트/필터에 자동 반영.

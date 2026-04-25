@@ -8,6 +8,8 @@ co-author network, and show up as nonsense in top-cited lists.
 `is_front_matter(title)` returns True for these entries. Used by the views
 that read `all_enriched.json` (step3_excel, _make_all_html, _make_coauthor_network).
 """
+from __future__ import annotations
+
 import re
 
 # Whole title exactly one of these (case-insensitive, trailing period stripped).
