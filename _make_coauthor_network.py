@@ -16,7 +16,7 @@ import re
 from datetime import datetime, timezone
 from itertools import combinations
 
-from _clean import is_front_matter
+from _clean import is_front_matter, is_translated_dup
 
 INPUT = 'all_enriched.json'
 OUT_JSON = 'coauthor_network.json'
@@ -44,10 +44,12 @@ for p in papers:
     if not a_str:
         continue
     raw_title = htmllib.unescape((p.get('title') or '').strip()).rstrip('.').strip()
-    # Skip journal front-matter (Editorial, Table of Contents, Publication Info, ...).
-    # OpenAlex attributes those to editors, which otherwise inflates hubs and
-    # pollutes the per-author top-cited lists.
-    if is_front_matter(raw_title):
+    # Skip journal front-matter (Editorial, Table of Contents, Publication Info, ...),
+    # non-English translation duplicates (e.g. '【Powered by NICT】' Japanese copies),
+    # and DOI-less proceedings volume titles. All three pollute author lists.
+    if is_front_matter(raw_title) or is_translated_dup(raw_title):
+        continue
+    if not (p.get('doi') or '').strip():
         continue
     authors = [clean_author(a) for a in a_str.split(';')]
     authors = [a for a in authors if a]

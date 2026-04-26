@@ -21,7 +21,12 @@ REFRESH.md 보고 전체 리프레시 (데이터 → 네트워크 → 랜딩) �
 
 DBLP 새 연도 수집 + OpenAlex 인용수 갱신 + xlsx / explorer / by_year / dataset_preview / word_book 재생성.
 
-선행 질문: "새 연도 추가할지" / "인용수 갱신 범위(최근 7년 vs 전체)". 사용자 답에 따라 분기.
+⚠️ **반드시 사용자에게 물어볼 것**: "새 연도 추가할지" + "인용수 refresh 범위 (건너뛰기 / 최근 7년 / 전체)".
+풀 refresh는 OpenAlex 호출 ~1시간이라 비용 큼 — 기본 정책은 **3개월에 한 번**, 평소엔 신규 DOI만
+캐시 기반으로 fetch. 사용자 응답을 받기 전엔 절대 풀 refresh를 임의 실행하지 말 것.
+
+자세한 분기와 데이터 cleanup invariant(front-matter / CJK 번역본 / DOI-less / 저널-학회 dedup
+경계 / 페이지 cap)는 step1 문서 참조. 새 venue를 추가해도 모든 invariant가 자동으로 적용됨.
 
 산출물 변화:
 - `all_dblp.json`, `all_enriched.json`, `enriched_checkpoint_*.json`

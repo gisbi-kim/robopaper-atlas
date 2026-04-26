@@ -15,7 +15,7 @@ import re
 from datetime import datetime
 import pandas as pd
 
-from _clean import is_front_matter
+from _clean import is_front_matter, is_translated_dup
 
 INPUT = "all_enriched.json"
 
@@ -66,6 +66,21 @@ print(f"제외된 proceedings 표제 행: {before - len(df)}개")
 before = len(df)
 df = df[~df['title'].map(is_front_matter)].reset_index(drop=True)
 print(f"제외된 front-matter 행: {before - len(df)}개")
+
+# 2c) 비영어 번역본 중복 제거 (OpenAlex가 같은 논문의 일본어 번역 레코드를 별개 work로
+#     기록 — DOI 비어있고 제목에 CJK 문자나 '【Powered by NICT】' 포함. T-Mech / T-ASE
+#     ISSN 필터에 같이 잡혀들어옴).
+before = len(df)
+df = df[~df['title'].map(is_translated_dup)].reset_index(drop=True)
+print(f"제외된 비영어 번역본 행: {before - len(df)}개")
+
+# 2d) DOI 없는 행 제거 — 거의 다 학회 proceedings volume 표제
+#     ("Robotics: Science and Systems XX, Delft, The Netherlands, ...") 같은
+#     비논문 엔트리. 모던 robotics venue에서 정상 논문은 100% DOI 있음.
+before = len(df)
+df['doi'] = df['doi'].fillna('').astype(str).str.strip()
+df = df[df['doi'] != ''].reset_index(drop=True)
+print(f"제외된 DOI-less 행: {before - len(df)}개")
 
 # 3) DOI 기반 중복 제거 (같은 DOI가 RA-L·ICRA·IROS에 중복 등장하면 RA-L 우선으로 남김)
 df['doi'] = df['doi'].fillna('').astype(str).str.strip().str.lower()

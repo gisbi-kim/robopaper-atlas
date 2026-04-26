@@ -6,7 +6,7 @@ import re
 from datetime import datetime
 import pandas as pd
 
-from _clean import is_front_matter
+from _clean import is_front_matter, is_translated_dup
 
 # Single source of truth for venues — priority order = display order.
 # Adding a venue: append a dict here; HTML/JS sections regenerate automatically.
@@ -81,14 +81,20 @@ def _page_count(p):
     if _pg_single.match(s):
         return 1
     return 0
-# Sanity-clip: anything outside 2..50 is bogus (early-access "1-1" placeholder
-# or DBLP proceedings-position artifacts like "1827-18533" that span many papers).
-# Cap at 50 — robotics survey papers rarely exceed that; longer values are
-# almost always a data-quality issue, not a real page span.
-def _clean_page_count(p):
+# Sanity-clip per venue. Default cap is 50 pages — robotics conf / letter
+# papers are template-fixed at 6–8 pages, so anything longer is almost always
+# a DBLP proceedings-span artifact. Long-form journals (IJRR, T-RO) legitimately
+# publish 50–100 page surveys, so they get a higher cap.
+PAGE_CAP_DEFAULT = 50
+PAGE_CAP_OVERRIDES = {'IJRR': 100, 'T-RO': 100}
+def _clean_page_count(p, venue):
     n = _page_count(p)
-    return n if 2 <= n <= 50 else 0
-slim['pages_n'] = slim['pages'].fillna('').astype(str).map(_clean_page_count)
+    cap = PAGE_CAP_OVERRIDES.get(venue, PAGE_CAP_DEFAULT)
+    return n if 2 <= n <= cap else 0
+slim['pages_n'] = [
+    _clean_page_count(p, v)
+    for v, p in zip(slim['venue'], slim['pages'].fillna('').astype(str))
+]
 
 before = len(slim)
 slim = slim[slim['authors'].str.strip() != ''].reset_index(drop=True)
@@ -97,7 +103,10 @@ print(f"proceedings 표제 제외: {before - len(slim)}건")
 # 저널 front-matter 제거 (Editorial, Table of Contents, Publication Info 등)
 before = len(slim)
 slim = slim[~slim['title'].map(is_front_matter)].reset_index(drop=True)
-print(f"front-matter 제외: {before - len(slim)}건")
+slim = slim[~slim['title'].map(is_translated_dup)].reset_index(drop=True)
+# DOI 없는 행은 거의 다 학회 proceedings volume 표제 등 비논문 → drop.
+slim = slim[slim['doi'].astype(str).str.strip() != ''].reset_index(drop=True)
+print(f"front-matter / 비영어 / DOI-less 제외: {before - len(slim)}건")
 
 # DOI 기반 dedup — 우선순위는 VENUE_PRIORITY
 before = len(slim)
@@ -474,7 +483,7 @@ __FILTER_B_CHECKBOXES__  </div>
 
     <div class="vcol">
       <h3>7 · Avg # pages / paper</h3>
-      <div class="desc">Mean page length per venue. Thin black <b>±1σ pin</b> shows within-venue variance. Clipped to 2–50 pages to filter out early-access placeholders and DBLP proceedings-span artifacts.</div>
+      <div class="desc">Mean page length per venue. Thin black <b>±1σ pin</b> shows within-venue variance. Clipped to 2–50 pages (IJRR · T-RO: up to 100) to filter out early-access placeholders and DBLP proceedings-span artifacts.</div>
       <div class="canv"><canvas id="chart-vpages"></canvas></div>
     </div>
   </div>

@@ -30,14 +30,30 @@ REFRESH_step1_데이터업데이트.md 보고 인용수·데이터 재조사 해
 
 ### 2) 인용수 갱신 방식 사용자에게 질문
 
-> "인용수 갱신 범위를 선택해주세요:
->   - (1) **최근 7년** (2019~현재) — 약 5분, 주요 변동 논문 커버
->   - (2) **전체** — 약 1~3시간, 모든 71k 논문 다시 조회"
+> ⚠️ **중요**: step2는 기본적으로 체크포인트에 **없는 DOI만** 새로 받습니다. 즉
+> 신규 venue·연도를 추가하면 그 신규 DOI만 fresh citation을 받고, 기존 ~88k
+> 논문의 인용수는 캐시된 옛 값 그대로 유지됩니다. 그래서 "한번씩" 명시적으로
+> 전체/부분 refresh를 돌려야 사이트 인용수가 최신이 됩니다.
+>
+> **풀 refresh는 비용이 큽니다 (~1시간 OpenAlex 호출)**. 따라서 기본 정책은
+> "신규 venue 추가 직후엔 굳이 안 하고, **3개월에 한 번 정도** 돌리는 것"입니다.
+>
+> 따라서 사용자에게 직접 물어보세요:
+>
+> > "지난 인용수 refresh 시점이 오래 됐나요? 옵션:
+> >   - (0) **건너뛰기** — 신규 추가 DOI만 자동으로 fresh, 기존은 캐시 유지
+> >   - (1) **최근 7년** (2019~현재) — 약 5분, 주요 변동 논문 커버
+> >   - (2) **전체** — 약 30분~1시간, 모든 ~88k 논문 다시 조회 (3개월에 한 번 권장)"
+>
+> 사용자 응답을 받기 전에는 절대 (1) 또는 (2)를 임의로 실행하지 말 것.
 
-- **(1) 최근 7년**: `python refresh_recent.py 2019` 실행 → checkpoint에서 해당 연도 DOI 제거 → `python step2_openalex.py` 실행
-- **(2) 전체**: `enriched_checkpoint.json` 삭제 → `python step2_openalex.py` 실행
+- **(0) 건너뛰기**: 신규 venue/연도 추가만 했다면 step1*.py 실행 후 곧장
+  `python step2_openalex.py` 실행해도 됨 — 체크포인트에 없는 신규 DOI만 자동 fetch.
+- **(1) 최근 7년**: `python refresh_recent.py 2019` → checkpoint에서 해당 연도 DOI 제거 → `python step2_openalex.py`
+- **(2) 전체**: `rm enriched_checkpoint_*.json` → `python step2_openalex.py`
+  (백그라운드로 돌리고 진행상황은 출력 모니터링)
 
-step2는 체크포인트 없는 항목만 조회하므로 위 방식으로 자동 선택적 refresh가 됨.
+`enriched_checkpoint_*.json`의 mtime을 보면 마지막 전체 refresh가 언제였는지 추정 가능 — 3개월 이상 됐으면 사용자에게 (2) 권유.
 
 ### 3) 산출물 재생성 (전부 돌림)
 
@@ -58,8 +74,25 @@ python _enrich_communities.py     # Leiden + TF-IDF → community 필드 주입
 ### 4) 검증
 
 - 재생성된 HTML 상단의 "Citations as of YYYY-MM-DD"가 오늘 날짜인지
+  > 주의: 이 날짜는 `all_enriched.json`의 mtime이라 step2가 재실행되면 무조건 오늘
+  > 날짜가 됨. 실제 인용수 신선도는 (2)번 풀 refresh를 안 돌렸으면 캐시된 옛 값.
 - xlsx `summary` 시트 첫 행 "인용수 기준일"도 오늘 날짜인지
 - 엑셀이 열려있어 저장 실패했다면 닫게 해달라고 요청
+
+### Invariant 정리 (step3·_make_all_html에서 자동 적용 — 새 venue 추가시에도 그대로 적용됨)
+
+데이터 들어올 때 자동으로 걸러지거나 정리되는 규칙들 — 새 venue를 추가하든 인용수만 새로
+받든 항상 동일하게 적용됨. 코드 위치는 [`_clean.py`](_clean.py), [`step3_excel.py`](step3_excel.py),
+[`_make_all_html.py`](_make_all_html.py).
+
+| 규칙 | 위치 | 처리 |
+|---|---|---|
+| Front-matter 제거 | `_clean.is_front_matter` | "Editorial", "Table of Contents", "Front Cover" 등 비논문 행 drop |
+| 비영어 번역본 중복 제거 | `_clean.is_translated_dup` | OpenAlex가 같은 논문의 일본어/중국어 번역 레코드를 별개 work로 기록한 경우 (DOI 없음, 제목에 CJK 문자 또는 `【Powered by NICT】`) |
+| DOI 없는 행 drop | step3 / _make_all_html | 거의 다 학회 proceedings volume 표제 ("Robotics: Science and Systems XX, …") 같은 비논문 |
+| DOI 기반 dedup | step3 / _make_all_html | 같은 DOI가 여러 venue에 등장하면 `_DEDUP_ORDER` (저널 우선) 기준으로 primary venue 결정, `venues_all`에 다 기록 |
+| 제목+연도 dedup (within-venue only) | step3 / _make_all_html | 같은 venue 안에서 DOI만 다른 중복만 합침. **다른 venue 간(저널↔학회)에 같은-제목·같은-연도 있어도 절대 합치지 않음** — 보통 별개 publication (저널 확장본 vs 학회 원본) |
+| Page count 정리 | _make_all_html `_clean_page_count` | 2~50쪽만 정상값으로 인정. IJRR / T-RO 만 cap을 100으로 올림 (장문 survey 허용). 그 외 값(early-access "1-1", DBLP proceedings span "1827-18533" 등)은 0 → 화면에 `—` 표시 |
 
 ### 5) 다음 단계로
 

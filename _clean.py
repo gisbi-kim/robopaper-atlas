@@ -47,3 +47,21 @@ def is_front_matter(title: str | None) -> bool:
     if t in FRONT_MATTER_EXACT:
         return True
     return bool(_FRONT_MATTER_PREFIX.match(t))
+
+
+# OpenAlex sometimes returns a Japanese (or other-language) translated copy of
+# an English-only paper as a separate work — typically with an empty DOI and a
+# title ending in '【Powered by NICT】'. Our ISSN-based fetch picks both up,
+# polluting T-Mech / T-ASE with duplicate non-English titles.
+_TRANSLATED_TITLE = re.compile(
+    r'[\u3040-\u30ff\u4e00-\u9fff\uac00-\ud7af]'   # any Japanese / Chinese / Korean char
+    r'|【\s*Powered\s+by\s+NICT\s*】',              # NICT translator stamp
+    re.I,
+)
+
+
+def is_translated_dup(title: str | None) -> bool:
+    """True if title looks like a non-English translation artifact (drop these)."""
+    if not title:
+        return False
+    return bool(_TRANSLATED_TITLE.search(title))
