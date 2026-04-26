@@ -162,7 +162,9 @@ VENUE_TEXT_CSS = ''.join(
     for v in VENUES_CFG
 )
 SUMMARY_CARDS = ''.join(
-    f'  <div class="card v-{v["id"]}"><div class="num" id="c-{v["id"]}">-</div>'
+    f'  <div class="card v-{v["id"]} venue-card" data-venue-id="{v["id"]}" '
+    f'title="Click to solo this venue (click again to restore all)">'
+    f'<div class="num" id="c-{v["id"]}">-</div>'
     f'<div class="label">{v["label"]} ({v["since"]}~)</div></div>\n'
     for v in VENUES_CFG
 )
@@ -201,6 +203,10 @@ HTML = r"""<!DOCTYPE html>
   .card { min-width: 0; background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 10px 14px; }
   .card .num { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
   .card .label { color: #666; font-size: 11px; margin-top: 2px; }
+  .venue-card { cursor: pointer; transition: background 0.1s, transform 0.08s; }
+  .venue-card:hover { background: #fafafa; transform: translateY(-1px); }
+  .venue-card.solo { background: #f0f7ff; border-color: #1f77b4; }
+  .card.dim { opacity: 0.45; }
 
   .venue-filters {
     display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
@@ -1133,6 +1139,41 @@ document.querySelectorAll('th[data-sort]').forEach(th => {
     filterAndSort();
     renderTable();
   });
+});
+
+// Venue cards: click to solo (= only that venue checked), click again to restore all.
+function syncVenueCardStyles() {
+  const checked = {};
+  for (const v of VENUES) checked[v] = document.getElementById('f-' + VENUE_IDS[v]).checked;
+  const checkedList = VENUES.filter(v => checked[v]);
+  const isSoloed = checkedList.length === 1;
+  document.querySelectorAll('.venue-card').forEach(card => {
+    const vid = card.dataset.venueId;
+    // Map id-suffix back to label for state lookup
+    const label = VENUES.find(v => VENUE_IDS[v] === vid);
+    card.classList.toggle('solo', isSoloed && checked[label]);
+    card.classList.toggle('dim', !checked[label] && checkedList.length < VENUES.length);
+  });
+}
+document.querySelectorAll('.venue-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const vid = card.dataset.venueId;
+    const targetId = 'f-' + vid;
+    const allBoxes = VENUES.map(v => document.getElementById('f-' + VENUE_IDS[v]));
+    const isSoloed = allBoxes.every(cb => cb.checked === (cb.id === targetId));
+    if (isSoloed) {
+      allBoxes.forEach(cb => cb.checked = true);     // toggle off → restore all
+    } else {
+      allBoxes.forEach(cb => cb.checked = (cb.id === targetId));  // solo
+    }
+    applyFilters();
+    syncVenueCardStyles();
+  });
+});
+// Keep card highlight in sync when user toggles checkboxes manually.
+VENUES.forEach(v => {
+  const cb = document.getElementById('f-' + VENUE_IDS[v]);
+  if (cb) cb.addEventListener('change', syncVenueCardStyles);
 });
 
 document.getElementById('page-first').onclick = () => { state.page = 1; renderTable(); };
