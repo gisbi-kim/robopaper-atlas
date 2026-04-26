@@ -230,6 +230,7 @@ __CARD_BORDER_CSS__
   col.col-rank { width: 52px; }
   col.col-venue { width: 110px; }
   col.col-year { width: 56px; }
+  col.col-pages { width: 64px; }
   col.col-cites { width: 72px; }
   col.col-title { width: auto; }
   col.col-authors { width: 230px; }
@@ -498,7 +499,7 @@ __FILTER_B_CHECKBOXES__  </div>
   </h2>
   <table>
     <colgroup>
-      <col class="col-rank"><col class="col-venue"><col class="col-year">
+      <col class="col-rank"><col class="col-venue"><col class="col-year"><col class="col-pages">
       <col class="col-title"><col class="col-authors"><col class="col-cites">
     </colgroup>
     <thead>
