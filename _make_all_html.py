@@ -228,7 +228,7 @@ __CARD_BORDER_CSS__
   th .arrow { font-size: 10px; color: #1f77b4; margin-left: 4px; }
 
   col.col-rank { width: 52px; }
-  col.col-venue { width: 110px; }
+  col.col-venue { width: 88px; }
   col.col-year { width: 56px; }
   col.col-pages { width: 64px; }
   col.col-cites { width: 72px; }
