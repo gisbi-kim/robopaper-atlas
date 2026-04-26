@@ -1028,7 +1028,7 @@ function renderTable() {
       + `<td class="rank">${i + 1}</td>`
       + `<td>${renderVenueCell(r)}</td>`
       + `<td class="year">${r[1]}</td>`
-      + `<td class="pages">${r[7] ? r[7] : '—'}</td>`
+      + `<td class="pages">${r[7] ? r[7] : 'N/A'}</td>`
       + `<td>${title}</td>`
       + `<td class="authors" title="${escapeAttr(r[3])}">${authorsHtml}</td>`
       + `<td class="cites">${r[4].toLocaleString()}</td>`
