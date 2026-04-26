@@ -1,7 +1,7 @@
 # RoboPaper Atlas
 
-**40여 년치 로봇공학 논문(ICRA · IROS · RA-L · T-RO · RSS · IJRR · Sci-Rob · SoRo · T-Mech · T-FR · RA-P)을 한 곳에 모은 인터랙티브 아틀라스.**
-DBLP + OpenAlex로 82,000+ 편의 제목·저자·초록·인용수·키워드를 긁어와서
+**40여 년치 로봇공학 논문(ICRA · IROS · RA-L · T-RO · RSS · IJRR · Sci-Rob · SoRo · T-Mech · T-FR · RA-P · T-ASE)을 한 곳에 모은 인터랙티브 아틀라스.**
+DBLP + OpenAlex로 88,000+ 편의 제목·저자·초록·인용수·키워드를 긁어와서
 중복 제거하고, 바로 탐색·정렬·필터할 수 있는 웹 페이지와 엑셀로 정리합니다.
 
 🔗 **Live demo**: https://gisbi-kim.github.io/robopaper-atlas/
@@ -21,14 +21,15 @@ DBLP + OpenAlex로 82,000+ 편의 제목·저자·초록·인용수·키워드�
 | SoRo | OpenAlex ISSN `2169-5172` | 2014 | ~820 |
 | T-FR | OpenAlex ISSN `2997-1101` | 2024 | ~85 |
 | RA-P | OpenAlex ISSN `2995-4304` | 2025 | ~20 |
-| **합계** | | 1984 ~ 2026 | **~82,900** |
+| T-ASE | OpenAlex ISSN `1545-5955` | 2004 | ~5,580 |
+| **합계** | | 1984 ~ 2026 | **~88,500** |
 
 DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 병합 (예: RA-L 논문이 ICRA에서 발표된 경우 1개 엔트리).
 
 ## 무엇을 할 수 있나
 
 ### 🔍 [Full Explorer](explorer.html)
-82,000+편 전체 탐색기. 한 페이지에서:
+88,000+편 전체 탐색기. 한 페이지에서:
 - **연도 범위** / **venue** / **최소 인용수** / **제목·저자 검색** 복합 필터
 - 모든 컬럼(venue, year, cites 등) **클릭 정렬**
 - 페이지당 50/100/200/500 선택 가능한 페이지네이션
@@ -42,7 +43,7 @@ DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 �
 연도별 venue별 편수 추이. Stacked / Grouped / Line 세 가지 뷰로 토글.
 
 ### 🕸️ [Co-author Network](coauthor_network.html)
-저자 24k+, 공저 엣지 71k+ 인터랙티브 그래프.
+저자 26k+, 공저 엣지 80k+ 인터랙티브 그래프.
 
 ### 🌐 [Conference Location Globe](https://gisbi-kim.github.io/icra-iros-globe/src/icra_iros_globe.html)
 ICRA / IROS 개최지를 3D 지구본에 시각화 (별도 프로젝트).

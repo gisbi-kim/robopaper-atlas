@@ -22,12 +22,13 @@ VENUES_CFG = [
     {'label': 'T-Mech',  'id': 'tmech',  'color': '#bcbd22', 'since': 1996},
     {'label': 'T-FR',    'id': 'tfr',    'color': '#7f7f7f', 'since': 2024},
     {'label': 'RA-P',    'id': 'rap',    'color': '#d4a017', 'since': 2025},
+    {'label': 'T-ASE',   'id': 'tase',   'color': '#2c8c8c', 'since': 2004},
 ]
 
 # Dedup priority: when one paper is cross-listed (RA-L→ICRA, etc.) we keep
 # the JOURNAL version as the primary venue. Order MUST match step3_excel.py
 # so summary cards / by_year totals stay consistent across pages.
-_DEDUP_ORDER = ['T-RO', 'IJRR', 'Sci-Rob', 'T-FR', 'SoRo', 'T-Mech', 'RA-L', 'RA-P', 'RSS', 'ICRA', 'IROS']
+_DEDUP_ORDER = ['T-RO', 'IJRR', 'Sci-Rob', 'T-FR', 'SoRo', 'T-Mech', 'T-ASE', 'RA-L', 'RA-P', 'RSS', 'ICRA', 'IROS']
 VENUE_PRIORITY = {v: i for i, v in enumerate(_DEDUP_ORDER)}
 VENUE_LABELS   = [v['label'] for v in VENUES_CFG]
 VENUE_COLORS   = {v['label']: v['color'] for v in VENUES_CFG}
@@ -43,7 +44,7 @@ except OSError:
 with open('all_enriched.json', encoding='utf-8') as f:
     papers = json.load(f)
 df = pd.DataFrame(papers)
-slim = df[['venue', 'year', 'title', 'authors', 'cited_by_count', 'doi']].copy()
+slim = df[['venue', 'year', 'title', 'authors', 'cited_by_count', 'doi', 'pages']].copy()
 slim['title'] = (slim['title'].fillna('').astype(str).map(html.unescape)
                  .str.rstrip('.').str.strip().str[:300])
 # DBLP 동명이인 식별자 ("0001" 등) 제거 + HTML 엔티티 디코딩
@@ -55,6 +56,32 @@ slim['doi'] = slim['doi'].fillna('').astype(str).str.strip().str.lower()
 slim['doi'] = slim['doi'].str.replace(r'^https?://doi\.org/', '', regex=True)
 slim['cited_by_count'] = pd.to_numeric(slim['cited_by_count'], errors='coerce').fillna(0).astype(int)
 slim['year'] = pd.to_numeric(slim['year'], errors='coerce').fillna(0).astype(int)
+
+# Page count from `pages` string. Handles "117-122", "117", "117-22" (DBLP
+# abbreviation = 117-122), "117:1-25" (article-id style). Returns 0 if unknown.
+_pg_range = re.compile(r'^\s*(\d+)\s*[-–]\s*(\d+)\s*$')
+_pg_single = re.compile(r'^\s*(\d+)\s*$')
+_pg_article = re.compile(r'^\s*\d+\s*:\s*(\d+)\s*[-–]\s*(\d+)\s*$')
+def _page_count(p):
+    if not p:
+        return 0
+    s = str(p).strip()
+    m = _pg_article.match(s)
+    if m:
+        a, b = int(m.group(1)), int(m.group(2))
+        return max(0, b - a + 1)
+    m = _pg_range.match(s)
+    if m:
+        a, b = int(m.group(1)), int(m.group(2))
+        if b < a:
+            sa, sb = str(a), str(b)
+            if len(sb) < len(sa):
+                b = int(sa[:len(sa) - len(sb)] + sb)
+        return max(0, b - a + 1)
+    if _pg_single.match(s):
+        return 1
+    return 0
+slim['pages_n'] = slim['pages'].fillna('').astype(str).map(_page_count)
 
 before = len(slim)
 slim = slim[slim['authors'].str.strip() != ''].reset_index(drop=True)
@@ -98,7 +125,7 @@ pool['venues_all'] = pool.set_index(['_tn', 'year']).index.map(combined)
 slim = pd.concat([pool, keep], ignore_index=True).drop(columns=['_tn'])
 print(f"제목+연도 dedup: {before} → {len(slim)} ({before - len(slim)}건 병합)")
 
-arr = [[r['venue'], r['year'], r['title'], r['authors'], r['cited_by_count'], r['doi'], r['venues_all']]
+arr = [[r['venue'], r['year'], r['title'], r['authors'], r['cited_by_count'], r['doi'], r['venues_all'], int(r['pages_n'])]
        for r in slim.to_dict('records')]
 
 total = len(arr)
@@ -140,11 +167,11 @@ SUMMARY_CARDS = ''.join(
     for v in VENUES_CFG
 )
 FILTER_A_CHECKBOXES = ''.join(
-    f'    <label><input type="checkbox" id="f-{v["id"]}" checked> {v["label"]} <span style="color:#999; font-size:11px;">({v["since"]}~)</span></label>\n'
+    f'      <label><input type="checkbox" id="f-{v["id"]}" checked> {v["label"]} <span class="since">({v["since"]}~)</span></label>\n'
     for v in VENUES_CFG
 )
 FILTER_B_CHECKBOXES = ''.join(
-    f'    <label><input type="checkbox" id="f-{v["id"]}-b" checked> {v["label"]} <span style="color:#999; font-size:11px;">({v["since"]}~)</span></label>\n'
+    f'      <label><input type="checkbox" id="f-{v["id"]}-b" checked> {v["label"]} <span class="since">({v["since"]}~)</span></label>\n'
     for v in VENUES_CFG
 )
 
@@ -170,10 +197,18 @@ HTML = r"""<!DOCTYPE html>
   h2 { font-size: 14px; margin: 0 0 10px; color: #333; }
   canvas { max-height: 340px; }
 
-  .summary { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 16px; }
   .card { min-width: 0; background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 10px 14px; }
   .card .num { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
   .card .label { color: #666; font-size: 11px; margin-top: 2px; }
+
+  .venue-filters {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+    gap: 4px 14px; padding: 8px 12px; margin-bottom: 10px;
+    background: #fafafa; border: 1px solid #eee; border-radius: 6px;
+  }
+  .venue-filters label { font-size: 13px; color: #444; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+  .venue-filters label .since { color: #999; font-size: 11px; }
 __CARD_BORDER_CSS__
   .controls { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
   .controls label { font-size: 13px; color: #555; display: inline-flex; align-items: center; gap: 6px; }
@@ -199,7 +234,8 @@ __CARD_BORDER_CSS__
   col.col-title { width: auto; }
   col.col-authors { width: 230px; }
 
-  td.rank, td.cites, td.year { text-align: right; font-variant-numeric: tabular-nums; }
+  td.rank, td.cites, td.year, td.pages { text-align: right; font-variant-numeric: tabular-nums; }
+  td.pages { color: #888; font-size: 12px; }
   td.cites { font-weight: 600; }
   td.rank { color: #999; }
 __VENUE_TEXT_CSS__  .venue-also { color: #888; font-weight: 400; font-size: 10px; }
@@ -281,13 +317,14 @@ __SUMMARY_CARDS__</div>
 
 <div class="wrap">
   <h2>Filters <span class="zone-label" id="zone-label-a" style="display:none;">A</span></h2>
+  <div class="venue-filters">
+__FILTER_A_CHECKBOXES__  </div>
   <div class="controls">
     <label>Year
       <input type="number" id="f-year-from" min="__YMIN__" max="__YMAX__" value="__YMIN__">
       ~
       <input type="number" id="f-year-to" min="__YMIN__" max="__YMAX__" value="__YMAX__">
     </label>
-__FILTER_A_CHECKBOXES__    <div style="flex-basis: 100%; height: 0;"></div>
     <label>Min citations
       <input type="number" id="f-mincite" min="0" value="0">
     </label>
@@ -311,13 +348,14 @@ __FILTER_A_CHECKBOXES__    <div style="flex-basis: 100%; height: 0;"></div>
 
 <div class="wrap" id="filter-b-wrap" style="display:none;">
   <h2>Filters <span class="zone-label b">B</span></h2>
+  <div class="venue-filters">
+__FILTER_B_CHECKBOXES__  </div>
   <div class="controls">
     <label>Year
       <input type="number" id="f-year-from-b" min="__YMIN__" max="__YMAX__" value="__YMIN__">
       ~
       <input type="number" id="f-year-to-b" min="__YMIN__" max="__YMAX__" value="__YMAX__">
     </label>
-__FILTER_B_CHECKBOXES__    <div style="flex-basis: 100%; height: 0;"></div>
     <label>Min citations
       <input type="number" id="f-mincite-b" min="0" value="0">
     </label>
@@ -468,6 +506,7 @@ __FILTER_B_CHECKBOXES__    <div style="flex-basis: 100%; height: 0;"></div>
         <th>#</th>
         <th data-sort="venue">Venue<span class="arrow"></span></th>
         <th data-sort="year">Year<span class="arrow"></span></th>
+        <th data-sort="pages"># pages<span class="arrow"></span></th>
         <th data-sort="title">Title<span class="arrow"></span></th>
         <th data-sort="authors">Authors<span class="arrow"></span></th>
         <th data-sort="cites">Cites<span class="arrow"></span></th>
@@ -494,7 +533,7 @@ __FILTER_B_CHECKBOXES__    <div style="flex-basis: 100%; height: 0;"></div>
 const ALL = __ARR_JSON__;
 const WB_VOCAB = __WB_VOCAB__;
 const WB_PAPERS = __WB_PAPERS__;
-const KEYS = { venue: 0, year: 1, title: 2, authors: 3, cites: 4, doi: 5 };
+const KEYS = { venue: 0, year: 1, title: 2, authors: 3, cites: 4, doi: 5, pages: 7 };
 const YMIN = __YMIN__, YMAX = __YMAX__;
 
 const VENUE_COLOR = __VENUE_COLOR_JSON__;
@@ -907,6 +946,7 @@ function renderTable() {
       + `<td class="rank">${i + 1}</td>`
       + `<td>${renderVenueCell(r)}</td>`
       + `<td class="year">${r[1]}</td>`
+      + `<td class="pages">${r[7] || ''}</td>`
       + `<td>${title}</td>`
       + `<td class="authors" title="${escapeAttr(r[3])}">${authorsHtml}</td>`
       + `<td class="cites">${r[4].toLocaleString()}</td>`

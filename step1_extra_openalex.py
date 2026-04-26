@@ -35,6 +35,7 @@ EXTRA_VENUES = [
     ('tmech', 'T-Mech', '1083-4435', range(1996, 2027)),  # IEEE/ASME TMech 창간 1996
     ('tfr',   'T-FR',   '2997-1101', range(2024, 2027)),  # IEEE Transactions on Field Robotics 창간 2024
     ('rap',   'RA-P',   '2995-4304', range(2025, 2027)),  # IEEE Robotics and Automation Practice 창간 2024 (2024 호는 front-matter only → 2025부터 수집)
+    ('tase',  'T-ASE',  '1545-5955', range(2004, 2027)),  # IEEE Transactions on Automation Science and Engineering 창간 2004
 ]
 
 

@@ -18,6 +18,7 @@ VENUES_CFG = [
     {'label': 'T-Mech',  'id': 'tmech',  'color': '#bcbd22', 'since': 1996},
     {'label': 'T-FR',    'id': 'tfr',    'color': '#7f7f7f', 'since': 2024},
     {'label': 'RA-P',    'id': 'rap',    'color': '#d4a017', 'since': 2025},
+    {'label': 'T-ASE',   'id': 'tase',   'color': '#2c8c8c', 'since': 2004},
 ]
 VENUE_LABELS = [v['label'] for v in VENUES_CFG]
 TITLE_STR = ' / '.join(VENUE_LABELS) + ' Papers by Year'
