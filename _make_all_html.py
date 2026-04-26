@@ -81,7 +81,12 @@ def _page_count(p):
     if _pg_single.match(s):
         return 1
     return 0
-slim['pages_n'] = slim['pages'].fillna('').astype(str).map(_page_count)
+# Sanity-clip: anything outside 2..100 is bogus (early-access "1-1" placeholder
+# or DBLP proceedings-position artifacts like "1827-18533" that span many papers).
+def _clean_page_count(p):
+    n = _page_count(p)
+    return n if 2 <= n <= 100 else 0
+slim['pages_n'] = slim['pages'].fillna('').astype(str).map(_clean_page_count)
 
 before = len(slim)
 slim = slim[slim['authors'].str.strip() != ''].reset_index(drop=True)
@@ -107,7 +112,9 @@ without_doi['venues_all'] = without_doi['venue']
 slim = pd.concat([with_doi, without_doi], ignore_index=True)
 print(f"DOI dedup: {before} → {len(slim)} ({before - len(slim)}건 병합)")
 
-# 제목+연도 기반 추가 dedup (DOI는 다르지만 같은 논문이 여러 venue에 교차 게재)
+# 제목+연도 기반 추가 dedup — 같은 venue 안에서 DOI만 다른 중복 인덱스만 합침.
+# 다른 venue 간(예: IJRR vs ICRA)에 같은-제목·같은-연도가 있어도 보통 저널 확장본/
+# 학회 원본으로 별개 publication이므로 절대 합치지 않음.
 def _norm_title(s):
     return re.sub(r'[^a-z0-9]', '', str(s).lower())
 before = len(slim)
@@ -116,14 +123,10 @@ short = slim['_tn'].str.len() < 20  # "Editorial" 같은 짧은 제목은 제외
 pool = slim[~short].copy()
 keep = slim[short].copy()
 pool['_pri'] = pool['venue'].map(VENUE_PRIORITY).fillna(99).astype(int)
-pool = pool.sort_values(['_tn', 'year', '_pri'])
-combined = pool.groupby(['_tn', 'year'])['venues_all'].apply(
-    lambda s: ','.join(sorted(set(v for row in s for v in str(row).split(',')), key=lambda v: VENUE_PRIORITY.get(v, 99)))
-)
-pool = pool.drop_duplicates(subset=['_tn', 'year'], keep='first').drop(columns=['_pri'])
-pool['venues_all'] = pool.set_index(['_tn', 'year']).index.map(combined)
+pool = pool.sort_values(['_tn', 'year', 'venue', '_pri'])
+pool = pool.drop_duplicates(subset=['_tn', 'year', 'venue'], keep='first').drop(columns=['_pri'])
 slim = pd.concat([pool, keep], ignore_index=True).drop(columns=['_tn'])
-print(f"제목+연도 dedup: {before} → {len(slim)} ({before - len(slim)}건 병합)")
+print(f"제목+연도 dedup (within-venue): {before} → {len(slim)} ({before - len(slim)}건 병합)")
 
 arr = [[r['venue'], r['year'], r['title'], r['authors'], r['cited_by_count'], r['doi'], r['venues_all'], int(r['pages_n'])]
        for r in slim.to_dict('records')]
@@ -465,6 +468,12 @@ __FILTER_B_CHECKBOXES__  </div>
       <h3>6 · Avg authors / paper</h3>
       <div class="desc">Team size culture. Low = solo / small-group, high = mass-collab culture.</div>
       <div class="canv"><canvas id="chart-vauth"></canvas></div>
+    </div>
+
+    <div class="vcol">
+      <h3>7 · Avg # pages / paper</h3>
+      <div class="desc">Mean page length, with a thin black <b>±1σ pin</b> showing within-venue variance. RSS / Sci-Rob have sparse pages metadata so values may be missing.</div>
+      <div class="canv"><canvas id="chart-vpages"></canvas></div>
     </div>
   </div>
 </div>
@@ -828,12 +837,12 @@ function renderBarChart() {
   }
 }
 
-let vtotChart, vavgChart, vmedChart, vhChart, vtopkChart, vauthChart;
+let vtotChart, vavgChart, vmedChart, vhChart, vtopkChart, vauthChart, vpagesChart;
 
 function venueStats(filtered, topK) {
-  const sum = {}, count = {}, cites = {}, authorsTot = {};
+  const sum = {}, count = {}, cites = {}, authorsTot = {}, pagesArr = {};
   for (const v of VENUES) {
-    sum[v] = 0; count[v] = 0; cites[v] = []; authorsTot[v] = 0;
+    sum[v] = 0; count[v] = 0; cites[v] = []; authorsTot[v] = 0; pagesArr[v] = [];
   }
   for (const r of filtered) {
     const v = r[0], c = r[4];
@@ -841,12 +850,24 @@ function venueStats(filtered, topK) {
     sum[v] += c; count[v]++; cites[v].push(c);
     const nAuth = (r[3] || '').split(';').filter(s => s.trim()).length;
     authorsTot[v] += nAuth;
+    const pn = r[7] || 0;
+    if (pn > 0) pagesArr[v].push(pn);
   }
-  const avg = {}, avgAuth = {}, med = {}, hidx = {};
+  const avg = {}, avgAuth = {}, med = {}, hidx = {}, pagesAvg = {}, pagesSd = {};
   for (const v of VENUES) {
     const n = count[v];
     avg[v]     = n ? sum[v] / n : 0;
     avgAuth[v] = n ? authorsTot[v] / n : 0;
+    const pa = pagesArr[v];
+    if (pa.length) {
+      const m = pa.reduce((a, b) => a + b, 0) / pa.length;
+      const variance = pa.reduce((a, b) => a + (b - m) * (b - m), 0) / pa.length;
+      pagesAvg[v] = m;
+      pagesSd[v] = Math.sqrt(variance);
+    } else {
+      pagesAvg[v] = 0;
+      pagesSd[v] = 0;
+    }
     // Median
     const asc = cites[v].slice().sort((a, b) => a - b);
     if (!asc.length) { med[v] = 0; }
@@ -865,7 +886,7 @@ function venueStats(filtered, topK) {
   const topN = {};
   for (const v of VENUES) topN[v] = 0;
   for (const r of sorted) if (topN[r[0]] !== undefined) topN[r[0]]++;
-  return { sum, avg, med, hidx, topN, topK: sorted.length, avgAuth };
+  return { sum, avg, med, hidx, topN, topK: sorted.length, avgAuth, pagesAvg, pagesSd };
 }
 
 function _venueBar(data, xTitle, formatValue) {
@@ -896,6 +917,46 @@ function _venueBar(data, xTitle, formatValue) {
   };
 }
 
+function _venueBarWithPin(meanData, sdData, xTitle, formatValue) {
+  const labels = VENUES.slice().sort((a, b) => (meanData[b] || 0) - (meanData[a] || 0));
+  const means  = labels.map(v => meanData[v] || 0);
+  const sds    = labels.map(v => sdData[v]   || 0);
+  const ranges = labels.map((_, i) => [Math.max(0, means[i] - sds[i]), means[i] + sds[i]]);
+  const colors = labels.map(v => VENUE_COLOR[v]);
+  const fmt = formatValue || ((v) => Number(v).toFixed(1));
+  return {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        // mean bar
+        { data: means, backgroundColor: colors, borderColor: colors, borderWidth: 0,
+          barPercentage: 0.7, categoryPercentage: 0.9 },
+        // ±1σ pin overlay (thin dark bar across mean)
+        { data: ranges, backgroundColor: 'rgba(40,40,40,0.85)', borderColor: 'rgba(40,40,40,0.85)',
+          borderWidth: 0, barPercentage: 0.10, categoryPercentage: 0.9, grouped: false },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      indexAxis: 'y',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: {
+          label: (ctx) => ctx.datasetIndex === 0
+            ? ' mean: ' + fmt(ctx.raw)
+            : ' ±1σ: ' + fmt(ctx.raw[0]) + ' – ' + fmt(ctx.raw[1]),
+        } },
+      },
+      scales: {
+        x: { title: { display: true, text: xTitle }, beginAtZero: true,
+             ticks: { callback: (v) => fmt(v) } },
+        y: { ticks: { autoSkip: false } },
+      },
+    },
+  };
+}
+
 function renderVenueComparison() {
   const topK = parseInt(document.getElementById('topk-select').value) || 100;
   const s = venueStats(state.filtered, topK);
@@ -913,6 +974,8 @@ function renderVenueComparison() {
   vtopkChart = new Chart(document.getElementById('chart-vtopk'),  _venueBar(s.topN,    `# in top ${s.topK}`));
   if (vauthChart) vauthChart.destroy();
   vauthChart = new Chart(document.getElementById('chart-vauth'),  _venueBar(s.avgAuth, 'authors / paper',  f1));
+  if (vpagesChart) vpagesChart.destroy();
+  vpagesChart = new Chart(document.getElementById('chart-vpages'), _venueBarWithPin(s.pagesAvg, s.pagesSd, 'pages / paper', f1));
 }
 
 
@@ -954,7 +1017,7 @@ function renderTable() {
       + `<td class="rank">${i + 1}</td>`
       + `<td>${renderVenueCell(r)}</td>`
       + `<td class="year">${r[1]}</td>`
-      + `<td class="pages">${r[7] || ''}</td>`
+      + `<td class="pages">${r[7] ? r[7] : '—'}</td>`
       + `<td>${title}</td>`
       + `<td class="authors" title="${escapeAttr(r[3])}">${authorsHtml}</td>`
       + `<td class="cites">${r[4].toLocaleString()}</td>`

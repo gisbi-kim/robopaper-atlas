@@ -95,17 +95,13 @@ short_mask = df['_tn'].str.len() < 20
 dedup_pool = df[~short_mask].copy()
 keep_asis = df[short_mask].copy()
 
+# Within-venue only: 같은 venue 안에서 DOI만 다른 중복 인덱스만 합침. 다른 venue 간(저널 ↔ 학회)에
+# 같은-제목·같은-연도가 있어도 보통 저널 확장본/학회 원본으로 별개 publication이라 절대 합치지 않음.
 dedup_pool['_priority'] = dedup_pool['venue'].map(VENUE_PRIORITY).fillna(99).astype(int)
-dedup_pool = dedup_pool.sort_values(['_tn', 'year', '_priority'])
-# venues_all 업데이트: 같은 (title_norm, year) 그룹의 venue 병합
-grp = dedup_pool.groupby(['_tn', 'year'])
-combined_venues = grp['venues_all'].apply(
-    lambda s: ','.join(sorted(set(v for row in s for v in str(row).split(',')), key=lambda v: VENUE_PRIORITY.get(v, 99)))
-)
-dedup_pool = dedup_pool.drop_duplicates(subset=['_tn', 'year'], keep='first').drop(columns=['_priority'])
-dedup_pool['venues_all'] = dedup_pool.set_index(['_tn', 'year']).index.map(combined_venues)
+dedup_pool = dedup_pool.sort_values(['_tn', 'year', 'venue', '_priority'])
+dedup_pool = dedup_pool.drop_duplicates(subset=['_tn', 'year', 'venue'], keep='first').drop(columns=['_priority'])
 df = pd.concat([dedup_pool, keep_asis], ignore_index=True).drop(columns=['_tn'])
-print(f"제목+연도 추가 dedup: {before} → {len(df)} ({before - len(df)}건 병합)")
+print(f"제목+연도 dedup (within-venue): {before} → {len(df)} ({before - len(df)}건 병합)")
 
 # 연도 내림차순, venue 정렬
 df['year'] = pd.to_numeric(df['year'], errors='coerce').fillna(0).astype(int)
