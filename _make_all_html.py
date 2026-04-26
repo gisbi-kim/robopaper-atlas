@@ -315,7 +315,7 @@ __VENUE_TEXT_CSS__  .venue-also { color: #888; font-weight: 400; font-size: 10px
   <span>DBLP + OpenAlex · __TOTAL_FMT__ papers (DOI-deduped) · __YMIN__ ~ __YMAX__ · Filter · Sort · Search</span>
   <span style="color:#888; text-align:right; line-height:1.4;">
     <a href="REFRESH.md" style="color:#1f77b4; text-decoration:none; font-size:11px;">How to refresh? ↻</a><br>
-    Citations as of __AS_OF__
+    Citations from Semantic Scholar · as of __AS_OF__
   </span>
 </div>
 

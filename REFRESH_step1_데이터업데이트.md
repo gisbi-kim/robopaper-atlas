@@ -55,6 +55,22 @@ REFRESH_step1_데이터업데이트.md 보고 인용수·데이터 재조사 해
 
 `enriched_checkpoint_*.json`의 mtime을 보면 마지막 전체 refresh가 언제였는지 추정 가능 — 3개월 이상 됐으면 사용자에게 (2) 권유.
 
+### 2b) (선택) Semantic Scholar 인용수로 교체
+
+OpenAlex의 인용수는 Crossref deposited refs 기반이라 보수적이고 preprint/blog/poster
+인용을 거의 못 잡음 (예: ColoRadar 2022 — OpenAlex 3, S2 93, GS 107). CS/robotics
+도메인에서는 **Semantic Scholar (S2)** 가 Google Scholar에 거의 가까운 수치를 줌.
+
+```bash
+python step2b_semanticscholar.py            # 신규 DOI만 (idempotent)
+python step2b_semanticscholar.py --refresh  # 모든 DOI 다시 조회 (3개월에 한 번)
+```
+
+- 체크포인트에 `cited_by_s2` / `influential_cites_s2` 추가, all_enriched.json 의
+  `cited_by_count` 를 S2 값으로 덮어씀 (S2에 없는 DOI는 OpenAlex 값 유지).
+- Unauthenticated S2 batch API는 글로벌 ~1 batch/min 쪽 제한 → 90k 전수 fetch는
+  **약 90분** 정도 백그라운드로 돌림. API key 신청하면 훨씬 빠름.
+
 ### 3) 산출물 재생성 (전부 돌림)
 
 ```bash
@@ -109,7 +125,8 @@ python _enrich_communities.py     # Leiden + TF-IDF → community 필드 주입
 | 파일 | 역할 |
 |---|---|
 | `step1_dblp.py` | DBLP에서 venue별 연도별 메타데이터 수집 (캐시: `dblp_raw/`) |
-| `step2_openalex.py` | OpenAlex로 초록·인용수·concepts 보강 (체크포인트: `enriched_checkpoint.json`) |
+| `step2_openalex.py` | OpenAlex로 초록·OpenAlex 인용수·concepts·pages 보강 (체크포인트: `enriched_checkpoint.json`) |
+| `step2b_semanticscholar.py` | (선택) Semantic Scholar로 인용수 교체 — OpenAlex보다 GS에 가까운 정확도 |
 | `step1_extra_openalex.py` | DBLP 미색인 저널(SoRo/TMech)을 OpenAlex ISSN으로 수집 |
 | `step3_excel.py` | 정제·dedup 후 xlsx 생성 |
 | `_make_all_html.py` | 전체 탐색기 HTML |

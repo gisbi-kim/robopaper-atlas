@@ -52,6 +52,8 @@ ICRA / IROS 개최지를 3D 지구본에 시각화 (별도 프로젝트).
 ### 📊 [Dataset download](robopaper_atlas_all.xlsx)
 **XLSX** — 5 시트: `summary` / `by_year_pivot` / `by_year_detail` / `top_cited_100` / `papers`
 
+> 인용수는 **Semantic Scholar** 기준 (~92% 커버리지). 나머지 ~8%는 S2 미색인 paper로 OpenAlex 값 폴백. OpenAlex는 Crossref deposited refs만 봐서 보수적이고 (예: ColoRadar 2022 OpenAlex 3 vs S2 93 vs GS 107), CS/robotics 도메인에선 S2가 GS에 가장 가까움.
+
 **Word book**: [`word_book.csv`](word_book.csv) (0.3 MB) · [`word_book.json`](word_book.json) (18 MB)
 초록에서 stop word 제외 후 추출한 단어장. CSV는 `word,total_count,num_papers`. JSON은 vocab + per-paper 상위 50 단어 인덱스 — word cloud용.
 
