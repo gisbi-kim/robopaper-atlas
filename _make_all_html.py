@@ -81,12 +81,22 @@ def _page_count(p):
     if _pg_single.match(s):
         return 1
     return 0
-# Sanity-clip: anything outside 2..100 is bogus (early-access "1-1" placeholder
+# Page count is only meaningful for "real" journals where length is editorially
+# variable. Conference proceedings (ICRA/IROS/RSS) and short-paper letter venues
+# (RA-L, RA-P) are template-fixed at 6–8 pages, so we suppress the field there
+# to avoid suggesting a comparison that isn't apples-to-apples.
+PAGES_VENUES = {'T-RO', 'IJRR', 'Sci-Rob', 'T-FR', 'SoRo', 'T-Mech', 'T-ASE'}
+# Sanity-clip: anything outside 2..50 is bogus (early-access "1-1" placeholder
 # or DBLP proceedings-position artifacts like "1827-18533" that span many papers).
+# Cap at 50 — robotics survey papers rarely exceed that; longer values are
+# almost always a data-quality issue, not a real page span.
 def _clean_page_count(p):
     n = _page_count(p)
-    return n if 2 <= n <= 100 else 0
-slim['pages_n'] = slim['pages'].fillna('').astype(str).map(_clean_page_count)
+    return n if 2 <= n <= 50 else 0
+slim['pages_n'] = [
+    _clean_page_count(p) if v in PAGES_VENUES else 0
+    for v, p in zip(slim['venue'], slim['pages'].fillna('').astype(str))
+]
 
 before = len(slim)
 slim = slim[slim['authors'].str.strip() != ''].reset_index(drop=True)
@@ -472,7 +482,7 @@ __FILTER_B_CHECKBOXES__  </div>
 
     <div class="vcol">
       <h3>7 · Avg # pages / paper</h3>
-      <div class="desc">Mean page length, with a thin black <b>±1σ pin</b> showing within-venue variance. RSS / Sci-Rob have sparse pages metadata so values may be missing.</div>
+      <div class="desc">Mean page length (journals only — conferences and short-paper letters are template-fixed, so excluded). Thin black <b>±1σ pin</b> shows within-venue variance.</div>
       <div class="canv"><canvas id="chart-vpages"></canvas></div>
     </div>
   </div>
