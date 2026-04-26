@@ -120,17 +120,23 @@ def main():
             found_dois.add(w_doi)
 
             concepts = w.get('concepts', [])[:5]
+            # OpenAlex의 biblio.first_page-last_page 도 같이 추출 — DBLP가 비워둔 경우
+            # 병합 단계에서 fallback으로 채워줌. 형식은 DBLP와 동일하게 "first-last".
+            biblio = w.get('biblio') or {}
+            fp, lp = biblio.get('first_page'), biblio.get('last_page')
+            pages_oa = f'{fp}-{lp}' if fp and lp else (fp or lp or '')
             enriched[w_doi] = {
                 'abstract': reconstruct_abstract(w.get('abstract_inverted_index')),
                 'cited_by_count': w.get('cited_by_count', 0),
                 'concepts': '; '.join([c.get('display_name', '') for c in concepts]),
                 'openalex_id': w.get('id', ''),
+                'pages_oa': pages_oa,
             }
 
         # 못 찾은 DOI도 빈 값으로 표시 (재처리 방지)
         for d in batch:
             if d not in found_dois:
-                enriched[d] = {'abstract': '', 'cited_by_count': '', 'concepts': '', 'openalex_id': ''}
+                enriched[d] = {'abstract': '', 'cited_by_count': '', 'concepts': '', 'openalex_id': '', 'pages_oa': ''}
 
         done = i + len(batch)
         print(f"  [{done}/{len(all_dois)}] batch ok, found {len(found_dois)}/{len(batch)}")
@@ -155,6 +161,9 @@ def main():
         p['cited_by_count'] = e.get('cited_by_count', '')
         p['concepts'] = e.get('concepts', '')
         p['openalex_id'] = e.get('openalex_id', '')
+        # pages 백필: DBLP가 비워둔 경우 OpenAlex의 biblio 값으로 채움
+        if not (p.get('pages') or '').strip() and e.get('pages_oa'):
+            p['pages'] = e['pages_oa']
 
     with open(OUT_FILE, 'w', encoding='utf-8') as f:
         json.dump(papers, f, ensure_ascii=False)

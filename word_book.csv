@@ -2,8 +2,8 @@
 robot,75230,33826
 control,71446,29998
 system,59681,30001
-model,46550,25018
-robots,37821,21266
+model,46549,25017
+robots,37820,21266
 motion,35638,19094
 algorithm,29719,17065
 data,28090,15894
@@ -14,7 +14,7 @@ robotic,23629,15232
 learning,22726,11747
 task,22103,13291
 object,22036,10170
-time,20800,14786
+time,20798,14786
 planning,20764,11038
 human,20596,10910
 novel,20298,17732
@@ -32,7 +32,7 @@ simulation,16271,13324
 math,15753,9513
 mathml,15681,9498
 tracking,15523,8456
-space,14835,9768
+space,14834,9768
 models,14800,9908
 developed,14745,12193
 accuracy,14373,10622
@@ -43,10 +43,10 @@ autonomous,13253,9795
 position,13032,9064
 dynamics,12980,8454
 network,12975,7997
-mobile,12894,8511
+mobile,12893,8511
 manipulation,12886,7339
 visual,12848,7482
-process,12646,9171
+process,12645,9170
 applications,12622,10716
 multiple,12614,9534
 real,12422,10029
@@ -66,7 +66,7 @@ point,11149,6868
 robust,11086,8576
 joint,11085,6462
 soft,11073,4322
-analysis,10986,8641
+analysis,10985,8640
 strategy,10872,7594
 mechanism,10695,6674
 optimal,10630,6975
@@ -94,7 +94,7 @@ interaction,8845,6037
 training,8752,5697
 target,8750,5128
 images,8568,5224
-conditions,8540,6717
+conditions,8539,6716
 hand,8482,4206
 applied,8469,7584
 field,8441,6245
@@ -117,7 +117,7 @@ challenging,7891,7256
 scenarios,7857,6370
 single,7775,6591
 robotics,7712,6448
-physical,7689,5962
+physical,7688,5962
 adaptive,7680,5035
 research,7623,6535
 feature,7490,4870
@@ -125,12 +125,12 @@ nonlinear,7435,5109
 grasping,7307,3563
 forces,7283,4825
 robustness,7178,5920
-simple,7141,6360
+simple,7139,6360
 speed,7126,5159
 current,7119,6043
 vehicles,7098,4991
 modeling,6995,5358
-linear,6978,5455
+linear,6977,5454
 shape,6934,4238
 state-of-the-art,6933,6395
 body,6911,4527
@@ -168,7 +168,7 @@ inline-formula,6302,1374
 tex-math,6302,1374
 enables,6284,5857
 obstacles,6280,4079
-limited,6262,5691
+limited,6261,5691
 motions,6260,4387
 flexible,6251,4280
 representation,6251,4589
@@ -216,7 +216,7 @@ rate,5290,4173
 development,5280,4625
 external,5280,4032
 key,5278,4906
-goal,5267,4170
+goal,5266,4169
 capabilities,5258,4576
 implemented,5253,4968
 operation,5222,4140
@@ -391,7 +391,7 @@ experimentally,3498,3372
 response,3496,2785
 planar,3489,2770
 haptic,3488,1571
-complete,3487,3125
+complete,3486,3124
 fully,3483,3152
 sequence,3483,2588
 effect,3480,2924
@@ -440,7 +440,7 @@ estimated,3261,2827
 formulation,3250,2650
 cameras,3249,2286
 similar,3249,3001
-frequency,3245,2238
+frequency,3244,2237
 estimates,3243,2677
 described,3240,2978
 operating,3236,2815
@@ -1030,7 +1030,7 @@ property,1534,1345
 approximate,1531,1364
 axis,1530,1123
 project,1529,1388
-mission,1529,1021
+mission,1528,1020
 close,1527,1437
 identified,1525,1395
 gradient,1523,1193
@@ -1260,7 +1260,7 @@ resource,1207,800
 servo,1206,809
 primary,1206,1034
 criteria,1201,971
-completion,1200,887
+completion,1199,886
 lateral,1199,814
 central,1196,1058
 safely,1196,1122
@@ -1420,9 +1420,9 @@ clinical,1033,802
 utility,1032,874
 navigating,1031,953
 near,1030,935
-statistical,1029,865
 ranging,1029,915
 assess,1029,991
+statistical,1028,864
 rough,1027,783
 equivalent,1026,919
 cues,1026,756
@@ -1952,7 +1952,7 @@ located,680,639
 existence,680,620
 front,679,567
 runs,679,650
-mechanics,678,584
+mechanics,677,583
 window,677,516
 admittance,676,388
 operates,675,660
@@ -2108,10 +2108,10 @@ closed-form,608,543
 depend,608,601
 room,608,451
 surgeon,607,436
-asymmetric,607,428
 simply,606,595
 monte,606,549
 time-consuming,606,592
+asymmetric,606,427
 frameworks,606,530
 emerging,605,580
 tolerance,604,417
@@ -2298,10 +2298,10 @@ refine,539,519
 contraction,539,354
 repeatability,538,434
 fitting,537,460
-asymptotically,536,471
 ranges,536,471
 imposed,535,508
 cycles,535,416
+asymptotically,535,470
 maximizing,535,502
 activation,534,408
 purely,532,492
@@ -2815,9 +2815,9 @@ checking,398,319
 suffers,398,395
 risks,398,341
 add,398,377
-frequent,398,379
 earlier,397,383
 scientific,397,358
+frequent,397,378
 fin,397,170
 compensator,396,275
 mimic,396,378
@@ -4439,7 +4439,6 @@ icub,188,147
 denoising,188,134
 filled,187,169
 spread,187,169
-degrades,187,187
 refining,187,180
 begin,187,181
 whereby,187,179
@@ -4455,6 +4454,7 @@ theoretic,186,162
 sweep,186,103
 tips,186,140
 cam,186,116
+degrades,186,186
 accordance,186,181
 perpendicular,186,168
 histogram,186,147
@@ -5568,7 +5568,6 @@ emika,128,127
 durations,127,107
 externally,127,120
 finders,127,109
-totally,127,125
 request,127,105
 hour,127,114
 reprojection,127,117
@@ -5590,6 +5589,7 @@ two-fingered,126,110
 percent,126,102
 basically,126,124
 cones,126,91
+totally,126,124
 altering,126,121
 regional,126,97
 dispatch,126,66
@@ -6912,7 +6912,6 @@ subproblem,84,64
 trucks,84,63
 nonsmooth,84,67
 unintended,84,79
-well-studied,84,83
 ignores,84,83
 cpgs,84,55
 kilometers,84,80
@@ -6965,6 +6964,7 @@ installing,83,81
 driver's,83,55
 intrusion,83,44
 fulfilling,83,80
+well-studied,83,82
 multi-finger,83,63
 heads,83,67
 harvest,83,61
@@ -8398,7 +8398,6 @@ weaker,57,53
 slips,57,53
 problem-specific,57,43
 hydrodynamics,57,53
-gracefully,57,54
 investment,57,44
 hmd,57,33
 enlarged,57,55
@@ -8484,6 +8483,7 @@ hampered,56,56
 travelled,56,51
 encapsulate,56,56
 regain,56,54
+gracefully,56,53
 observational,56,46
 customize,56,56
 rating,56,50
@@ -9168,7 +9168,6 @@ archival,49,49
 etm,49,24
 graphically,48,47
 recalibration,48,39
-exclusion,48,45
 streamline,48,48
 navigator,48,33
 everywhere,48,46
@@ -9272,6 +9271,7 @@ srm,48,15
 die,47,35
 ascertain,47,47
 surveyed,47,43
+exclusion,47,44
 revision,47,35
 lengthy,47,47
 obtainable,47,46
@@ -9341,7 +9341,6 @@ biaxial,47,35
 robonaut,47,29
 cultural,47,35
 skid-steered,47,31
-crashes,47,40
 noting,47,47
 two-way,47,42
 tablet,47,36
@@ -9451,6 +9450,7 @@ in-field,46,36
 organism,46,36
 bypassing,46,43
 deviates,46,45
+crashes,46,39
 ecosystems,46,40
 incentive,46,27
 protected,46,38
@@ -11464,7 +11464,6 @@ saccadic,31,20
 manoeuvrability,31,27
 perception-based,31,27
 sport,31,29
-surely,31,27
 checker,31,27
 elevators,31,24
 task-priority,31,28
@@ -11661,6 +11660,7 @@ flange,30,24
 experimentations,30,30
 neighbour,30,24
 robot-mounted,30,23
+surely,30,26
 impending,30,28
 indicative,30,29
 prs,30,15
@@ -17789,7 +17789,6 @@ airgap,13,9
 toronto,13,13
 matchings,13,12
 hexagon,13,11
-crashing,13,13
 polished,13,11
 ditches,13,12
 npd,13,5
@@ -18528,6 +18527,7 @@ wisely,12,12
 thoughts,12,12
 backing,12,10
 tbd,12,6
+crashing,12,12
 wheelchair-mounted,12,12
 robot-camera,12,10
 residing,12,12

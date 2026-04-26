@@ -92,7 +92,8 @@ python _enrich_communities.py     # Leiden + TF-IDF → community 필드 주입
 | DOI 없는 행 drop | step3 / _make_all_html | 거의 다 학회 proceedings volume 표제 ("Robotics: Science and Systems XX, …") 같은 비논문 |
 | DOI 기반 dedup | step3 / _make_all_html | 같은 DOI가 여러 venue에 등장하면 `_DEDUP_ORDER` (저널 우선) 기준으로 primary venue 결정, `venues_all`에 다 기록 |
 | 제목+연도 dedup (within-venue only) | step3 / _make_all_html | 같은 venue 안에서 DOI만 다른 중복만 합침. **다른 venue 간(저널↔학회)에 같은-제목·같은-연도 있어도 절대 합치지 않음** — 보통 별개 publication (저널 확장본 vs 학회 원본) |
-| Page count 정리 | _make_all_html `_clean_page_count` | 2~50쪽만 정상값으로 인정. IJRR / T-RO 만 cap을 100으로 올림 (장문 survey 허용). 그 외 값(early-access "1-1", DBLP proceedings span "1827-18533" 등)은 0 → 화면에 `—` 표시 |
+| Pages 백필 | step2_openalex.py | DBLP가 `pages` 필드를 비워둔 경우 (특히 IJRR 2018~2021 ~280편) OpenAlex `biblio.first_page-last_page` 로 자동 채움 — 신규 DOI fetch 때 자동 적용. 기존 캐시 entry는 자체적인 backfill 안 됨 → `enriched_checkpoint`에서 해당 DOI 삭제 후 step2 재실행 (예: `python3 -c "from _checkpoint import load_checkpoint, save_checkpoint; ..."` 패턴) |
+| Page count 정리 | _make_all_html `_clean_page_count` | 2~50쪽만 정상값으로 인정. IJRR / T-RO 만 cap을 100으로 올림 (장문 survey 허용). 그 외 값(early-access "1-1", DBLP proceedings span "1827-18533" 등)은 0 → 화면에 `N/A` 표시 |
 
 ### 5) 다음 단계로
 
