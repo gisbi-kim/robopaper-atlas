@@ -1,1 +1,2632 @@
-[]
+[
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Data Retrieval with Importance Weights for Few-Shot Imitation Learning",
+    "authors": "Amber Xie; Rahul Chand; Dorsa Sadigh; Joey Hejna",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/xie25a.html",
+    "pages": "1-16",
+    "dblp_key": "conf/corl/pmlr305_xie25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "$\\pi_0.5$: a Vision-Language-Action Model with Open-World Generalization",
+    "authors": "Kevin Black; Noah Brown; James Darpinian; Karan Dhabalia; Danny Driess; Adnan Esmail; Michael Robert Equi; Chelsea Finn; Niccolo Fusai; Manuel Y. Galliker; Dibya Ghosh; Lachy Groom; Karol Hausman; brian ichter; Szymon Jakubczak; Tim Jones; Liyiming Ke; Devin LeBlanc; Sergey Levine; Adrian Li-Bell; Mohith Mothukuri; Suraj Nair; Karl Pertsch; Allen Z. Ren; Lucy Xiaoyang Shi; Laura Smith; Jost Tobias Springenberg; Kyle Stachowicz; James Tanner; Quan Vuong; Homer Walke; Anna Walling; Haohuan Wang; Lili Yu; Ury Zhilinsky",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/black25a.html",
+    "pages": "17-40",
+    "dblp_key": "conf/corl/pmlr305_black25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Geometric Red-Teaming for Robotic Manipulation",
+    "authors": "Divyam Goel; Yufei Wang; Tiancheng Wu; Guixiu Qiao; Pavel Piliptchak; David Held; Zackory Erickson",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/goel25a.html",
+    "pages": "41-67",
+    "dblp_key": "conf/corl/pmlr305_goel25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Belief-Conditioned One-Step Diffusion: Real-Time Trajectory Planning with Just-Enough Sensing",
+    "authors": "Gokul Puthumanaillam; Aditya Penumarti; Manav Vora; Paulo Padrao; Jose Fuentes; Leonardo Bobadilla; Jane Shin; Melkior Ornik",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/puthumanaillam25a.html",
+    "pages": "68-92",
+    "dblp_key": "conf/corl/pmlr305_puthumanaillam25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Reactive In-Air Clothing Manipulation with Confidence-Aware Dense Correspondence and Visuotactile Affordance",
+    "authors": "Neha Sunil; Megha Tippur; Arnau Saumell Portillo; Edward H Adelson; Alberto Rodriguez Garcia",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/sunil25a.html",
+    "pages": "93-104",
+    "dblp_key": "conf/corl/pmlr305_sunil25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Tactile Beyond Pixels: Multisensory Touch Representations for Robot Manipulation",
+    "authors": "Carolina Higuera; Akash Sharma; Taosha Fan; Chaithanya Krishna Bodduluri; Byron Boots; Michael Kaess; Mike Lambeta; Tingfan Wu; Zixi Liu; Francois Robert Hogan; Mustafa Mukadam",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/higuera25a.html",
+    "pages": "105-123",
+    "dblp_key": "conf/corl/pmlr305_higuera25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "“Stack It Up!”: 3D Stable Structure Generation from 2D Hand-drawn Sketch",
+    "authors": "Yiqing Xu; Linfeng Li; Cunjun Yu; David Hsu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/xu25a.html",
+    "pages": "124-151",
+    "dblp_key": "conf/corl/pmlr305_xu25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Cross-Sensor Touch Generation",
+    "authors": "Samanta Rodriguez; Yiming Dou; Miquel Oller; Andrew Owens; Nima Fazeli",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/rodriguez25a.html",
+    "pages": "152-167",
+    "dblp_key": "conf/corl/pmlr305_rodriguez25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "One View, Many Worlds: Single-Image to 3D object Meets Generative Domain Randomization for One-Shot 6D Pose Estimation",
+    "authors": "Zheng Geng; Nan Wang; Shaocong Xu; Chongjie Ye; Bohan Li; Zhaoxi Chen; Sida Peng; Hao Zhao",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/geng25a.html",
+    "pages": "168-197",
+    "dblp_key": "conf/corl/pmlr305_geng25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "AirExo-2: Scaling up Generalizable Robotic Imitation Learning with Low-Cost Exoskeletons",
+    "authors": "Hongjie Fang; Chenxi Wang; Yiming Wang; Jingjing Chen; Shangning Xia; Jun Lv; Zihao He; Xiyan Yi; Yunhan Guo; Xinyu Zhan; Lixin Yang; Weiming Wang; Cewu Lu; Hao-Shu Fang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/fang25a.html",
+    "pages": "198-220",
+    "dblp_key": "conf/corl/pmlr305_fang25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Non-conflicting Energy Minimization in Reinforcement Learning based Robot Control",
+    "authors": "Skand Peri; Akhil Perincherry; Bikram Pandit; Stefan Lee",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/peri25a.html",
+    "pages": "221-237",
+    "dblp_key": "conf/corl/pmlr305_peri25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Streaming Flow Policy: Simplifying diffusion/flow-matching policies by treating action trajectories as flow trajectories",
+    "authors": "Sunshine Jiang; Xiaolin Fang; Nicholas Roy; Tomás Lozano-Pérez; Leslie Pack Kaelbling; Siddharth Ancha",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/jiang25a.html",
+    "pages": "238-257",
+    "dblp_key": "conf/corl/pmlr305_jiang25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Steering Your Diffusion Policy with Latent Space Reinforcement Learning",
+    "authors": "Andrew Wagenmaker; Yunchu Zhang; Mitsuhiko Nakamoto; Seohong Park; Waleed Yagoub; Anusha Nagabandi; Abhishek Gupta; Sergey Levine",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wagenmaker25a.html",
+    "pages": "258-282",
+    "dblp_key": "conf/corl/pmlr305_wagenmaker25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Real-Time Out-of-Distribution Failure Prevention via Multi-Modal Reasoning",
+    "authors": "Milan Ganai; Rohan Sinha; Christopher Agia; Daniel Morton; Luigi Di Lillo; Marco Pavone",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/ganai25a.html",
+    "pages": "283-308",
+    "dblp_key": "conf/corl/pmlr305_ganai25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "ScrewSplat: An End-to-End Method for Articulated Object Recognition",
+    "authors": "Seungyeon Kim; Junsu HA; Young Hun Kim; Yonghyeon Lee; Frank C. Park",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/kim25a.html",
+    "pages": "309-335",
+    "dblp_key": "conf/corl/pmlr305_kim25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "RoboArena: Distributed Real-World Evaluation of Generalist Robot Policies",
+    "authors": "Pranav Atreya; Karl Pertsch; Tony Lee; Moo Jin Kim; Arhan Jain; Artur Kuramshin; Cyrus Neary; Edward S. Hu; Kanav Arora; Kirsty Ellis; Luca Macesanu; Matthew Leonard; Meedeum Cho; Ozgur Aslan; Shivin Dass; Tony Wang; Xingfang Yuan; Abhishek Gupta; Dinesh Jayaraman; Glen Berseth; Kostas Daniilidis; Roberto Martín-Martín; Youngwoon Lee; Percy Liang; Chelsea Finn; Sergey Levine",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/atreya25a.html",
+    "pages": "336-364",
+    "dblp_key": "conf/corl/pmlr305_atreya25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Training Strategies for Efficient Embodied Reasoning",
+    "authors": "William Chen; Suneel Belkhale; Suvir Mirchandani; Karl Pertsch; Danny Driess; Oier Mees; Sergey Levine",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/chen25a.html",
+    "pages": "365-391",
+    "dblp_key": "conf/corl/pmlr305_chen25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Latent Theory of Mind: A Decentralized Diffusion Architecture for Cooperative Manipulation",
+    "authors": "Chengyang He; Gadiel Mark Sznaier Camps; Xu Liu; Mac Schwager; Guillaume Adrien Sartoretti",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/he25a.html",
+    "pages": "392-405",
+    "dblp_key": "conf/corl/pmlr305_he25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Fabrica: Dual-Arm Assembly of General Multi-Part Objects via Integrated Planning and Learning",
+    "authors": "Yunsheng Tian; Joshua Jacob; Yijiang Huang; Jialiang Zhao; Edward Li Gu; Pingchuan Ma; Annan Zhang; Farhad Javid; Branden Romero; Sachin Chitta; Shinjiro Sueda; Hui Li; Wojciech Matusik",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/tian25a.html",
+    "pages": "406-419",
+    "dblp_key": "conf/corl/pmlr305_tian25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "The Sound of Simulation: Learning Multimodal Sim-to-Real Robot Policies with Generative Audio",
+    "authors": "Renhao Wang; Haoran Geng; Tingle Li; Philipp Wu; Feishi Wang; Gopala Anumanchipalli; Trevor Darrell; Boyi Li; Pieter Abbeel; Jitendra Malik; Alexei A Efros",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wang25a.html",
+    "pages": "420-436",
+    "dblp_key": "conf/corl/pmlr305_wang25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "DexUMI: Using Human Hand as the Universal Manipulation Interface for Dexterous Manipulation",
+    "authors": "Mengda Xu; Han Zhang; Yifan Hou; Zhenjia Xu; Linxi Fan; Manuela Veloso; Shuran Song",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/xu25b.html",
+    "pages": "437-459",
+    "dblp_key": "conf/corl/pmlr305_xu25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "ReWiND: Language-Guided Rewards Teach Robot Policies without New Demonstrations",
+    "authors": "Jiahui Zhang; Yusen Luo; Abrar Anwar; Sumedh Anand Sontakke; Joseph J Lim; Jesse Thomason; Erdem Biyik; Jesse Zhang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhang25a.html",
+    "pages": "460-488",
+    "dblp_key": "conf/corl/pmlr305_zhang25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Planning from Point Clouds over Continuous Actions for Multi-object Rearrangement",
+    "authors": "Kallol Saha; Amber Li; Angela Rodriguez-Izquierdo; Lifan Yu; Ben Eisner; Maxim Likhachev; David Held",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/saha25a.html",
+    "pages": "489-512",
+    "dblp_key": "conf/corl/pmlr305_saha25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "SAVOR: Skill Affordance Learning from Visuo-Haptic Perception for Robot-Assisted Bite Acquisition",
+    "authors": "Zhanxin Wu; Bo Ai; Tom Silver; Tapomayukh Bhattacharjee",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wu25a.html",
+    "pages": "513-531",
+    "dblp_key": "conf/corl/pmlr305_wu25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "LocoFormer: Generalist Locomotion via Long-context Adaptation",
+    "authors": "Min Liu; Deepak Pathak; Ananye Agarwal",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/liu25a.html",
+    "pages": "532-546",
+    "dblp_key": "conf/corl/pmlr305_liu25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Real2Render2Real: Scaling Robot Data Without Dynamics Simulation or Robot Hardware",
+    "authors": "Justin Yu; Letian Fu; Huang Huang; Karim El-Refai; Rares Andrei Ambrus; Richard Cheng; Muhammad Zubair Irshad; Ken Goldberg",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/yu25a.html",
+    "pages": "547-577",
+    "dblp_key": "conf/corl/pmlr305_yu25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Sampling-based System Identification with Active Exploration for Legged Sim2Real Learning",
+    "authors": "Nikhil Sobanbabu; Guanqi He; Tairan He; Yuxiang Yang; Guanya Shi",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/sobanbabu25a.html",
+    "pages": "578-598",
+    "dblp_key": "conf/corl/pmlr305_sobanbabu25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "DemoSpeedup: Accelerating Visuomotor Policies via Entropy-Guided Demonstration Acceleration",
+    "authors": "Lingxiao Guo; Zhengrong Xue; Zijing Xu; Huazhe Xu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/guo25a.html",
+    "pages": "599-609",
+    "dblp_key": "conf/corl/pmlr305_guo25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Versatile Loco-Manipulation through Flexible Interlimb Coordination",
+    "authors": "Xinghao Zhu; Yuxin Chen; Lingfeng Sun; Farzad Niroui; Simon Le Cleac’h; Jiuguang Wang; Kuan Fang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhu25a.html",
+    "pages": "610-632",
+    "dblp_key": "conf/corl/pmlr305_zhu25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "KineSoft: Learning Proprioceptive Manipulation Policies with Soft Robot Hands",
+    "authors": "Uksang Yoo; Jonathan Francis; Jean Oh; Jeffrey Ichnowski",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/yoo25a.html",
+    "pages": "633-651",
+    "dblp_key": "conf/corl/pmlr305_yoo25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Learning a Unified Policy for Position and Force Control in Legged Loco-Manipulation",
+    "authors": "Peiyuan Zhi; Peiyang Li; Jianqin Yin; Baoxiong Jia; Siyuan Huang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhi25a.html",
+    "pages": "652-669",
+    "dblp_key": "conf/corl/pmlr305_zhi25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Omni-Perception: Omnidirectional Collision Avoidance of Legged Robots in Dynamic Environments",
+    "authors": "Zifan Wang; Teli Ma; Yufei Jia; Xun Yang; Jiaming Zhou; Wenlong OUYANG; Qiang Zhang; Junwei Liang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wang25b.html",
+    "pages": "670-685",
+    "dblp_key": "conf/corl/pmlr305_wang25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "HuB: Learning Extreme Humanoid Balance",
+    "authors": "Tong Zhang; Boyuan Zheng; Ruiqian Nai; Yingdong Hu; Yen-Jen Wang; Geng Chen; Fanqi Lin; Jiongye Li; Chuye Hong; Koushil Sreenath; Yang Gao",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhang25b.html",
+    "pages": "686-704",
+    "dblp_key": "conf/corl/pmlr305_zhang25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "FACET: Force-Adaptive Control via Impedance Reference Tracking for Legged Robots",
+    "authors": "Botian Xu; Haoyang Weng; Qingzhou Lu; Yang Gao; Huazhe Xu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/xu25c.html",
+    "pages": "705-720",
+    "dblp_key": "conf/corl/pmlr305_xu25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "SAIL: Faster-than-Demonstration Execution of Imitation Learning Policies",
+    "authors": "Nadun Ranawaka Arachchige; Zhenyang Chen; Wonsuhk Jung; Woo Chul Shin; Rohan Bansal; Pierre Barroso; Yu Hang He; Yingyan Celine Lin; Benjamin Joffe; Shreyas Kousik; Danfei Xu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/arachchige25a.html",
+    "pages": "721-749",
+    "dblp_key": "conf/corl/pmlr305_arachchige25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Divide, Discover, Deploy: Factorized Skill Learning with Symmetry and Style Priors",
+    "authors": "Rafael Cathomen; Mayank Mittal; Marin Vlastelica; Marco Hutter",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/cathomen25a.html",
+    "pages": "750-768",
+    "dblp_key": "conf/corl/pmlr305_cathomen25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "DexSkin: High-Coverage Conformable Robotic Skin for Learning Contact-Rich Manipulation",
+    "authors": "Suzannah Wistreich; Baiyu Shi; Stephen Tian; Samuel Clarke; Michael Nath; Chengyi Xu; Zhenan Bao; Jiajun Wu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wistreich25a.html",
+    "pages": "769-793",
+    "dblp_key": "conf/corl/pmlr305_wistreich25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Visual Imitation Enables Contextual Humanoid Control",
+    "authors": "Arthur Allshire; Hongsuk Choi; Junyi Zhang; David McAllister; Anthony Zhang; Chung Min Kim; Trevor Darrell; Pieter Abbeel; Jitendra Malik; Angjoo Kanazawa",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/allshire25a.html",
+    "pages": "794-815",
+    "dblp_key": "conf/corl/pmlr305_allshire25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "X-Sim: Cross-Embodiment Learning via Real-to-Sim-to-Real",
+    "authors": "Prithwish Dan; Kushal Kedia; Angela Chao; Edward Duan; Maximus Adrian Pace; Wei-Chiu Ma; Sanjiban Choudhury",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/dan25a.html",
+    "pages": "816-833",
+    "dblp_key": "conf/corl/pmlr305_dan25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "ImMimic: Cross-Domain Imitation from Human Videos via Mapping and Interpolation",
+    "authors": "Yangcen Liu; Woo Chul Shin; Yunhai Han; Zhenyang Chen; Harish Ravichandar; Danfei Xu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/liu25b.html",
+    "pages": "834-858",
+    "dblp_key": "conf/corl/pmlr305_liu25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "FetchBot: Learning Generalizable Object Fetching in Cluttered Scenes via Zero-Shot Sim2Real",
+    "authors": "Weiheng Liu; Yuxuan Wan; Jilong Wang; Yuxuan Kuang; Xuesong Shi; Haoran Li; Dongbin Zhao; Zhizheng Zhang; He Wang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/liu25c.html",
+    "pages": "859-884",
+    "dblp_key": "conf/corl/pmlr305_liu25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "ClutterDexGrasp: A Sim-to-Real System for General Dexterous Grasping in Cluttered Scenes",
+    "authors": "Zeyuan Chen; Qiyang Yan; Yuanpei Chen; Tianhao Wu; Jiyao Zhang; Zihan Ding; Jinzhou Li; Yaodong Yang; Hao Dong",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/chen25b.html",
+    "pages": "885-905",
+    "dblp_key": "conf/corl/pmlr305_chen25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Wheeled Lab: Modern Sim2Real for Low-cost, Open-source Wheeled Robotics",
+    "authors": "Tyler Han; Preet Shah; Sidharth Rajagopal; Yanda Bao; Sanghun Jung; Sidharth Talia; Gabriel Guo; Bryan Xu; Bhaumik Mehta; Emma Romig; Rosario Scalise; Byron Boots",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/han25a.html",
+    "pages": "906-923",
+    "dblp_key": "conf/corl/pmlr305_han25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "FlashBack: Consistency Model-Accelerated Shared Autonomy",
+    "authors": "Luzhe Sun; Jingtian Ji; Xiangshan Tan; Matthew Walter",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/sun25a.html",
+    "pages": "924-940",
+    "dblp_key": "conf/corl/pmlr305_sun25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "CLAMP: Crowdsourcing a LArge-scale in-the-wild haptic dataset with an open-source device for Multimodal robot Perception",
+    "authors": "Pranav N. Thakkar; Shubhangi Sinha; Karan Baijal; Yuhan (Anjelica) Bian; Leah Lackey; Ben Dodson; Heisen Kong; Jueun Kwon; Amber Li; Yifei Hu; alexios rekoutis; Tom Silver; Tapomayukh Bhattacharjee",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/thakkar25a.html",
+    "pages": "941-960",
+    "dblp_key": "conf/corl/pmlr305_thakkar25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "DEQ-MPC : Deep Equilibrium Model Predictive Control",
+    "authors": "Swaminathan Gurumurthy; Khai Nguyen; Arun L Bishop; J Zico Kolter; Zachary Manchester",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/gurumurthy25a.html",
+    "pages": "961-980",
+    "dblp_key": "conf/corl/pmlr305_gurumurthy25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Merging and Disentangling Views in Visual Reinforcement Learning for Robotic Manipulation",
+    "authors": "Abdulaziz Almuzairee; Rohan Prashant Patil; Dwait Bhatt; Henrik I Christensen",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/almuzairee25a.html",
+    "pages": "981-1003",
+    "dblp_key": "conf/corl/pmlr305_almuzairee25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "GraspVLA: a Grasping Foundation Model Pre-trained on Billion-scale Synthetic Action Data",
+    "authors": "Shengliang Deng; Mi Yan; Songlin Wei; Haixin Ma; Yuxin Yang; Jiayi Chen; Zhiqi Zhang; Taoyu Yang; Xuheng Zhang; Heming Cui; Zhizheng Zhang; He Wang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/deng25a.html",
+    "pages": "1004-1029",
+    "dblp_key": "conf/corl/pmlr305_deng25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Multi-Loco: Unifying Multi-Embodiment Legged Locomotion via Reinforcement Learning Augmented Diffusion",
+    "authors": "Shunpeng Yang; Zhen Fu; Zhefeng Cao; Guo Junde; Patrick Wensing; Wei Zhang; Hua Chen",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/yang25a.html",
+    "pages": "1030-1048",
+    "dblp_key": "conf/corl/pmlr305_yang25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Ensuring Force Safety in Vision-Guided Robotic Manipulation via Implicit Tactile Calibration",
+    "authors": "Lai Wei; Jiahua Ma; Yibo Hu; Ruimao Zhang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wei25a.html",
+    "pages": "1049-1062",
+    "dblp_key": "conf/corl/pmlr305_wei25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Learning Long-Horizon Robot Manipulation Skills via Privileged Action",
+    "authors": "Xiaofeng Mao; Yucheng XU; Zhaole Sun; Elle Miller; Daniel Layeghi; Michael Mistry",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/mao25a.html",
+    "pages": "1063-1078",
+    "dblp_key": "conf/corl/pmlr305_mao25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Estimating Value of Assistance for Online POMDP Robotic Agents",
+    "authors": "Yuval Goshen; Sarah Keren",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/goshen25a.html",
+    "pages": "1079-1101",
+    "dblp_key": "conf/corl/pmlr305_goshen25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "COMBO-Grasp: Learning Constraint-Based Manipulation for Bimanual Occluded Grasping",
+    "authors": "Jun Yamada; Alexander Luis Mitchell; Jack Collins; Ingmar Posner",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/yamada25a.html",
+    "pages": "1102-1119",
+    "dblp_key": "conf/corl/pmlr305_yamada25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "SocialNav-SUB: Benchmarking VLMs for Scene Understanding in Social Robot Navigation",
+    "authors": "Michael Joseph Munje; Chen Tang; Shuijing Liu; Zichao Hu; Yifeng Zhu; Jiaxun Cui; Garrett Warnell; Joydeep Biswas; Peter Stone",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/munje25a.html",
+    "pages": "1120-1143",
+    "dblp_key": "conf/corl/pmlr305_munje25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "AT-Drone: Benchmarking Adaptive Teaming in Multi-Drone Pursuit",
+    "authors": "Yang Li; Junfan Chen; Feng Xue; Jiabin Qiu; Wenbin Li; Qingrui Zhang; Ying Wen; Wei Pan",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/li25a.html",
+    "pages": "1144-1161",
+    "dblp_key": "conf/corl/pmlr305_li25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Robot Operating Home Appliances by Reading User Manuals",
+    "authors": "Jian Zhang; Hanbo Zhang; Anxing Xiao; David Hsu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhang25c.html",
+    "pages": "1162-1209",
+    "dblp_key": "conf/corl/pmlr305_zhang25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "KDPE: A Kernel Density Estimation Strategy for Diffusion Policy Trajectory Selection",
+    "authors": "Andrea Rosasco; Federico Ceola; Giulia Pasquale; Lorenzo Natale",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/rosasco25a.html",
+    "pages": "1210-1224",
+    "dblp_key": "conf/corl/pmlr305_rosasco25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "ActLoc: Learning to Localize on the Move via Active Viewpoint Selection",
+    "authors": "Jiajie Li; Boyang Sun; Luca Di Giammarino; Hermann Blum; Marc Pollefeys",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/li25b.html",
+    "pages": "1225-1245",
+    "dblp_key": "conf/corl/pmlr305_li25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "BEHAVIOR Robot Suite: Streamlining Real-World Whole-Body Manipulation for Everyday Household Activities",
+    "authors": "Yunfan Jiang; Ruohan Zhang; Josiah Wong; Chen Wang; Yanjie Ze; Hang Yin; Cem Gokmen; Shuran Song; Jiajun Wu; Li Fei-Fei",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/jiang25b.html",
+    "pages": "1246-1281",
+    "dblp_key": "conf/corl/pmlr305_jiang25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "TopoCut: Learning Multi-Step Cutting with Spectral Rewards and Discrete Diffusion Policies",
+    "authors": "Liquan Wang; Jiangjie Bian; Eric Heiden; Animesh Garg",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wang25c.html",
+    "pages": "1282-1310",
+    "dblp_key": "conf/corl/pmlr305_wang25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "$\\textttSPIN$: distilling $\\textttSkill-RRT$ for long-horizon prehensile and non-prehensile manipulation",
+    "authors": "Haewon Jung; Donguk Lee; Haecheol Park; Kim Jun Hyeop; Beomjoon Kim",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/jung25a.html",
+    "pages": "1311-1351",
+    "dblp_key": "conf/corl/pmlr305_jung25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "FFHFlow: Diverse and Uncertainty-Aware Dexterous Grasp Generation via Flow Variational Inference",
+    "authors": "Qian Feng; Jianxiang Feng; Zhaopeng Chen; Rudolph Triebel; Alois Knoll",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/feng25a.html",
+    "pages": "1352-1381",
+    "dblp_key": "conf/corl/pmlr305_feng25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "CogniPlan: Uncertainty-Guided Path Planning with Conditional Generative Layout Prediction",
+    "authors": "Yizhuo Wang; Haodong He; Jingsong Liang; Yuhong Cao; Ritabrata Chakraborty; Guillaume Adrien Sartoretti",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wang25d.html",
+    "pages": "1382-1396",
+    "dblp_key": "conf/corl/pmlr305_wang25d"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "ObjectReact: Learning Object-Relative Control for Visual Navigation",
+    "authors": "Sourav Garg; Dustin Craggs; Vineeth Bhat; Lachlan Mares; Stefan Podgorski; Madhava Krishna; Feras Dayoub; Ian Reid",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/garg25a.html",
+    "pages": "1397-1419",
+    "dblp_key": "conf/corl/pmlr305_garg25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "CHD: Coupled Hierarchical Diffusion for Long-Horizon Tasks",
+    "authors": "Ce Hao; Anxing Xiao; Zhiwei Xue; Harold Soh",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/hao25a.html",
+    "pages": "1420-1451",
+    "dblp_key": "conf/corl/pmlr305_hao25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Residual Neural Terminal Constraint for MPC-based Collision Avoidance in Dynamic Environments",
+    "authors": "Bojan Derajic; Mohamed-Khalil Bouzidi; Sebastian Bernhard; Wolfgang Hönig",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/derajic25a.html",
+    "pages": "1452-1469",
+    "dblp_key": "conf/corl/pmlr305_derajic25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Multi-critic Learning for Whole-body End-effector Twist Tracking",
+    "authors": "Aravind Elanjimattathil Vijayan; Andrei Cramariuc; Mattia Risiglione; Christian Gehring; Marco Hutter",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/vijayan25a.html",
+    "pages": "1470-1485",
+    "dblp_key": "conf/corl/pmlr305_vijayan25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Adapt3R: Adaptive 3D Scene Representation for Domain Transfer in Imitation Learning",
+    "authors": "Albert Wilcox; Mohamed Ghanem; Masoud Moghani; Pierre Barroso; Benjamin Joffe; Animesh Garg",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wilcox25a.html",
+    "pages": "1486-1514",
+    "dblp_key": "conf/corl/pmlr305_wilcox25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "PrioriTouch: Adapting to User Contact Preferences for Whole-Arm Physical Human-Robot Interaction",
+    "authors": "Rishabh Madan; Jiawei Lin; Mahika Goel; Amber Li; Angchen Xie; Xiaoyu Liang; Marcus Lee; Justin Guo; Pranav N. Thakkar; Rohan Banerjee; Jose Barreiros; Kate Tsui; Tom Silver; Tapomayukh Bhattacharjee",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/madan25a.html",
+    "pages": "1515-1530",
+    "dblp_key": "conf/corl/pmlr305_madan25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Sequence Modeling for Time-Optimal Quadrotor Trajectory Optimization with Sampling-based Robustness Analysis",
+    "authors": "Katherine Mao; Hongzhan Yu; Ruipeng Zhang; Igor Spasojevic; Sicun Gao; Vijay Kumar",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/mao25b.html",
+    "pages": "1531-1540",
+    "dblp_key": "conf/corl/pmlr305_mao25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "O$^3$Afford: One-Shot 3D Object-to-Object Affordance Grounding for Generalizable Robotic Manipulation",
+    "authors": "Tongxuan Tian; Xuhui Kang; Yen-Ling Kuo",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/tian25b.html",
+    "pages": "1541-1561",
+    "dblp_key": "conf/corl/pmlr305_tian25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Multimodal Fused Learning for Solving the Generalized Traveling Salesman Problem in Robotic Task Planning",
+    "authors": "Jiaqi Cheng; Mingfeng Fan; Xuefeng Zhang; Jingsong Liang; Yuhong Cao; Guohua Wu; Guillaume Adrien Sartoretti",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/cheng25a.html",
+    "pages": "1562-1575",
+    "dblp_key": "conf/corl/pmlr305_cheng25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Capability-Aware Shared Hypernetworks for Flexible Heterogeneous Multi-Robot Coordination",
+    "authors": "Kevin Fu; Shalin Jain; Pierce Howell; Harish Ravichandar",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/fu25a.html",
+    "pages": "1576-1597",
+    "dblp_key": "conf/corl/pmlr305_fu25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "ReCoDe: Reinforcement Learning-based Dynamic Constraint Design for Multi-Agent Coordination",
+    "authors": "Michael Amir; Guang Yang; Zhan Gao; Keisuke Okumura; Heedo Woo; Amanda Prorok",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/amir25a.html",
+    "pages": "1598-1614",
+    "dblp_key": "conf/corl/pmlr305_amir25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Predictive Red Teaming: Breaking Policies Without Breaking Robots",
+    "authors": "Anirudha Majumdar; Mohit Sharma; Dmitry Kalashnikov; Sumeet Singh; Pierre Sermanet; Vikas Sindhwani",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/majumdar25a.html",
+    "pages": "1615-1635",
+    "dblp_key": "conf/corl/pmlr305_majumdar25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Efficient Evaluation of Multi-Task Robot Policies With Active Experiment Selection",
+    "authors": "Abrar Anwar; Rohan Gupta; Zain Merchant; Sayan Ghosh; Willie Neiswanger; Jesse Thomason",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/anwar25a.html",
+    "pages": "1636-1653",
+    "dblp_key": "conf/corl/pmlr305_anwar25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Learning Smooth State-Dependent Traversability from Dense Point Clouds",
+    "authors": "Zihao Dong; Alan Papalia; Leonard Jung; Alenna Spiro; Philip R Osteen; Christa S. Robison; Michael Everett",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/dong25a.html",
+    "pages": "1654-1671",
+    "dblp_key": "conf/corl/pmlr305_dong25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Robot Trains Robot: Automatic Real-World Policy Adaptation and Learning for Humanoids",
+    "authors": "Kaizhe Hu; Haochen Shi; Yao He; Weizhuo Wang; Karen Liu; Shuran Song",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/hu25a.html",
+    "pages": "1672-1689",
+    "dblp_key": "conf/corl/pmlr305_hu25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Steerable Scene Generation with Post Training and Inference-Time Search",
+    "authors": "Nicholas Ezra Pfaff; Hongkai Dai; Sergey Zakharov; Shun Iwase; Russ Tedrake",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/pfaff25a.html",
+    "pages": "1690-1702",
+    "dblp_key": "conf/corl/pmlr305_pfaff25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Diffusion Dynamics Models with Generative State Estimation for Cloth Manipulation",
+    "authors": "Tongxuan Tian; Haoyang Li; Bo Ai; Xiaodi Yuan; Zhiao Huang; Hao Su",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/tian25c.html",
+    "pages": "1703-1725",
+    "dblp_key": "conf/corl/pmlr305_tian25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "LaDi-WM: A Latent Diffusion-Based World Model for Predictive Manipulation",
+    "authors": "Yuhang Huang; Jiazhao Zhang; Shilong Zou; Xinwang Liu; Ruizhen Hu; Kai Xu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/huang25a.html",
+    "pages": "1726-1743",
+    "dblp_key": "conf/corl/pmlr305_huang25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Learning Long-Context Diffusion Policies via Past-Token Prediction",
+    "authors": "Marcel Torne Villasevil; Andy Tang; Yuejiang Liu; Chelsea Finn",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/villasevil25a.html",
+    "pages": "1744-1755",
+    "dblp_key": "conf/corl/pmlr305_villasevil25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Constraint-Aware Diffusion Guidance for Robotics: Real-Time Obstacle Avoidance for Autonomous Racing",
+    "authors": "Hao Ma; Sabrina Bodmer; Andrea Carron; Melanie Zeilinger; Michael Muehlebach",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/ma25a.html",
+    "pages": "1756-1776",
+    "dblp_key": "conf/corl/pmlr305_ma25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "QuaDreamer: Controllable Panoramic Video Generation for Quadruped Robots",
+    "authors": "Sheng Wu; Fei Teng; Hao Shi; Qi Jiang; Kai Luo; Kaiwei Wang; Kailun Yang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wu25b.html",
+    "pages": "1777-1789",
+    "dblp_key": "conf/corl/pmlr305_wu25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Human-like Navigation in a World Built for Humans",
+    "authors": "Bhargav Chandaka; Gloria Xinyue Wang; Haozhe Chen; Henry Che; Albert J. Zhai; Shenlong Wang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/chandaka25a.html",
+    "pages": "1790-1808",
+    "dblp_key": "conf/corl/pmlr305_chandaka25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "GC-VLN: Instruction as Graph Constraints for Training-free Vision-and-Language Navigation",
+    "authors": "Hang Yin; Haoyu Wei; Xiuwei Xu; Wenxuan Guo; Jie Zhou; Jiwen Lu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/yin25a.html",
+    "pages": "1809-1824",
+    "dblp_key": "conf/corl/pmlr305_yin25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Point Policy: Unifying Observations and Actions with Key Points for Robot Manipulation",
+    "authors": "Siddhant Haldar; Lerrel Pinto",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/haldar25a.html",
+    "pages": "1825-1846",
+    "dblp_key": "conf/corl/pmlr305_haldar25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Train-Once Plan-Anywhere Kinodynamic Motion Planning via Diffusion Trees",
+    "authors": "Yaniv Hassidof; Tom Jurgenson; Kiril Solovey",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/hassidof25a.html",
+    "pages": "1847-1878",
+    "dblp_key": "conf/corl/pmlr305_hassidof25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "SDS – See it, Do it, Sorted: Quadruped Skill Synthesis from Single Video Demonstration",
+    "authors": "Maria Stamatopoulou; Jeffrey Li; Dimitrios Kanoulas",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/stamatopoulou25a.html",
+    "pages": "1879-1897",
+    "dblp_key": "conf/corl/pmlr305_stamatopoulou25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "ControlVLA: Few-shot Object-centric Adaptation for Pre-trained Vision-Language-Action Models",
+    "authors": "Puhao Li; Yingying Wu; Ziheng Xi; Wanlin Li; Yuzhe Huang; Zhiyuan Zhang; Yinghan Chen; Jianan Wang; Song-Chun Zhu; Tengyu Liu; Siyuan Huang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/li25c.html",
+    "pages": "1898-1913",
+    "dblp_key": "conf/corl/pmlr305_li25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Sample-Efficient Online Control Policy Learning with Real-Time Recursive Model Updates",
+    "authors": "Zixin Zhang; James Avtges; Todd Murphey",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhang25d.html",
+    "pages": "1914-1939",
+    "dblp_key": "conf/corl/pmlr305_zhang25d"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "BranchOut: Capturing Realistic Multimodality in Autonomous Driving Decisions",
+    "authors": "Hee Jae Kim; Zekai Yin; Lei Lai; Jason Lee; Eshed Ohn-Bar",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/kim25b.html",
+    "pages": "1940-1952",
+    "dblp_key": "conf/corl/pmlr305_kim25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Morphologically Symmetric Reinforcement Learning for Ambidextrous Bimanual Manipulation",
+    "authors": "Zechu Li; Yufeng Jin; Daniel Ordonez-Apraez; Claudio Semini; Puze Liu; Georgia Chalvatzaki",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/li25d.html",
+    "pages": "1953-1974",
+    "dblp_key": "conf/corl/pmlr305_li25d"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "JaxRobotarium: Training and Deploying Multi-Robot Policies in 10 Minutes",
+    "authors": "Shalin Jain; Jiazhen Liu; Siva Kailas; Harish Ravichandar",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/jain25a.html",
+    "pages": "1975-1996",
+    "dblp_key": "conf/corl/pmlr305_jain25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "AutoEval: Autonomous Evaluation of Generalist Robot Manipulation Policies in the Real World",
+    "authors": "Zhiyuan Zhou; Pranav Atreya; You Liang Tan; Karl Pertsch; Sergey Levine",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhou25a.html",
+    "pages": "1997-2017",
+    "dblp_key": "conf/corl/pmlr305_zhou25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Long-VLA: Unleashing Long-Horizon Capability of Vision Language Action Model for Robot Manipulation",
+    "authors": "Yiguo Fan; Shuanghao Bai; Xinyang Tong; Pengxiang Ding; Yuyang Zhu; Hongchao Lu; Fengqi Dai; Wei Zhao; Yang Liu; Siteng Huang; Zhaoxin Fan; Badong Chen; Donglin Wang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/fan25a.html",
+    "pages": "2018-2037",
+    "dblp_key": "conf/corl/pmlr305_fan25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Reflective Planning: Vision-Language Models for Multi-Stage Long-Horizon Robotic Manipulation",
+    "authors": "Yunhai Feng; Jiaming Han; Zhuoran Yang; Xiangyu Yue; Sergey Levine; Jianlan Luo",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/feng25b.html",
+    "pages": "2038-2062",
+    "dblp_key": "conf/corl/pmlr305_feng25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Learn from What We HAVE: History-Aware VErifier that Reasons about Past Interactions Online",
+    "authors": "Yishu Li; Xinyi Mao; Ying Yuan; Kyutae Sim; Ben Eisner; David Held",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/li25e.html",
+    "pages": "2063-2092",
+    "dblp_key": "conf/corl/pmlr305_li25e"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Search-TTA: A Multi-Modal Test-Time Adaptation Framework for Visual Search in the Wild",
+    "authors": "Derek Ming Siang Tan; Shailes Shailesh; Boyang Liu; Alok Raj; Qi Xuan Ang; Weiheng Dai; Tanishq Duhan; Jimmy Chiun; Yuhong Cao; Florian Shkurti; Guillaume Adrien Sartoretti",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/tan25a.html",
+    "pages": "2093-2120",
+    "dblp_key": "conf/corl/pmlr305_tan25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "MEReQ: Max-Ent Residual-Q Inverse RL for Sample-Efficient Alignment from Intervention",
+    "authors": "Yuxin Chen; Chen Tang; Jianglan Wei; Chenran Li; Thomas Tian; Xiang Zhang; Wei Zhan; Peter Stone; Masayoshi Tomizuka",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/chen25c.html",
+    "pages": "2121-2142",
+    "dblp_key": "conf/corl/pmlr305_chen25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "TWIST: Teleoperated Whole-Body Imitation System",
+    "authors": "Yanjie Ze; Zixuan Chen; Joao Pedro Araujo; Zi-ang Cao; Xue Bin Peng; Jiajun Wu; Karen Liu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/ze25a.html",
+    "pages": "2143-2154",
+    "dblp_key": "conf/corl/pmlr305_ze25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "KoopMotion: Learning Almost Divergence Free Koopman Flow Fields for Motion Planning",
+    "authors": "Alice Kate Li; Thales C. Silva; Victoria Edwards; Vijay Kumar; M. Ani Hsieh",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/li25f.html",
+    "pages": "2155-2169",
+    "dblp_key": "conf/corl/pmlr305_li25f"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Pointing3D: A Benchmark for 3D Object Referral via Pointing Gestures",
+    "authors": "Mert Arslanoglu; Kadir Yilmaz; Cemhan Kaan Özaltan; Timm Linder; Bastian Leibe",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/arslanoglu25a.html",
+    "pages": "2170-2183",
+    "dblp_key": "conf/corl/pmlr305_arslanoglu25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Dexplore: Scalable Neural Control for Dexterous Manipulation from Reference Scoped Exploration",
+    "authors": "Sirui Xu; Yu-Wei Chao; Liuyu Bian; Arsalan Mousavian; Yu-Xiong Wang; Liangyan Gui; Wei Yang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/xu25d.html",
+    "pages": "2184-2199",
+    "dblp_key": "conf/corl/pmlr305_xu25d"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Enabling Long(er) Horizon Imitation for Manipulation Tasks by Modeling Subgoal Transitions",
+    "authors": "Shivam Jain; Sachit Sachdeva; Rohan Paul",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/jain25b.html",
+    "pages": "2219-2238",
+    "dblp_key": "conf/corl/pmlr305_jain25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Cost-aware Discovery of Contextual Failures using Bayesian Active Learning",
+    "authors": "Anjali Parashar; Joseph Zhang; Yingke Li; Chuchu Fan",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/parashar25a.html",
+    "pages": "2239-2267",
+    "dblp_key": "conf/corl/pmlr305_parashar25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "ManiFlow: A General Robot Manipulation Policy via Consistency Flow Training",
+    "authors": "Ge Yan; Jiyue Zhu; Yuquan Deng; Shiqi Yang; Ri-Zhao Qiu; Xuxin Cheng; Marius Memmel; Ranjay Krishna; Ankit Goyal; Xiaolong Wang; Dieter Fox",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/yan25a.html",
+    "pages": "2268-2293",
+    "dblp_key": "conf/corl/pmlr305_yan25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Leveraging Correlation Across Test Platforms for Variance-Reduced Metric Estimation",
+    "authors": "Rachel Luo; Heng Yang; Michael Watson; Apoorva Sharma; Sushant Veer; Edward Schmerling; Marco Pavone",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/luo25a.html",
+    "pages": "2294-2310",
+    "dblp_key": "conf/corl/pmlr305_luo25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Self-supervised perception for tactile skin covered dexterous hands",
+    "authors": "Akash Sharma; Carolina Higuera; Chaithanya Krishna Bodduluri; Zixi Liu; Taosha Fan; Tess Hellebrekers; Mike Lambeta; Byron Boots; Michael Kaess; Tingfan Wu; Francois Robert Hogan; Mustafa Mukadam",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/sharma25a.html",
+    "pages": "2311-2328",
+    "dblp_key": "conf/corl/pmlr305_sharma25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Learning Impact-Rich Rotational Maneuvers via Centroidal Velocity Rewards and Sim-to-Real Techniques: A One-Leg Hopper Flip Case Study",
+    "authors": "Dongyun Kang; Gijeong Kim; JongHun Choe; Hajun Kim; Hae-Won Park",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/kang25a.html",
+    "pages": "2329-2343",
+    "dblp_key": "conf/corl/pmlr305_kang25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "3DS-VLA: A 3D Spatial-Aware Vision Language Action Model for Robust Multi-Task Manipulation",
+    "authors": "Xiaoqi Li; Liang Heng; Jiaming Liu; Yan Shen; Chenyang Gu; Zhuoyang Liu; Hao Chen; Nuowei Han; Renrui Zhang; Hao Tang; Shanghang Zhang; Hao Dong",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/li25g.html",
+    "pages": "2344-2359",
+    "dblp_key": "conf/corl/pmlr305_li25g"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "CoRI: Communication of Robot Intent for Physical Human-Robot Interaction",
+    "authors": "Junxiang Wang; Emek Barış Küçüktabak; Rana Soltani Zarrin; Zackory Erickson",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wang25e.html",
+    "pages": "2360-2390",
+    "dblp_key": "conf/corl/pmlr305_wang25e"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "MirrorDuo: Reflection-Consistent Visuomotor Learning from Mirrored Demonstration Pairs",
+    "authors": "Zheyu Zhuang; Ruiyu Wang; Giovanni Luca Marchetti; Florian T. Pokorny; Danica Kragic",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhuang25a.html",
+    "pages": "2391-2408",
+    "dblp_key": "conf/corl/pmlr305_zhuang25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "AimBot: A Simple Auxiliary Visual Cue to Enhance Spatial Awareness of Visuomotor Policies",
+    "authors": "Yinpei Dai; Jayjun Lee; Yichi Zhang; Ziqiao Ma; Jianing Yang; Amir Zadeh; Chuan Li; Nima Fazeli; Joyce Chai",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/dai25a.html",
+    "pages": "2409-2429",
+    "dblp_key": "conf/corl/pmlr305_dai25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Latent Adaptive Planner for Dynamic Manipulation",
+    "authors": "Donghun Noh; Deqian Kong; Minglu Zhao; Andrew Lizarraga; Jianwen Xie; Ying Nian Wu; Dennis Hong",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/noh25a.html",
+    "pages": "2430-2448",
+    "dblp_key": "conf/corl/pmlr305_noh25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Improving Efficiency of Sampling-based Motion Planning via Message-Passing Monte Carlo",
+    "authors": "Makram Chahine; T. Konstantin Rusch; Zach J Patterson; Daniela Rus",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/chahine25a.html",
+    "pages": "2449-2461",
+    "dblp_key": "conf/corl/pmlr305_chahine25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "CASPER: Inferring Diverse Intents for Assistive Teleoperation with Vision Language Models",
+    "authors": "Huihan Liu; Rutav Shah; Shuijing Liu; Jack Pittenger; Mingyo Seo; Yuchen Cui; Yonatan Bisk; Roberto Martín-Martín; Yuke Zhu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/liu25d.html",
+    "pages": "2462-2483",
+    "dblp_key": "conf/corl/pmlr305_liu25d"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "VT-Refine: Learning Bimanual Assembly with Visuo-Tactile Feedback via Simulation Fine-Tuning",
+    "authors": "Binghao Huang; Jie Xu; Iretiayo Akinola; Wei Yang; Balakumar Sundaralingam; Rowland O’Flaherty; Dieter Fox; Xiaolong Wang; Arsalan Mousavian; Yu-Wei Chao; Yunzhu Li",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/huang25b.html",
+    "pages": "2484-2500",
+    "dblp_key": "conf/corl/pmlr305_huang25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Few-Shot Neuro-Symbolic Imitation Learning for Long-Horizon Planning and Acting",
+    "authors": "Pierrick Lorang; Hong Lu; Johannes Huemer; Patrik Zips; Matthias Scheutz",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/lorang25a.html",
+    "pages": "2501-2518",
+    "dblp_key": "conf/corl/pmlr305_lorang25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "From Tabula Rasa to Emergent Abilities: Discovering Robot Skills via Real-World Unsupervised Quality-Diversity",
+    "authors": "Luca Grillotti; Lisa Coiffard; Oscar Pang; Maxence Faldor; Antoine Cully",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/grillotti25a.html",
+    "pages": "2519-2535",
+    "dblp_key": "conf/corl/pmlr305_grillotti25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "exUMI: Extensible Robot Teaching System with Action-aware Task-agnostic Tactile Representation",
+    "authors": "Yue Xu; Litao Wei; Pengyu An; Qingyu Zhang; Yong-Lu Li",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/xu25e.html",
+    "pages": "2536-2554",
+    "dblp_key": "conf/corl/pmlr305_xu25e"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "IRIS: An Immersive Robot Interaction System",
+    "authors": "Xinkai Jiang; Qihao Yuan; Enes Ulas Dincer; Hongyi Zhou; Ge Li; Xueyin Li; Xiaogang Jia; Timo Schnizer; Nicolas Schreiber; Weiran Liao; Julius Haag; Kailai Li; Gerhard Neumann; Rudolf Lioutikov",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/jiang25c.html",
+    "pages": "2555-2582",
+    "dblp_key": "conf/corl/pmlr305_jiang25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "GraspQP: Differentiable Optimization of Force Closure for Diverse and Robust Dexterous Grasping",
+    "authors": "René Zurbrügg; Andrei Cramariuc; Marco Hutter",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zurbrugg25a.html",
+    "pages": "2583-2602",
+    "dblp_key": "conf/corl/pmlr305_zurbrugg25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "ATK: Automatic Task-driven Keypoint Selection for Robust Policy Learning",
+    "authors": "Yunchu Zhang; Shubham Mittal; Zhengyu Zhang; Liyiming Ke; Siddhartha Srinivasa; Abhishek Gupta",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhang25e.html",
+    "pages": "2603-2627",
+    "dblp_key": "conf/corl/pmlr305_zhang25e"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "ARCH: Hierarchical Hybrid Learning for Long-Horizon Contact-Rich Robotic Assembly",
+    "authors": "Jiankai Sun; Aidan Curtis; Yang You; Yan Xu; Michael Koehle; Qianzhong Chen; Suning Huang; Leonidas Guibas; Sachin Chitta; Mac Schwager; Hui Li",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/sun25b.html",
+    "pages": "2628-2642",
+    "dblp_key": "conf/corl/pmlr305_sun25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Generalist Robot Manipulation beyond Action Labeled Data",
+    "authors": "Alexander Spiridonov; Jan-Nico Zaech; Nikolay Nikolov; Luc Van Gool; Danda Pani Paudel",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/spiridonov25a.html",
+    "pages": "2643-2664",
+    "dblp_key": "conf/corl/pmlr305_spiridonov25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Subteaming and Adaptive Formation Control for Coordinated Multi-Robot Navigation",
+    "authors": "Zihao Deng; Peng Gao; Williard Joshua Jose; Maggie Wigness; John G. Rogers III; Brian Reily; Christopher M. Reardon; Hao Zhang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/deng25b.html",
+    "pages": "2665-2677",
+    "dblp_key": "conf/corl/pmlr305_deng25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Unsupervised Skill Discovery as Exploration for Learning Agile Locomotion",
+    "authors": "Seungeun Rho; Kartik Garg; Morgan Byrd; Sehoon Ha",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/rho25a.html",
+    "pages": "2678-2694",
+    "dblp_key": "conf/corl/pmlr305_rho25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Tool-as-Interface: Learning Robot Policies from Observing Human Tool Use",
+    "authors": "Haonan Chen; Cheng Zhu; Shuijing Liu; Yunzhu Li; Katherine Rose Driggs-Campbell",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/chen25d.html",
+    "pages": "2695-2713",
+    "dblp_key": "conf/corl/pmlr305_chen25d"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "GraphEQA: Using 3D Semantic Scene Graphs for Real-time Embodied Question Answering",
+    "authors": "Saumya Saxena; Blake Buchanan; Chris Paxton; Peiqi Liu; Bingqing Chen; Narunas Vaskevicius; Luigi Palmieri; Jonathan Francis; Oliver Kroemer",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/saxena25a.html",
+    "pages": "2714-2742",
+    "dblp_key": "conf/corl/pmlr305_saxena25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Mechanistic Interpretability for Steering Vision-Language-Action Models",
+    "authors": "Bear Häon; Kaylene Caswell Stocking; Ian Chuang; Claire Tomlin",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/haon25a.html",
+    "pages": "2743-2762",
+    "dblp_key": "conf/corl/pmlr305_haon25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "AgentWorld: An Interactive Simulation Platform for Scene Construction and Mobile Robotic Manipulation",
+    "authors": "Yizheng Zhang; Zhenjun Yu; JiaXin Lai; Cewu Lu; Lei Han",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhang25f.html",
+    "pages": "2763-2778",
+    "dblp_key": "conf/corl/pmlr305_zhang25f"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "LocoTouch: Learning Dynamic Quadrupedal Transport with Tactile Sensing",
+    "authors": "Changyi Lin; Yuxin Ray Song; Boda Huo; Mingyang Yu; Yikai Wang; Shiqi Liu; Yuxiang Yang; Wenhao Yu; Tingnan Zhang; Jie Tan; Yiyue Luo; Ding Zhao",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/lin25a.html",
+    "pages": "2779-2801",
+    "dblp_key": "conf/corl/pmlr305_lin25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Uncertainty-aware Accurate Elevation Modeling for Off-road Navigation via Neural Processes",
+    "authors": "Sanghun Jung; Daehoon Gwak; Byron Boots; James Hays",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/jung25b.html",
+    "pages": "2802-2822",
+    "dblp_key": "conf/corl/pmlr305_jung25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Generative Visual Foresight Meets Task-Agnostic Pose Estimation in Robotic Table-top Manipulation",
+    "authors": "Chuye Zhang; Xiaoxiong Zhang; Linfang Zheng; Wei Pan; Wei Zhang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhang25g.html",
+    "pages": "2823-2846",
+    "dblp_key": "conf/corl/pmlr305_zhang25g"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Text2Touch: Tactile In-Hand Manipulation with LLM-Designed Reward Functions",
+    "authors": "Harrison Field; Max Yang; Yijiong Lin; Efi Psomopoulou; David A.W. Barton; Nathan F. Lepora",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/field25a.html",
+    "pages": "2847-2887",
+    "dblp_key": "conf/corl/pmlr305_field25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Humanoid Policy   Human Policy",
+    "authors": "Ri-Zhao Qiu; Shiqi Yang; Xuxin Cheng; Chaitanya Chawla; Jialong Li; Tairan He; Ge Yan; David J. Yoon; Ryan Hoque; Lars Paulsen; Ge Yang; Jian Zhang; Sha Yi; Guanya Shi; Xiaolong Wang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/qiu25a.html",
+    "pages": "2888-2906",
+    "dblp_key": "conf/corl/pmlr305_qiu25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "CUPID: Curating Data your Robot Loves with Influence Functions",
+    "authors": "Christopher Agia; Rohan Sinha; Jingyun Yang; Rika Antonova; Marco Pavone; Haruki Nishimura; Masha Itkina; Jeannette Bohg",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/agia25a.html",
+    "pages": "2907-2932",
+    "dblp_key": "conf/corl/pmlr305_agia25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "MoTo: A Zero-shot Plug-in Interaction-aware Navigation for General Mobile Manipulation",
+    "authors": "Zhenyu Wu; Angyuan Ma; Xiuwei Xu; Hang Yin; Yinan Liang; Ziwei Wang; Jiwen Lu; Haibin Yan",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wu25c.html",
+    "pages": "2933-2948",
+    "dblp_key": "conf/corl/pmlr305_wu25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Constrained Style Learning from Imperfect Demonstrations under Task Optimality",
+    "authors": "Kehan Wen; Chenhao Li; Junzhe He; Marco Hutter",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wen25a.html",
+    "pages": "2949-2965",
+    "dblp_key": "conf/corl/pmlr305_wen25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "SLAC: Simulation-Pretrained Latent Action Space for Whole-Body Real-World RL",
+    "authors": "Jiaheng Hu; Peter Stone; Roberto Martín-Martín",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/hu25b.html",
+    "pages": "2966-2982",
+    "dblp_key": "conf/corl/pmlr305_hu25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "GraspMolmo: Generalizable Task-Oriented Grasping via Large-Scale Synthetic Data Generation",
+    "authors": "Abhay Deshpande; Yuquan Deng; Jordi Salvador; Arijit Ray; Winson Han; Jiafei Duan; Rose Hendrix; Yuke Zhu; Ranjay Krishna",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/deshpande25a.html",
+    "pages": "2983-3007",
+    "dblp_key": "conf/corl/pmlr305_deshpande25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Poke and Strike: Learning Task-Informed Exploration Policies",
+    "authors": "Marina Y. Aoyama; Joao Moura; Juan Del Aguila Ferrandis; Sethu Vijayakumar",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/aoyama25a.html",
+    "pages": "3008-3034",
+    "dblp_key": "conf/corl/pmlr305_aoyama25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Robust Dexterous Grasping of General Objects",
+    "authors": "Hui Zhang; Zijian wu; Linyi Huang; Sammy Christen; Jie Song",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhang25h.html",
+    "pages": "3035-3050",
+    "dblp_key": "conf/corl/pmlr305_zhang25h"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "ReasonPlan: Unified Scene Prediction and Decision Reasoning for Closed-loop Autonomous Driving",
+    "authors": "Xueyi Liu; Zuodong Zhong; Qichao Zhang; Yuxin Guo; Yupeng Zheng; Junli Wang; Dongbin Zhao; Yun-Fu Liu; Zhiguo Su; Yinfeng Gao; Qiao Lin; Chen Huiyong",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/liu25e.html",
+    "pages": "3051-3068",
+    "dblp_key": "conf/corl/pmlr305_liu25e"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "FastUMI: A Scalable and Hardware-Independent Universal Manipulation Interface with Dataset",
+    "authors": "Zhaxizhuom Zhaxizhuoma; Kehui Liu; Chuyue Guan; Zhongjie Jia; Ziniu Wu; Xin Liu; Tianyu Wang; Shuai Liang; Pengan CHEN; Pingrui Zhang; Haoming Song; Delin Qu; Dong Wang; Zhigang Wang; Nieqing Cao; Yan Ding; Bin Zhao; Xuelong Li",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhaxizhuoma25a.html",
+    "pages": "3069-3093",
+    "dblp_key": "conf/corl/pmlr305_zhaxizhuoma25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "DexVLA: Vision-Language Model with Plug-In Diffusion Expert for General Robot Control",
+    "authors": "Junjie Wen; Yichen Zhu; Jinming Li; Zhibin Tang; Chaomin Shen; Feifei Feng",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wen25b.html",
+    "pages": "3094-3114",
+    "dblp_key": "conf/corl/pmlr305_wen25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "ZipMPC: Compressed Context-Dependent MPC Cost via Imitation Learning",
+    "authors": "Rahel Rickenbach; Alan Lahoud; Erik Schaffernicht; Melanie Zeilinger; Johannes A. Stork",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/rickenbach25a.html",
+    "pages": "3115-3136",
+    "dblp_key": "conf/corl/pmlr305_rickenbach25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "LLM-Guided Probabilistic Program Induction for POMDP Model Estimation",
+    "authors": "Aidan Curtis; Hao Tang; Thiago Veloso; Kevin Ellis; Joshua B. Tenenbaum; Tomás Lozano-Pérez; Leslie Pack Kaelbling",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/curtis25a.html",
+    "pages": "3137-3184",
+    "dblp_key": "conf/corl/pmlr305_curtis25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Long Range Navigator (LRN): Extending robot planning horizons beyond metric maps",
+    "authors": "Matt Schmittle; Rohan Baijal; Nathan Hatch; Rosario Scalise; Mateo Guaman Castro; Sidharth Talia; Khimya Khetarpal; Byron Boots; Siddhartha Srinivasa",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/schmittle25a.html",
+    "pages": "3185-3199",
+    "dblp_key": "conf/corl/pmlr305_schmittle25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "RoboMonkey: Scaling Test-Time Sampling and Verification for Vision-Language-Action Models",
+    "authors": "Jacky Kwok; Christopher Agia; Rohan Sinha; Matt Foutter; Shulu Li; Ion Stoica; Azalia Mirhoseini; Marco Pavone",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/kwok25a.html",
+    "pages": "3200-3217",
+    "dblp_key": "conf/corl/pmlr305_kwok25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "SafeBimanual: Diffusion-based trajectory optimization for safe bimanual manipulation",
+    "authors": "Haoyuan Deng; Wenkai Guo; Qianzhun Wang; Zhenyu Wu; Ziwei Wang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/deng25c.html",
+    "pages": "3218-3238",
+    "dblp_key": "conf/corl/pmlr305_deng25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Shortcut Learning in Generalist Robot Policies: The Role of Dataset Diversity and Fragmentation",
+    "authors": "Youguang Xing; Xu Luo; Junlin Xie; Lianli Gao; Heng Tao Shen; Jingkuan Song",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/xing25a.html",
+    "pages": "3239-3266",
+    "dblp_key": "conf/corl/pmlr305_xing25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "HALO : Human Preference Aligned Offline Reward Learning for Robot Navigation",
+    "authors": "Gershom Seneviratne; Jianyu An; Sahire Ellahy; Kasun Weerakoon; Mohamed Bashir Elnoor; Jonathan Deepak Kannan; Amogha Thalihalla Sunil; Dinesh Manocha",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/seneviratne25a.html",
+    "pages": "3267-3284",
+    "dblp_key": "conf/corl/pmlr305_seneviratne25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Contrastive Forward Prediction Reinforcement Learning for Adaptive Fault-Tolerant Legged Robots",
+    "authors": "Yangqing Fu; Yang Zhang; Qiyue Yang; Liyun Yan; Zhanxiang Cao; Yue Gao",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/fu25b.html",
+    "pages": "3285-3303",
+    "dblp_key": "conf/corl/pmlr305_fu25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Self-supervised Learning Of Visual Pose Estimation Without Pose Labels By Classifying LED States",
+    "authors": "Nicholas Carlotti; Mirko Nava; Alessandro Giusti",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/carlotti25a.html",
+    "pages": "3304-3317",
+    "dblp_key": "conf/corl/pmlr305_carlotti25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "ImLPR: Image-based LiDAR Place Recognition using Vision Foundation Models",
+    "authors": "Minwoo Jung; Lanke Frank Tarimo Fu; Maurice Fallon; Ayoung Kim",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/jung25c.html",
+    "pages": "3318-3340",
+    "dblp_key": "conf/corl/pmlr305_jung25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "$Door(s)$: Junction State Estimation for Efficient Exploration in Reinforcement Learning",
+    "authors": "Benjamin Fele; Jan Babic",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/fele25a.html",
+    "pages": "3341-3356",
+    "dblp_key": "conf/corl/pmlr305_fele25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Fast Flow-based Visuomotor Policies via Conditional Optimal Transport Couplings",
+    "authors": "Andreas Sochopoulos; Nikolay Malkin; Nikolaos Tsagkas; Joao Moura; Michael Gienger; Sethu Vijayakumar",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/sochopoulos25a.html",
+    "pages": "3357-3377",
+    "dblp_key": "conf/corl/pmlr305_sochopoulos25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "DiWA: Diffusion Policy Adaptation with World Models",
+    "authors": "Akshay L Chandra; Iman Nematollahi; Chenguang Huang; Tim Welschehold; Wolfram Burgard; Abhinav Valada",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/chandra25a.html",
+    "pages": "3378-3400",
+    "dblp_key": "conf/corl/pmlr305_chandra25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "SimShear: Sim-to-Real Shear-based Tactile Servoing",
+    "authors": "Kipp Freud; Yijiong Lin; Nathan F. Lepora",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/freud25a.html",
+    "pages": "3401-3412",
+    "dblp_key": "conf/corl/pmlr305_freud25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "ManipBench: Benchmarking Vision-Language Models for Low-Level Robot Manipulation",
+    "authors": "Enyu Zhao; Vedant Raval; Hejia Zhang; Jiageng Mao; Zeyu Shangguan; Stefanos Nikolaidis; Yue Wang; Daniel Seita",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhao25a.html",
+    "pages": "3413-3462",
+    "dblp_key": "conf/corl/pmlr305_zhao25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Distributed Upload and Active Labeling for Resource-Constrained Fleet Learning",
+    "authors": "Oguzhan Akcin; Harsh Goel; Ruihan Zhao; Sandeep P. Chinchali",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/akcin25a.html",
+    "pages": "3463-3482",
+    "dblp_key": "conf/corl/pmlr305_akcin25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Towards Embodiment Scaling Laws in Robot Locomotion",
+    "authors": "Bo Ai; Liu Dai; Nico Bohlinger; Dichen Li; Tongzhou Mu; Zhanxin Wu; K. Fay; Henrik I Christensen; Jan Peters; Hao Su",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/ai25a.html",
+    "pages": "3483-3515",
+    "dblp_key": "conf/corl/pmlr305_ai25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Mobi-$\\pi$: Mobilizing Your Robot Learning Policy",
+    "authors": "Jingyun Yang; Isabella Huang; Brandon Vu; Max Bajracharya; Rika Antonova; Jeannette Bohg",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/yang25b.html",
+    "pages": "3516-3536",
+    "dblp_key": "conf/corl/pmlr305_yang25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "RoboChemist: Long-Horizon and Safety-Compliant Robotic Chemical Experimentation",
+    "authors": "Zongzheng Zhang; Chenghao Yue; Haobo Xu; Minwen Liao; Xianglin Qi; Huan-ang Gao; Ziwei Wang; Hao Zhao",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhang25i.html",
+    "pages": "3537-3568",
+    "dblp_key": "conf/corl/pmlr305_zhang25i"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "D-CODA: Diffusion for Coordinated Dual-Arm Data Augmentation",
+    "authors": "I-Chun Arthur Liu; Jason Chen; Gaurav S. Sukhatme; Daniel Seita",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/liu25f.html",
+    "pages": "3569-3588",
+    "dblp_key": "conf/corl/pmlr305_liu25f"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "UnPose: Uncertainty-Guided Diffusion Priors for Zero-Shot Pose Estimation",
+    "authors": "Zhaodong Jiang; Ashish Sinha; Tongtong Cao; Yuan Ren; Bingbing Liu; Binbin Xu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/jiang25d.html",
+    "pages": "3589-3604",
+    "dblp_key": "conf/corl/pmlr305_jiang25d"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "WoMAP: World Models For Embodied Open-Vocabulary Object Localization",
+    "authors": "Tenny Yin; Zhiting Mei; Tao Sun; Ola Sho; Anirudha Majumdar; Emily Zhou; Jeremy Bao; Miyu Yamane; Lihan Zha",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/yin25b.html",
+    "pages": "3605-3630",
+    "dblp_key": "conf/corl/pmlr305_yin25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Constraint-Preserving Data Generation for One-Shot Visuomotor Policy Generalization",
+    "authors": "Kevin Lin; Varun Ragunath; Andrew McAlinden; Aaditya Prasad; Jimmy Wu; Yuke Zhu; Jeannette Bohg",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/lin25b.html",
+    "pages": "3631-3646",
+    "dblp_key": "conf/corl/pmlr305_lin25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Eye, Robot: Learning to Look to Act with a BC-RL Perception-Action Loop",
+    "authors": "Justin Kerr; Kush Hari; Ethan Weber; Chung Min Kim; Brent Yi; tyler bonnen; Ken Goldberg; Angjoo Kanazawa",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/kerr25a.html",
+    "pages": "3647-3664",
+    "dblp_key": "conf/corl/pmlr305_kerr25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Learning Deployable Locomotion Control via Differentiable Simulation",
+    "authors": "Clemens Schwarke; Victor Klemm; Joshua Bagajo; Jean Pierre Sleiman; Ignat Georgiev; Jesus Tordesillas Torres; Marco Hutter",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/schwarke25a.html",
+    "pages": "3665-3684",
+    "dblp_key": "conf/corl/pmlr305_schwarke25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Agreement Volatility: A Second-Order Metric for Uncertainty Quantification in Surgical Robot Learning",
+    "authors": "Jordan Thompson; Britton Jordan; Daniel S. Brown; Alan Kuntz",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/thompson25a.html",
+    "pages": "3685-3703",
+    "dblp_key": "conf/corl/pmlr305_thompson25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "CARE: Enhancing Safety of Visual Navigation through Collision Avoidance via Repulsive Estimation",
+    "authors": "Joonkyung Kim; Joonyeol Sim; Woojun Kim; Katia P. Sycara; Changjoo Nam",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/kim25c.html",
+    "pages": "3704-3719",
+    "dblp_key": "conf/corl/pmlr305_kim25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Embrace Contacts: humanoid shadowing with full body ground contacts",
+    "authors": "Ziwen Zhuang; Hang Zhao",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhuang25b.html",
+    "pages": "3720-3735",
+    "dblp_key": "conf/corl/pmlr305_zhuang25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "FLOWER: Democratizing Generalist Robot Policies with Efficient Vision-Language-Flow Models",
+    "authors": "Moritz Reuss; Hongyi Zhou; Marcel Rühle; Ömer Erdinç Yağmurlu; Fabian Otto; Rudolf Lioutikov",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/reuss25a.html",
+    "pages": "3736-3761",
+    "dblp_key": "conf/corl/pmlr305_reuss25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Motion Priors Reimagined: Adapting Flat-Terrain Skills for Complex Quadruped Mobility",
+    "authors": "Zewei Zhang; Chenhao Li; Takahiro Miki; Marco Hutter",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhang25j.html",
+    "pages": "3762-3777",
+    "dblp_key": "conf/corl/pmlr305_zhang25j"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "VLM-AD: End-to-End Autonomous Driving through Vision-Language Model Supervision",
+    "authors": "Yi Xu; Yuxin Hu; Zaiwei Zhang; Gregory P. Meyer; Siva Karthik Mustikovela; Siddhartha Srinivasa; Eric M. Wolff; Xin Huang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/xu25f.html",
+    "pages": "3778-3803",
+    "dblp_key": "conf/corl/pmlr305_xu25f"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "SIREN: Semantic, Initialization-Free Registration of Multi-Robot Gaussian Splatting Maps",
+    "authors": "Olao Shorinwa; Jiankai Sun; Mac Schwager; Anirudha Majumdar",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/shorinwa25a.html",
+    "pages": "3804-3827",
+    "dblp_key": "conf/corl/pmlr305_shorinwa25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Articulated Object Estimation in the Wild",
+    "authors": "Abdelrhman Werby; Martin Büchner; Adrian Röfer; Chenguang Huang; Wolfram Burgard; Abhinav Valada",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/werby25a.html",
+    "pages": "3828-3849",
+    "dblp_key": "conf/corl/pmlr305_werby25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Decentralized Aerial Manipulation of a Cable-Suspended Load Using Multi-Agent Reinforcement Learning",
+    "authors": "Jack Zeng; Andreu Matoses Gimenez; Eugene Vinitsky; Javier Alonso-Mora; Sihao Sun",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zeng25a.html",
+    "pages": "3850-3868",
+    "dblp_key": "conf/corl/pmlr305_zeng25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Focusing on What Matters: Object-Agent-centric Tokenization for Vision Language Action models",
+    "authors": "Rokas Bendikas; Daniel Dijkman; Markus Peschl; Sanjay Haresh; Pietro Mazzaglia",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/bendikas25a.html",
+    "pages": "3869-3887",
+    "dblp_key": "conf/corl/pmlr305_bendikas25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "In-Context Iterative Policy Improvement for Dynamic Manipulation",
+    "authors": "Mark Van der Merwe; Devesh K. Jha",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/merwe25a.html",
+    "pages": "3888-3901",
+    "dblp_key": "conf/corl/pmlr305_merwe25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "One Demo is Worth a Thousand Trajectories: Action-View Augmentation for Visuomotor Policies",
+    "authors": "Chuer Pan; Litian Liang; Dominik Bauer; Eric Cousineau; Benjamin Burchfiel; Siyuan Feng; Shuran Song",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/pan25a.html",
+    "pages": "3902-3914",
+    "dblp_key": "conf/corl/pmlr305_pan25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Neural Robot Dynamics",
+    "authors": "Jie Xu; Eric Heiden; Iretiayo Akinola; Dieter Fox; Miles Macklin; Yashraj Narang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/xu25g.html",
+    "pages": "3915-3935",
+    "dblp_key": "conf/corl/pmlr305_xu25g"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Gen2Act: Human Video Generation in Novel Scenarios enables Generalizable Robot Manipulation",
+    "authors": "Homanga Bharadhwaj; Debidatta Dwibedi; Abhinav Gupta; Shubham Tulsiani; Carl Doersch; Ted Xiao; Dhruv Shah; Fei Xia; Dorsa Sadigh; Sean Kirmani",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/bharadhwaj25a.html",
+    "pages": "3936-3951",
+    "dblp_key": "conf/corl/pmlr305_bharadhwaj25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "FLARE: Robot Learning with Implicit World Modeling",
+    "authors": "Ruijie Zheng; Jing Wang; Scott Reed; Johan Bjorck; Yu Fang; Fengyuan Hu; Joel Jang; Kaushil Kundalia; Zongyu Lin; Loïc Magne; Avnish Narayan; You Liang Tan; Guanzhi Wang; Qi Wang; Jiannan Xiang; Yinzhen Xu; Seonghyeon Ye; Jan Kautz; Furong Huang; Yuke Zhu; Linxi Fan",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zheng25a.html",
+    "pages": "3952-3971",
+    "dblp_key": "conf/corl/pmlr305_zheng25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "GLOVER++: Unleashing the Potential of Affordance Learning from Human Behaviors for Robotic Manipulation",
+    "authors": "Teli Ma; Jia Zheng; Zifan Wang; Ziyao Gao; Jiaming Zhou; Junwei Liang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/ma25b.html",
+    "pages": "3972-3994",
+    "dblp_key": "conf/corl/pmlr305_ma25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Extracting Visual Plans from Unlabeled Videos via Symbolic Guidance",
+    "authors": "Wenyan Yang; Ahmet Tikna; Yi Zhao; Yuying Zhang; Luigi Palopoli; Marco Roveri; Joni Pajarinen",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/yang25c.html",
+    "pages": "3995-4018",
+    "dblp_key": "conf/corl/pmlr305_yang25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Elucidating the Design Space of Torque-aware Vision-Language-Action Models",
+    "authors": "Zongzheng Zhang; Haobo Xu; Zhuo Yang; Chenghao Yue; Zehao Lin; Huan-ang Gao; Ziwei Wang; Hao Zhao",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhang25k.html",
+    "pages": "4019-4037",
+    "dblp_key": "conf/corl/pmlr305_zhang25k"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "AnyPlace: Learning Generalizable Object Placement for Robot Manipulation",
+    "authors": "Yuchi Zhao; Miroslav Bogdanovic; Chengyuan Luo; Steven Tohme; Kourosh Darvish; Alan Aspuru-Guzik; Florian Shkurti; Animesh Garg",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhao25b.html",
+    "pages": "4038-4057",
+    "dblp_key": "conf/corl/pmlr305_zhao25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Hand-Eye Autonomous Delivery: Learning Humanoid Navigation, Locomotion and Reaching",
+    "authors": "Sirui Chen; Yufei Ye; Zi-ang Cao; Pei Xu; Jennifer Lew; Karen Liu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/chen25e.html",
+    "pages": "4058-4073",
+    "dblp_key": "conf/corl/pmlr305_chen25e"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "RobotxR1: Enabling Embodied Robotic Intelligence on Large Language Models through Closed-Loop Reinforcement Learning",
+    "authors": "Liam Boyle; Nicolas Baumann; Paviththiren Sivasothilingam; Michele Magno; Luca Benini",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/boyle25a.html",
+    "pages": "4074-4092",
+    "dblp_key": "conf/corl/pmlr305_boyle25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Off Policy Lyapunov Stability in Reinforcement Learning",
+    "authors": "Sarvan Gill; Daniela Constantinescu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/gill25a.html",
+    "pages": "4093-4102",
+    "dblp_key": "conf/corl/pmlr305_gill25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "From Space to Time: Enabling Adaptive Safety with Learned Value Functions via Disturbance Recasting",
+    "authors": "Sander Tonkens; Nikhil Uday Shinde; Azra Begzadić; Michael C. Yip; Jorge Cortes; Sylvia Lee Herbert",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/tonkens25a.html",
+    "pages": "4103-4122",
+    "dblp_key": "conf/corl/pmlr305_tonkens25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "KineDex: Learning Tactile-Informed Visuomotor Policies via Kinesthetic Teaching for Dexterous Manipulation",
+    "authors": "Di Zhang; Chengbo Yuan; Chuan Wen; Hai Zhang; Junqiao Zhao; Yang Gao",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhang25l.html",
+    "pages": "4123-4138",
+    "dblp_key": "conf/corl/pmlr305_zhang25l"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "TrackVLA: Embodied Visual Tracking in the Wild",
+    "authors": "Shaoan Wang; Jiazhao Zhang; Minghan Li; Jiahang Liu; Anqi Li; Kui Wu; Fangwei Zhong; Junzhi Yu; Zhizheng Zhang; He Wang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wang25f.html",
+    "pages": "4139-4164",
+    "dblp_key": "conf/corl/pmlr305_wang25f"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "ToddlerBot: Open-Source ML-Compatible Humanoid Platform for Loco-Manipulation",
+    "authors": "Haochen Shi; Weizhuo Wang; Shuran Song; Karen Liu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/shi25a.html",
+    "pages": "4165-4189",
+    "dblp_key": "conf/corl/pmlr305_shi25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "CDP: Towards Robust Autoregressive Visuomotor Policy Learning via Causal Diffusion",
+    "authors": "Jiahua Ma; Yiran Qin; Yixiong Li; Xuanqi Liao; Yulan Guo; Ruimao Zhang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/ma25c.html",
+    "pages": "4190-4205",
+    "dblp_key": "conf/corl/pmlr305_ma25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Towards Generalizable Safety in Crowd Navigation via Conformal Uncertainty Handling",
+    "authors": "Jianpeng Yao; Xiaopan Zhang; Yu Xia; Zejin Wang; Amit Roy-Chowdhury; Jiachen Li",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/yao25a.html",
+    "pages": "4206-4225",
+    "dblp_key": "conf/corl/pmlr305_yao25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Robot Learning from Any Images",
+    "authors": "Siheng Zhao; Jiageng Mao; Wei Chow; Zeyu Shangguan; Tianheng Shi; Rong Xue; Yuxi Zheng; Yijia Weng; Yang You; Daniel Seita; Leonidas Guibas; Sergey Zakharov; Vitor Campagnolo Guizilini; Yue Wang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhao25c.html",
+    "pages": "4226-4245",
+    "dblp_key": "conf/corl/pmlr305_zhao25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "ComposableNav: Instruction-Following Navigation in Dynamic Environments via Composable Diffusion",
+    "authors": "Zichao Hu; Chen Tang; Michael Joseph Munje; Yifeng Zhu; Alex Liu; Shuijing Liu; Garrett Warnell; Peter Stone; Joydeep Biswas",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/hu25c.html",
+    "pages": "4246-4268",
+    "dblp_key": "conf/corl/pmlr305_hu25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "UniSkill: Imitating Human Videos via Cross-Embodiment Skill Representations",
+    "authors": "Hanjung Kim; Jaehyun Kang; Hyolim Kang; Meedeum Cho; Seon Joo Kim; Youngwoon Lee",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/kim25d.html",
+    "pages": "4269-4294",
+    "dblp_key": "conf/corl/pmlr305_kim25d"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "PicoPose: Progressive Pixel-to-Pixel Correspondence Learning for Novel Object Pose Estimation",
+    "authors": "Lihua Liu; Jiehong Lin; ZhenXin Liu; Kui Jia",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/liu25g.html",
+    "pages": "4295-4312",
+    "dblp_key": "conf/corl/pmlr305_liu25g"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Co-Design of Soft Gripper with Neural Physics",
+    "authors": "Sha Yi; Xueqian Bai; Adabhav Singh; Jianglong Ye; Michael T. Tolley; Xiaolong Wang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/yi25a.html",
+    "pages": "4313-4327",
+    "dblp_key": "conf/corl/pmlr305_yi25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Joint Model-based Model-free Diffusion for Planning with Constraints",
+    "authors": "Wonsuhk Jung; Utkarsh Aashu Mishra; Nadun Ranawaka Arachchige; Yongxin Chen; Danfei Xu; Shreyas Kousik",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/jung25d.html",
+    "pages": "4328-4350",
+    "dblp_key": "conf/corl/pmlr305_jung25d"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Action-Free Reasoning for Policy Generalization",
+    "authors": "Jaden Clark; Suvir Mirchandani; Dorsa Sadigh; Suneel Belkhale",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/clark25a.html",
+    "pages": "4351-4366",
+    "dblp_key": "conf/corl/pmlr305_clark25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "UniTac2Pose: A Unified Approach Learned in Simulation for Category-level Visuotactile In-hand Pose Estimation",
+    "authors": "Mingdong Wu; Long Yang; Jin Liu; Weiyao Huang; Lehong Wu; Zelin Chen; Daolin Ma; Hao Dong",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wu25d.html",
+    "pages": "4367-4384",
+    "dblp_key": "conf/corl/pmlr305_wu25d"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "OPAL: Visibility-aware LiDAR-to-OpenStreetMap Place Recognition via Adaptive Radial Fusion",
+    "authors": "Shuhao Kang; Youqi Liao; Yan Xia; Olaf Wysocki; Boris Jutzi; Daniel Cremers",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/kang25b.html",
+    "pages": "4385-4400",
+    "dblp_key": "conf/corl/pmlr305_kang25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Uncertainty-Aware Scene Understanding via Efficient Sampling-Free Confidence Estimation",
+    "authors": "Hanieh Shojaei Miandashti; Qianqian Zou; Claus Brenner",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/miandashti25a.html",
+    "pages": "4401-4417",
+    "dblp_key": "conf/corl/pmlr305_miandashti25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Crossing the Human-Robot Embodiment Gap with Sim-to-Real RL using One Human Demonstration",
+    "authors": "Tyler Ga Wei Lum; Olivia Y. Lee; Karen Liu; Jeannette Bohg",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/lum25a.html",
+    "pages": "4418-4441",
+    "dblp_key": "conf/corl/pmlr305_lum25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Uncertainty-aware Latent Safety Filters for Avoiding Out-of-Distribution Failures",
+    "authors": "Junwon Seo; Kensuke Nakamura; Andrea Bajcsy",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/seo25a.html",
+    "pages": "4442-4472",
+    "dblp_key": "conf/corl/pmlr305_seo25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "MimicFunc: Imitating Tool Manipulation from a Single Human Video via Functional Correspondence",
+    "authors": "Chao Tang; Anxing Xiao; Yuhong Deng; Tianrun Hu; Wenlong Dong; Hanbo Zhang; David Hsu; Hong Zhang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/tang25a.html",
+    "pages": "4473-4492",
+    "dblp_key": "conf/corl/pmlr305_tang25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "CLONE: Closed-Loop Whole-Body Humanoid Teleoperation for Long-Horizon Tasks",
+    "authors": "Yixuan Li; Yutang Lin; Jieming Cui; Tengyu Liu; Wei Liang; Yixin Zhu; Siyuan Huang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/li25h.html",
+    "pages": "4493-4505",
+    "dblp_key": "conf/corl/pmlr305_li25h"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Hold My Beer: Learning Gentle Humanoid Locomotion and End-Effector Stabilization Control",
+    "authors": "Yitang Li; Yuanhang Zhang; Wenli Xiao; Chaoyi Pan; Haoyang Weng; Guanqi He; Tairan He; Guanya Shi",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/li25i.html",
+    "pages": "4506-4523",
+    "dblp_key": "conf/corl/pmlr305_li25i"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "HyperTASR: Hypernetwork-Driven Task-Aware Scene Representations for Robust Manipulation",
+    "authors": "Li Sun; Jiefeng Wu; Feng Chen; Ruizhe Liu; Yanchao Yang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/sun25c.html",
+    "pages": "4524-4544",
+    "dblp_key": "conf/corl/pmlr305_sun25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Phantom: Training Robots Without Robots Using Only Human Videos",
+    "authors": "Marion Lepert; Jiaying Fang; Jeannette Bohg",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/lepert25a.html",
+    "pages": "4545-4565",
+    "dblp_key": "conf/corl/pmlr305_lepert25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Granular loco-manipulation: Repositioning rocks through strategic sand avalanche",
+    "authors": "Haodi Hu; Yue Wu; Daniel Seita; Feifei Qian",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/hu25d.html",
+    "pages": "4566-4584",
+    "dblp_key": "conf/corl/pmlr305_hu25d"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Articulate AnyMesh: Open-vocabulary 3D Articulated Objects Modeling",
+    "authors": "Xiaowen Qiu; Jincheng Yang; Yian Wang; Zhehuan Chen; Yufei Wang; Tsun-Hsuan Wang; Zhou Xian; Chuang Gan",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/qiu25b.html",
+    "pages": "4585-4606",
+    "dblp_key": "conf/corl/pmlr305_qiu25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "COLLAGE: Adaptive Fusion-based Retrieval for Augmented Policy Learning",
+    "authors": "Sateesh Kumar; Shivin Dass; Georgios Pavlakos; Roberto Martín-Martín",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/kumar25a.html",
+    "pages": "4607-4624",
+    "dblp_key": "conf/corl/pmlr305_kumar25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Imitation Learning Based on Disentangled Representation Learning of Behavioral Characteristics",
+    "authors": "Ryoga Oishi; Sho Sakaino; Toshiaki Tsuji",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/oishi25a.html",
+    "pages": "4625-4640",
+    "dblp_key": "conf/corl/pmlr305_oishi25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Bipedal Balance Control with Whole-body Musculoskeletal Standing and Falling Simulations",
+    "authors": "Chengtian Ma; Yunyue Wei; Chenhui Zuo; Chen Zhang; Yanan Sui",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/ma25d.html",
+    "pages": "4641-4656",
+    "dblp_key": "conf/corl/pmlr305_ma25d"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Do LLM Modules Generalize? A Study on Motion Generation for Autonomous Driving",
+    "authors": "Mingyi Wang; Jingke Wang; Tengju Ye; Kaicheng Yu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wang25g.html",
+    "pages": "4657-4683",
+    "dblp_key": "conf/corl/pmlr305_wang25g"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Diffusion-Guided Multi-Arm Motion Planning",
+    "authors": "Viraj Parimi; Brian C. Williams",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/parimi25a.html",
+    "pages": "4684-4696",
+    "dblp_key": "conf/corl/pmlr305_parimi25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "See, Point, Fly: A Learning-Free VLM Framework for Universal Unmanned Aerial Navigation",
+    "authors": "Chih Yao Hu; Yang-Sen Lin; Yuna Lee; Chih-Hai Su; Jie-Ying Lee; Shr-Ruei Tsai; Chin-Yang Lin; Kuan-Wen Chen; Tsung-Wei Ke; Yu-Lun Liu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/hu25e.html",
+    "pages": "4697-4708",
+    "dblp_key": "conf/corl/pmlr305_hu25e"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Pseudo-Simulation for Autonomous Driving",
+    "authors": "Wei Cao; Marcel Hallgarten; Tianyu Li; Daniel Dauner; Xunjiang Gu; Caojun Wang; Yakov Miron; Marco Aiello; Hongyang Li; Igor Gilitschenski; Boris Ivanovic; Marco Pavone; Andreas Geiger; Kashyap Chitta",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/cao25a.html",
+    "pages": "4709-4722",
+    "dblp_key": "conf/corl/pmlr305_cao25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Toward Real-World Cooperative and Competitive Soccer with Quadrupedal Robot Teams",
+    "authors": "Zhi Su; Yuman Gao; Emily Lukas; Yunfei Li; Jiaze Cai; Faris Talubah; Fei Gao; Chao Yu; Zhongyu Li; Yi Wu; Koushil Sreenath",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/su25a.html",
+    "pages": "4723-4742",
+    "dblp_key": "conf/corl/pmlr305_su25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "CLASS: Contrastive Learning via Action Sequence Supervision for Robot Manipulation",
+    "authors": "Sung-Wook Lee; Xuhui Kang; Brandon Y. Yang; Yen-Ling Kuo",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/lee25a.html",
+    "pages": "4743-4766",
+    "dblp_key": "conf/corl/pmlr305_lee25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Generating Robot Constitutions & Benchmarks for Semantic Safety",
+    "authors": "Pierre Sermanet; Anirudha Majumdar; Alex Irpan; Dmitry Kalashnikov; Vikas Sindhwani",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/sermanet25a.html",
+    "pages": "4767-4823",
+    "dblp_key": "conf/corl/pmlr305_sermanet25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "BEVCalib: LiDAR-Camera Calibration via Geometry-Guided Bird’s-Eye View Representation",
+    "authors": "Weiduo Yuan; Jerry Li; Justin Yue; Divyank Shah; Konstantinos Karydis; Hang Qiu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/yuan25a.html",
+    "pages": "4824-4836",
+    "dblp_key": "conf/corl/pmlr305_yuan25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Imagine, Verify, Execute: Memory-guided Agentic Exploration with Vision-Language Models",
+    "authors": "Seungjae Lee; Daniel Ekpo; Haowen Liu; Furong Huang; Abhinav Shrivastava; Jia-Bin Huang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/lee25b.html",
+    "pages": "4837-4858",
+    "dblp_key": "conf/corl/pmlr305_lee25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Distilling On-device Language Models for Robot Planning with Minimal Human Intervention",
+    "authors": "Zachary Ravichandran; Ignacio Hounie; Fernando Cladera; Alejandro Ribeiro; George J. Pappas; Vijay Kumar",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/ravichandran25a.html",
+    "pages": "4859-4884",
+    "dblp_key": "conf/corl/pmlr305_ravichandran25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Beyond Constant Parameters: Hyper Prediction Models and HyperMPC",
+    "authors": "Jan Węgrzynowski; Piotr Kicki; Grzegorz Czechmanowski; Maciej Piotr Krupka; Krzysztof Walas",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wegrzynowski25a.html",
+    "pages": "4885-4907",
+    "dblp_key": "conf/corl/pmlr305_wegrzynowski25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Dynamics-Compliant Trajectory Diffusion for Super-Nominal Payload Manipulation",
+    "authors": "Anuj Pasricha; Joewie J. Koh; Jay Vakil; Alessandro Roncone",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/pasricha25a.html",
+    "pages": "4908-4925",
+    "dblp_key": "conf/corl/pmlr305_pasricha25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Sim-to-Real Reinforcement Learning for Vision-Based Dexterous Manipulation on Humanoids",
+    "authors": "Toru Lin; Kartik Sachdev; Linxi Fan; Jitendra Malik; Yuke Zhu",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/lin25c.html",
+    "pages": "4926-4940",
+    "dblp_key": "conf/corl/pmlr305_lin25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "ParticleFormer: A 3D Point Cloud World Model for Multi-Object, Multi-Material Robotic Manipulation",
+    "authors": "Suning Huang; Qianzhong Chen; Xiaohan Zhang; Jiankai Sun; Mac Schwager",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/huang25c.html",
+    "pages": "4941-4957",
+    "dblp_key": "conf/corl/pmlr305_huang25c"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "EndoVLA: Dual-Phase Vision-Language-Action for Precise Autonomous Tracking in Endoscopy",
+    "authors": "NG CHI KIT; Long Bai; Guankun Wang; Yupeng Wang; Huxin Gao; Kun yuan; Chenhan Jin; Tieyong Zeng; Hongliang Ren",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/kit25a.html",
+    "pages": "4958-4974",
+    "dblp_key": "conf/corl/pmlr305_kit25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "TypeTele: Releasing Dexterity in Teleoperation by Dexterous Manipulation Types",
+    "authors": "Yuhao Lin; Yi-Lin Wei; Haoran Liao; Mu Lin; Chengyi Xing; Hao Li; Dandan Zhang; Mark Cutkosky; Wei-Shi Zheng",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/lin25d.html",
+    "pages": "4975-4993",
+    "dblp_key": "conf/corl/pmlr305_lin25d"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "LodeStar: Long-horizon Dexterity via Synthetic Data Augmentation from Human Demonstrations",
+    "authors": "Weikang Wan; Jiawei Fu; Xiaodi Yuan; Yifeng Zhu; Hao Su",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/wan25a.html",
+    "pages": "4994-5021",
+    "dblp_key": "conf/corl/pmlr305_wan25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "RICL:  Adding In-Context Adaptability to Pre-Trained Vision-Language-Action Models",
+    "authors": "Kaustubh Sridhar; Souradeep Dutta; Dinesh Jayaraman; Insup Lee",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/sridhar25a.html",
+    "pages": "5022-5038",
+    "dblp_key": "conf/corl/pmlr305_sridhar25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "D-Cubed: Latent Diffusion Trajectory Optimisation for Dexterous Deformable Manipulation",
+    "authors": "Jun Yamada; Shaohong Zhong; Jack Collins; Ingmar Posner",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/yamada25b.html",
+    "pages": "5039-5055",
+    "dblp_key": "conf/corl/pmlr305_yamada25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Deep Reactive Policy: Learning Reactive Manipulator Motion Planning for Dynamic Environments",
+    "authors": "Jiahui Yang; Jason Jingzhou Liu; Yulong Li; Youssef Khaky; Kenneth Shaw; Deepak Pathak",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/yang25d.html",
+    "pages": "5056-5071",
+    "dblp_key": "conf/corl/pmlr305_yang25d"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Enter the Mind Palace: Reasoning and Planning for Long-term Active Embodied Question Answering",
+    "authors": "Muhammad Fadhil Ginting; Dong-Ki Kim; Xiangyun Meng; Andrzej Marek Reinke; Bandi Jai Krishna; Navid Kayhani; Oriana Peltzer; David Fan; Amirreza Shaban; Sung-Kyun Kim; Mykel Kochenderfer; Ali-akbar Agha-mohammadi; Shayegan Omidshafiei",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/ginting25a.html",
+    "pages": "5072-5106",
+    "dblp_key": "conf/corl/pmlr305_ginting25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Motion Blender Gaussian Splatting for Dynamic Reconstruction",
+    "authors": "Xinyu Zhang; Haonan Chang; Yuhan Liu; Abdeslam Boularias",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhang25m.html",
+    "pages": "5107-5128",
+    "dblp_key": "conf/corl/pmlr305_zhang25m"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "TReF-6: Inferring Task-Relevant Frames from a Single Demonstration for One-Shot Skill Generalization",
+    "authors": "Yuxuan Ding; Shuangge Wang; Tesca Fitzgerald",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/ding25a.html",
+    "pages": "5129-5150",
+    "dblp_key": "conf/corl/pmlr305_ding25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Lucid-XR: An Extended-Reality Data Engine for Robotic Manipulation",
+    "authors": "Yajvan Ravan; Adam Rashid; Alan Yu; Kai McClennen; Gio Huh; Kevin Yang; Zhutian Yang; Qinxi Yu; Xiaolong Wang; Phillip Isola; Ge Yang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/ravan25a.html",
+    "pages": "5151-5169",
+    "dblp_key": "conf/corl/pmlr305_ravan25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "DreamGen: Unlocking Generalization in Robot Learning through Video World Models",
+    "authors": "Joel Jang; Seonghyeon Ye; Zongyu Lin; Jiannan Xiang; Johan Bjorck; Yu Fang; Fengyuan Hu; Spencer Huang; Kaushil Kundalia; Yen-Chen Lin; Loïc Magne; Ajay Mandlekar; Avnish Narayan; You Liang Tan; Guanzhi Wang; Jing Wang; Qi Wang; Yinzhen Xu; Xiaohui Zeng; Kaiyuan Zheng; Ruijie Zheng; Ming-Yu Liu; Luke Zettlemoyer; Dieter Fox; Jan Kautz; Scott Reed; Yuke Zhu; Linxi Fan",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/jang25a.html",
+    "pages": "5170-5194",
+    "dblp_key": "conf/corl/pmlr305_jang25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "GENNAV: Polygon Mask Generation for Generalized Referring Navigable Regions",
+    "authors": "Kei Katsumata; Yui Iioka; Naoki Hosomi; Teruhisa Misu; Kentaro Yamada; Komei Sugiura",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/katsumata25a.html",
+    "pages": "5195-5217",
+    "dblp_key": "conf/corl/pmlr305_katsumata25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "NeuralSVCD for Efficient Swept Volume Collision Detection",
+    "authors": "Hojin Jung; Dongwon Son; Beomjoon Kim",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/jung25e.html",
+    "pages": "5218-5233",
+    "dblp_key": "conf/corl/pmlr305_jung25e"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "First Order Model-Based RL through Decoupled Backpropagation",
+    "authors": "Joseph Amigo; Rooholla Khorrambakht; Elliot Chane-Sane; Nicolas Mansard; Ludovic Righetti",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/amigo25a.html",
+    "pages": "5234-5255",
+    "dblp_key": "conf/corl/pmlr305_amigo25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Rapid Mismatch Estimation via Neural Network Informed Variational Inference",
+    "authors": "Mateusz Jaszczuk; Nadia Figueroa",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/jaszczuk25a.html",
+    "pages": "5256-5277",
+    "dblp_key": "conf/corl/pmlr305_jaszczuk25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Mastering Multi-Drone Volleyball through Hierarchical Co-Self-Play Reinforcement Learning",
+    "authors": "Ruize Zhang; Sirui Xiang; Zelai Xu; Feng Gao; Shilong Ji; Wenhao Tang; Wenbo Ding; Chao Yu; Yu Wang",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhang25n.html",
+    "pages": "5278-5300",
+    "dblp_key": "conf/corl/pmlr305_zhang25n"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "CaRL: Learning Scalable Planning Policies with Simple Rewards",
+    "authors": "Bernhard Jaeger; Daniel Dauner; Jens Beißwenger; Simon Gerstenecker; Kashyap Chitta; Andreas Geiger",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/jaeger25a.html",
+    "pages": "5301-5338",
+    "dblp_key": "conf/corl/pmlr305_jaeger25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Meta-Optimization and Program Search using Language Models for Task and Motion Planning",
+    "authors": "Denis Shcherba; Eckart Cobo-Briesewitz; Cornelius V. Braun; Marc Toussaint",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/shcherba25a.html",
+    "pages": "5339-5361",
+    "dblp_key": "conf/corl/pmlr305_shcherba25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "From Real World to Logic and Back: Learning Generalizable Relational Concepts For Long Horizon Robot Planning",
+    "authors": "Naman Shah; Jayesh Nagpal; Siddharth Srivastava",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/shah25a.html",
+    "pages": "5362-5434",
+    "dblp_key": "conf/corl/pmlr305_shah25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Adapting by Analogy: OOD Generalization of Visuomotor Policies via Functional Correspondence",
+    "authors": "Pranay Gupta; Henny Admoni; Andrea Bajcsy",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/gupta25a.html",
+    "pages": "5435-5449",
+    "dblp_key": "conf/corl/pmlr305_gupta25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Vision in Action: Learning Active Perception from Human Demonstrations",
+    "authors": "Haoyu Xiong; Xiaomeng Xu; Jimmy Wu; Yifan Hou; Jeannette Bohg; Shuran Song",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/xiong25a.html",
+    "pages": "5450-5463",
+    "dblp_key": "conf/corl/pmlr305_xiong25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Learning from 10 Demos: Generalisable and Sample-Efficient Policy Learning with Oriented Affordance Frames",
+    "authors": "Krishan Rana; Jad Abou-Chakra; Sourav Garg; Robert Lee; Ian Reid; Niko Suenderhauf",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/rana25a.html",
+    "pages": "5464-5482",
+    "dblp_key": "conf/corl/pmlr305_rana25a"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Force-Modulated Visual Policy for Robot-Assisted Dressing with Arm Motions",
+    "authors": "Alexis Yihong Hao; Yufei Wang; Navin Sriram Ravie; Bharath Hegde; David Held; Zackory Erickson",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/hao25b.html",
+    "pages": "5483-5505",
+    "dblp_key": "conf/corl/pmlr305_hao25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "LaVA-Man: Learning Visual Action Representations for Robot Manipulation",
+    "authors": "Chaoran Zhu; Hengyi Wang; Yik Lung Pang; Changjae Oh",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/zhu25b.html",
+    "pages": "5506-5525",
+    "dblp_key": "conf/corl/pmlr305_zhu25b"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "FOMO-3D: Using Vision Foundation Models for Long-Tailed 3D Object Detection",
+    "authors": "Anqi Joyce Yang; James Tu; Nikita Dvornik; Enxu Li; Raquel Urtasun",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/yang25e.html",
+    "pages": "5526-5556",
+    "dblp_key": "conf/corl/pmlr305_yang25e"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Disentangled Multi-Context Meta-Learning: Unlocking Robust and Generalized Task Learning",
+    "authors": "Seonsoo Kim; Jun-Gill Kang; Taehong Kim; Seongil Hong",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/kim25e.html",
+    "pages": "5557-5580",
+    "dblp_key": "conf/corl/pmlr305_kim25e"
+  },
+  {
+    "venue": "CoRL",
+    "year": "2025",
+    "title": "Fail2Progress: Learning from Real-World Robot Failures with Stein Variational Inference",
+    "authors": "Yixuan Huang; Novella Alvina; Mohanraj Devendran Shanthi; Tucker Hermans",
+    "doi": "",
+    "ee": "https://proceedings.mlr.press/v305/huang25d.html",
+    "pages": "5581-5605",
+    "dblp_key": "conf/corl/pmlr305_huang25d"
+  }
+]
