@@ -34,7 +34,7 @@ try:
 except OSError:
     AS_OF = datetime.now().date().isoformat()
 
-df = pd.read_excel('robopaper_atlas_all.xlsx', sheet_name='by_year_pivot')
+df = pd.read_excel('../robopaper_atlas_all.xlsx', sheet_name='by_year_pivot')
 df['year'] = df['year'].astype(int)
 for v in VENUE_LABELS:
     if v not in df.columns:
@@ -246,7 +246,7 @@ html_out = (HTML
             .replace('__VENUE_IDS_JSON__', json.dumps({v['label']: v['id'] for v in VENUES_CFG}))
             .replace('__ROWS_JSON__', json.dumps(rows)))
 
-OUT = 'by_year.html'
+OUT = '../by_year.html'
 with open(OUT, 'w', encoding='utf-8') as f:
     f.write(html_out)
 print(f'wrote {OUT} ({len(html_out):,} chars)')

@@ -55,12 +55,12 @@ Step 1 의 `all_enriched.json` 이 입력이므로 **반드시 Step 1 다음에*
 각 step 가이드마다 별도 커밋 예시가 있지만, 한 번에 푸시할 거면 마지막에 일괄로:
 
 ```bash
-git add -u && git add dblp_raw/ openalex_raw/ REFRESH*.md
+git add -u && git add pipeline/dblp_raw/ pipeline/openalex_raw/ REFRESH*.md
 git commit -m "Refresh: data → network → landing (<오늘 날짜>)"
 git push
 ```
 
-> `git add -u` 는 추적 중인 변경만 잡으니 새 raw 캐시(`dblp_raw/*_YYYY.json` 등)와 신규 문서는
+> `git add -u` 는 추적 중인 변경만 잡으니 새 raw 캐시(`pipeline/dblp_raw/*_YYYY.json` 등)와 신규 문서는
 > 명시적으로 추가. 민감 파일(.env, credentials) 없는 디렉터리만 골라 추가하세요.
 
 ---

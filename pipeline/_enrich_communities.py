@@ -31,7 +31,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 from _clean import is_front_matter
 
-COAUTHOR_JSON = "coauthor_network.json"
+COAUTHOR_JSON = "../coauthor_network.json"
 ENRICHED_JSON = "all_enriched.json"
 
 GIANT_THRESHOLD = 5           # edge weight cutoff for Leiden (strong ties only)

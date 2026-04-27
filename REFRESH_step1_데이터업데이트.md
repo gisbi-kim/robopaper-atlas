@@ -67,12 +67,13 @@ REFRESH_step1_데이터업데이트.md 보고 인용수·데이터 재조사 해
 ### 3) 산출물 재생성 (전부 돌림)
 
 ```bash
-python step3_excel.py             # robopaper_atlas_all.xlsx
+cd pipeline
+python step3_excel.py             # ../robopaper_atlas_all.xlsx
 python _make_word_book.py         # word_book.json / word_book.csv
-python _make_all_html.py          # explorer.html
-python _make_by_year_html.py      # by_year.html
-python _make_xlsx_preview.py      # dataset_preview.html
-python _make_coauthor_network.py  # coauthor_network.{html,json}
+python _make_all_html.py          # ../explorer.html
+python _make_by_year_html.py      # ../by_year.html
+python _make_xlsx_preview.py      # ../dataset_preview.html
+python _make_coauthor_network.py  # ../coauthor_network.{html,json}
 python _enrich_communities.py     # Leiden + TF-IDF → community 필드 주입
 ```
 

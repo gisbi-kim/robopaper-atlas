@@ -1518,7 +1518,7 @@ html_out = (HTML
             .replace('__WB_VOCAB__', json.dumps(wb_vocab, ensure_ascii=False))
             .replace('__WB_PAPERS__', json.dumps(wb_papers_slim, ensure_ascii=False)))
 
-OUT = 'explorer.html'
+OUT = '../explorer.html'
 with open(OUT, 'w', encoding='utf-8') as f:
     f.write(html_out)
 print(f'wrote {OUT} ({len(html_out)/1024/1024:.1f} MB, {total:,} papers)')

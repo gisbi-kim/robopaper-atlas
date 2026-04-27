@@ -19,8 +19,8 @@ from itertools import combinations
 from _clean import is_front_matter, is_translated_dup
 
 INPUT = 'all_enriched.json'
-OUT_JSON = 'coauthor_network.json'
-OUT_HTML = 'coauthor_network.html'
+OUT_JSON = '../coauthor_network.json'
+OUT_HTML = '../coauthor_network.html'
 
 MIN_AUTHOR_PAPERS = 3
 MIN_EDGE_COLLABS  = 2   # 데이터에 포함되는 최소 공저 횟수

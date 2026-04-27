@@ -25,7 +25,7 @@ try:
 except OSError:
     AS_OF = datetime.now().date().isoformat()
 print(f"Citations as of: {AS_OF}")
-OUT_XLSX = "robopaper_atlas_all.xlsx"
+OUT_XLSX = "../robopaper_atlas_all.xlsx"
 
 # DOI 중복 시 어느 venue를 남길지 우선순위 (저널/선택도 높은 conf 우선).
 # 순서 = summary 시트 표시 순서. 데이터에 등장하는데 여기 없는 venue는 default priority 99.

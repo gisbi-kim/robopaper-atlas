@@ -29,6 +29,7 @@ REFRESH_step2_공저자네트워크.md 보고 co-author network 업데이트 해
 ### 2) 네트워크 재생성 (두 단계)
 
 ```bash
+cd pipeline
 python _make_coauthor_network.py   # 그래프 빌드
 python _enrich_communities.py      # Leiden 커뮤니티 + TF-IDF 토픽 라벨 주입
 ```
@@ -78,7 +79,7 @@ DEFAULT_EDGE_VIEW = 5   # HTML 슬라이더 초기값 — 기본 뷰는 공저 5
 ### 5) 커밋·푸시
 
 ```bash
-git add _make_coauthor_network.py _enrich_communities.py \
+git add pipeline/_make_coauthor_network.py pipeline/_enrich_communities.py \
         coauthor_network.json coauthor_network.html
 git commit -m "Refresh co-author network (<N> authors, <M> edges as of <date>)"
 git push

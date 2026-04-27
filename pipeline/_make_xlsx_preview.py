@@ -13,8 +13,8 @@ from datetime import datetime
 
 import pandas as pd
 
-XLSX = 'robopaper_atlas_all.xlsx'
-OUT  = 'dataset_preview.html'
+XLSX = '../robopaper_atlas_all.xlsx'
+OUT  = '../dataset_preview.html'
 
 # How many rows to show per sheet. None = all.
 ROW_LIMITS: dict[str, int | None] = {
