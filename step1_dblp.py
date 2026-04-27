@@ -102,6 +102,7 @@ CORE_VENUES = [
     ('rss',  'conf/rss',      'RSS',  range(2005, 2026)),  # Robotics: Science and Systems
     ('ijrr', 'journals/ijrr', 'IJRR', range(1982, 2027)),  # Int. J. of Robotics Research (창간 1982)
     ('ram',  'journals/ram',  'RAM',  range(1994, 2027)),  # IEEE Robotics & Automation Magazine 창간 1994
+    ('corl', 'conf/corl',    'CoRL', range(2017, 2026)),  # Conference on Robot Learning 창간 2017
 ]
 
 # DBLP에 색인된 optional venues. (Soft Robotics, IEEE TMech은 DBLP 미색인 →

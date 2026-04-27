@@ -24,12 +24,13 @@ VENUES_CFG = [
     {'label': 'RA-P',    'id': 'rap',    'color': '#d4a017', 'since': 2025},
     {'label': 'T-ASE',   'id': 'tase',   'color': '#2c8c8c', 'since': 2004},
     {'label': 'RAM',     'id': 'ram',    'color': '#3f51b5', 'since': 1994},
+    {'label': 'CoRL',    'id': 'corl',   'color': '#f57c00', 'since': 2017},
 ]
 
 # Dedup priority: when one paper is cross-listed (RA-L→ICRA, etc.) we keep
 # the JOURNAL version as the primary venue. Order MUST match step3_excel.py
 # so summary cards / by_year totals stay consistent across pages.
-_DEDUP_ORDER = ['T-RO', 'IJRR', 'Sci-Rob', 'T-FR', 'SoRo', 'T-Mech', 'T-ASE', 'RAM', 'RA-L', 'RA-P', 'RSS', 'ICRA', 'IROS']
+_DEDUP_ORDER = ['T-RO', 'IJRR', 'Sci-Rob', 'T-FR', 'SoRo', 'T-Mech', 'T-ASE', 'RAM', 'RA-L', 'RA-P', 'RSS', 'ICRA', 'IROS', 'CoRL']
 VENUE_PRIORITY = {v: i for i, v in enumerate(_DEDUP_ORDER)}
 VENUE_LABELS   = [v['label'] for v in VENUES_CFG]
 VENUE_COLORS   = {v['label']: v['color'] for v in VENUES_CFG}
