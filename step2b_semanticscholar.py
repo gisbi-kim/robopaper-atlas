@@ -1,4 +1,8 @@
 """
+[DEPRECATED] Step 2b: 이 스크립트는 step2_openalex.py에 통합되었습니다.
+step2_openalex.py가 S2 기반으로 전환되면서 별도 실행이 불필요합니다.
+기존 checkpoint 호환성을 위해 보존하지만, 새 세팅에서는 step2_openalex.py만 사용하세요.
+
 Step 2b: Semantic Scholar로 인용수 갱신 (OpenAlex 인용수 → S2로 교체)
 
 OpenAlex의 cited_by_count는 Crossref deposited refs 기반이라 보수적이고,
