@@ -153,6 +153,7 @@ python _enrich_communities.py     # Leiden + TF-IDF → community 필드 주입
 | RA-P | OpenAlex ISSN `2995-4304` | 2025 |
 | T-ASE | OpenAlex ISSN `1545-5955` | 2004 |
 | RAM | DBLP `journals/ram` | 1994 |
+| CoRL | DBLP `conf/corl` | 2017 |
 
 ## 새 venue 추가하려면
 
@@ -165,5 +166,11 @@ python _enrich_communities.py     # Leiden + TF-IDF → community 필드 주입
 ```python
 ('key', 'LABEL', 'ISSN-NUMBER', range(start_year, 2027)),
 ```
+
+**PMLR 기반 학회 (CoRL 등)** — DBLP에 doi 필드가 없으므로 추가 스텝 필요:
+```bash
+python step1d_pmlr_doi_resolve.py   # OpenAlex 제목 검색으로 arXiv DOI 역추적
+```
+이후 step2 → step3 → HTML 생성 순서로 실행.
 
 그 후 step1 → step2 → step3 → HTML 생성 순서로 실행. 각 `_make_*.py` 상단의 `VENUES_CFG` 리스트에 `{'label', 'id', 'color'}` 한 줄 추가하면 모든 카드/차트/필터에 자동 반영.

@@ -62,7 +62,7 @@ def fetch_batch(dois):
         except Exception as e:
             print(f"    error: {e}")
             time.sleep(10 * (attempt + 1))
-    print(f"    giving up on this batch — moving on")
+    print(f"    giving up on this batch -- moving on")
     return [None] * len(dois)
 
 

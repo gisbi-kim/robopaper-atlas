@@ -46,7 +46,7 @@ except OSError:
 with open('all_enriched.json', encoding='utf-8') as f:
     papers = json.load(f)
 df = pd.DataFrame(papers)
-slim = df[['venue', 'year', 'title', 'authors', 'cited_by_count', 'doi', 'pages']].copy()
+slim = df[['venue', 'year', 'title', 'authors', 'cited_by_count', 'doi', 'pages', 'ee']].copy()
 slim['title'] = (slim['title'].fillna('').astype(str).map(html.unescape)
                  .str.rstrip('.').str.strip().str[:300])
 # DBLP 동명이인 식별자 ("0001" 등) 제거 + HTML 엔티티 디코딩
@@ -107,7 +107,9 @@ before = len(slim)
 slim = slim[~slim['title'].map(is_front_matter)].reset_index(drop=True)
 slim = slim[~slim['title'].map(is_translated_dup)].reset_index(drop=True)
 # DOI 없는 행은 거의 다 학회 proceedings volume 표제 등 비논문 → drop.
-slim = slim[slim['doi'].astype(str).str.strip() != ''].reset_index(drop=True)
+# 예외: PMLR 기반 학회 (CoRL 등) — ee URL로 정식 논문 확인됨.
+is_pmlr = slim['ee'].fillna('').str.startswith('https://proceedings.mlr.press/')
+slim = slim[(slim['doi'].astype(str).str.strip() != '') | is_pmlr].reset_index(drop=True)
 print(f"front-matter / 비영어 / DOI-less 제외: {before - len(slim)}건")
 
 # DOI 기반 dedup — 우선순위는 VENUE_PRIORITY

@@ -77,9 +77,11 @@ print(f"제외된 비영어 번역본 행: {before - len(df)}개")
 # 2d) DOI 없는 행 제거 — 거의 다 학회 proceedings volume 표제
 #     ("Robotics: Science and Systems XX, Delft, The Netherlands, ...") 같은
 #     비논문 엔트리. 모던 robotics venue에서 정상 논문은 100% DOI 있음.
+#     예외: PMLR 기반 학회 (CoRL 등) — ee URL로 정식 논문 확인됨 (DOI는 별도 resolve 필요).
 before = len(df)
 df['doi'] = df['doi'].fillna('').astype(str).str.strip()
-df = df[df['doi'] != ''].reset_index(drop=True)
+is_pmlr = df['ee'].fillna('').str.startswith('https://proceedings.mlr.press/')
+df = df[(df['doi'] != '') | is_pmlr].reset_index(drop=True)
 print(f"제외된 DOI-less 행: {before - len(df)}개")
 
 # 3) DOI 기반 중복 제거 (같은 DOI가 RA-L·ICRA·IROS에 중복 등장하면 RA-L 우선으로 남김)
