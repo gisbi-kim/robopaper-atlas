@@ -514,12 +514,22 @@ function chargeStrength(d) {
   return CHARGE_BASE * sparsity * (1 + Math.sqrt(deg) * 0.35);
 }
 
+// RAF dedup: simulation may fire many ticks per frame — cap renders at 60fps.
+let rafPending = false;
+function scheduleDraw() {
+  if (!rafPending) {
+    rafPending = true;
+    requestAnimationFrame(() => { draw(); rafPending = false; });
+  }
+}
+
 let simulation = d3.forceSimulation(nodes)
+  .alphaDecay(0.04)
   .force('link', d3.forceLink(edges).id(d => d.id).distance(linkDistance).strength(0.35))
   .force('charge', d3.forceManyBody().strength(chargeStrength))
   .force('center', d3.forceCenter(width / 2, height / 2).strength(0.05))
   .force('collide', d3.forceCollide().radius(d => rScale(d.papers) + 2))
-  .on('tick', draw);
+  .on('tick', scheduleDraw);
 
 function applySparsity(s) {
   sparsity = s;
@@ -542,76 +552,71 @@ function draw() {
   ctx.translate(transform.x, transform.y);
   ctx.scale(transform.k, transform.k);
 
-  // Edges — if no selection: all gray. If selection: gray (non-tier) then 3rd/2nd/1st.
+  // Viewport bounds in world coords + margin so nodes near edge aren't clipped.
+  const margin = 80 / transform.k;
+  const vx0 = (-transform.x) / transform.k - margin;
+  const vy0 = (-transform.y) / transform.k - margin;
+  const vx1 = (width  - transform.x) / transform.k + margin;
+  const vy1 = (height - transform.y) / transform.k + margin;
+
+  // Viewport cull once — skip edges whose AABB is entirely off-screen.
+  const visEdges = edges.filter(e => {
+    const sx = e.source.x, sy = e.source.y, tx = e.target.x, ty = e.target.y;
+    return Math.max(sx, tx) >= vx0 && Math.min(sx, tx) <= vx1
+        && Math.max(sy, ty) >= vy0 && Math.min(sy, ty) <= vy1;
+  });
+
   ctx.lineCap = 'round';
-  // Zoom-adaptive width: when zoomed out (k<1), thicken lines so they stay visible.
-  const wMult = Math.max(1, 1 / transform.k);
-  const TIER_STYLE = {
-    1: { color: '#34d399', alpha: 1.0,  w: 2.4 },  // emerald — most salient
-    2: { color: '#818cf8', alpha: 0.85, w: 1.5 },  // indigo — medium
-    3: { color: '#f59e0b', alpha: 0.45, w: 0.9 },  // amber (yellow-orange) — distant
-  };
-  if (!selectedNode && selectedCommunity != null) {
-    // Community-focus mode: edges inside that community keep colour,
-    // cross-community and outside edges fade to near-invisible.
-    ctx.strokeStyle = 'rgba(156, 163, 175, 0.06)';
-    for (const e of edges) {
-      if (e.source.community === selectedCommunity && e.target.community === selectedCommunity) continue;
-      ctx.beginPath();
-      ctx.lineWidth = eScale(e.weight) * wMult;
-      ctx.moveTo(e.source.x, e.source.y);
-      ctx.lineTo(e.target.x, e.target.y);
-      ctx.stroke();
+  const wMult = Math.max(1, 1 / transform.k);  // thicken when zoomed out
+
+  // Batched edge drawing: group by eScale bucket → one stroke() per bucket.
+  // eScale range [0.3, 3]; 4 buckets cover the full range.
+  const BUCKET_T = [0.75, 1.35, 2.1];          // threshold boundaries
+  const BUCKET_W = [0.45, 1.0, 1.75, 2.8];     // representative eScale width per bucket
+  function batchEdges(edgeList, style, alpha, scaleFactor) {
+    if (!edgeList.length) return;
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = style;
+    const bins = [[], [], [], []];
+    for (const e of edgeList) {
+      const w = eScale(e.weight);
+      bins[w < BUCKET_T[0] ? 0 : w < BUCKET_T[1] ? 1 : w < BUCKET_T[2] ? 2 : 3].push(e);
     }
-    ctx.strokeStyle = 'rgba(156, 163, 175, 0.55)';
-    for (const e of edges) {
-      if (!(e.source.community === selectedCommunity && e.target.community === selectedCommunity)) continue;
+    for (let i = 0; i < 4; i++) {
+      if (!bins[i].length) continue;
+      ctx.lineWidth = BUCKET_W[i] * scaleFactor * wMult;
       ctx.beginPath();
-      ctx.lineWidth = eScale(e.weight) * wMult;
-      ctx.moveTo(e.source.x, e.source.y);
-      ctx.lineTo(e.target.x, e.target.y);
+      for (const e of bins[i]) { ctx.moveTo(e.source.x, e.source.y); ctx.lineTo(e.target.x, e.target.y); }
       ctx.stroke();
-    }
-  } else if (!selectedNode) {
-    ctx.strokeStyle = 'rgba(156, 163, 175, 0.35)';
-    for (const e of edges) {
-      ctx.beginPath();
-      ctx.lineWidth = eScale(e.weight) * wMult;
-      ctx.moveTo(e.source.x, e.source.y);
-      ctx.lineTo(e.target.x, e.target.y);
-      ctx.stroke();
-    }
-  } else {
-    // background (untiered) edges, dimmer so tiers stand out
-    ctx.strokeStyle = 'rgba(156, 163, 175, 0.15)';
-    for (const e of edges) {
-      if (edgeTier.has(e)) continue;
-      ctx.beginPath();
-      ctx.lineWidth = eScale(e.weight) * wMult;
-      ctx.moveTo(e.source.x, e.source.y);
-      ctx.lineTo(e.target.x, e.target.y);
-      ctx.stroke();
-    }
-    // 3rd, then 2nd, then 1st (1st drawn on top = most prominent)
-    for (const tier of [3, 2, 1]) {
-      const s = TIER_STYLE[tier];
-      ctx.globalAlpha = s.alpha;
-      ctx.strokeStyle = s.color;
-      for (const e of edges) {
-        if (edgeTier.get(e) !== tier) continue;
-        ctx.beginPath();
-        ctx.lineWidth = eScale(e.weight) * s.w * wMult;
-        ctx.moveTo(e.source.x, e.source.y);
-        ctx.lineTo(e.target.x, e.target.y);
-        ctx.stroke();
-      }
     }
     ctx.globalAlpha = 1;
   }
 
-  // Nodes — partial zoom compensation so they stay visible when zoomed out
+  const TIER_STYLE = {
+    1: { color: '#34d399', alpha: 1.0,  sf: 2.4 },
+    2: { color: '#818cf8', alpha: 0.85, sf: 1.5 },
+    3: { color: '#f59e0b', alpha: 0.45, sf: 0.9 },
+  };
+
+  if (!selectedNode && selectedCommunity != null) {
+    batchEdges(visEdges.filter(e => !(e.source.community === selectedCommunity && e.target.community === selectedCommunity)),
+               'rgba(156, 163, 175, 0.06)', 1, 1);
+    batchEdges(visEdges.filter(e => e.source.community === selectedCommunity && e.target.community === selectedCommunity),
+               'rgba(156, 163, 175, 0.55)', 1, 1);
+  } else if (!selectedNode) {
+    batchEdges(visEdges, 'rgba(156, 163, 175, 0.35)', 1, 1);
+  } else {
+    batchEdges(visEdges.filter(e => !edgeTier.has(e)), 'rgba(156, 163, 175, 0.15)', 1, 1);
+    for (const tier of [3, 2, 1]) {
+      const s = TIER_STYLE[tier];
+      batchEdges(visEdges.filter(e => edgeTier.get(e) === tier), s.color, s.alpha, s.sf);
+    }
+  }
+
+  // Nodes — viewport culling + partial zoom compensation.
   const nodeMult = Math.min(8, Math.pow(Math.max(1 / transform.k, 1), 0.75));
   for (const n of nodes) {
+    if (n.x < vx0 || n.x > vx1 || n.y < vy0 || n.y > vy1) continue;
     ctx.beginPath();
     ctx.arc(n.x, n.y, rScale(n.papers) * nodeMult, 0, Math.PI * 2);
     ctx.fillStyle = nodeColor(n);
@@ -623,8 +628,7 @@ function draw() {
     }
   }
 
-  // Labels — progressively reveal more names as zoom increases; hub nodes
-  // (high paper count) appear earlier. Selected node always labeled.
+  // Labels — progressively reveal more names as zoom increases.
   if (transform.k > 0.25) {
     const fontPx = Math.max(9, 11 / transform.k);
     ctx.font = `${fontPx}px -apple-system, sans-serif`;
@@ -632,18 +636,18 @@ function draw() {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     let minPapers;
-    if      (transform.k >= 2.0) minPapers = 0;   // everyone
+    if      (transform.k >= 2.0) minPapers = 0;
     else if (transform.k >= 1.2) minPapers = 8;
     else if (transform.k >= 0.8) minPapers = 20;
     else if (transform.k >= 0.5) minPapers = 40;
-    else                         minPapers = 80;  // only big hubs at low zoom
+    else                         minPapers = 80;
     for (const n of nodes) {
       if (n.papers < minPapers && n !== selectedNode) continue;
+      if (n.x < vx0 || n.x > vx1 || n.y < vy0 || n.y > vy1) continue;
       const r = rScale(n.papers) * nodeMult;
       ctx.fillText(n.label, n.x, n.y + r + 2);
     }
   } else if (selectedNode) {
-    // very zoomed out: only selected node label
     ctx.font = `${11 / transform.k}px -apple-system, sans-serif`;
     ctx.fillStyle = '#38bdf8';
     ctx.textAlign = 'center';
