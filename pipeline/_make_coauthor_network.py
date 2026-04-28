@@ -165,11 +165,14 @@ HTML = r"""<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <title>Co-authorship network — RoboPaper Atlas (local preview)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <style>
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; height: 100%; font-family: -apple-system, "Segoe UI", sans-serif; background: #0f1117; color: #e5e7eb; overflow: hidden; }
-  canvas { display: block; background: #0f1117; }
+  canvas { display: block; }
+  #gl-canvas { position: fixed; top: 0; left: 0; z-index: 0; }
+  #net { position: fixed; top: 0; left: 0; z-index: 1; }
   .panel {
     position: fixed; background: rgba(17, 24, 39, 0.92); color: #e5e7eb;
     border: 1px solid #374151; border-radius: 8px; padding: 12px 14px;
@@ -325,7 +328,7 @@ HTML = r"""<!DOCTYPE html>
   <div id="legend-comm" style="color:#cbd5e1; margin-bottom: 3px;">
     Node color = research community · <span id="comm-count" style="color:#e5e7eb;">—</span> communities detected via Leiden · hover a node for topic
   </div>
-  <div style="color:#9ca3af;">Node size = # papers · Edge thickness = # co-authored papers</div>
+  <div style="color:#9ca3af;">Node size = # papers · Edge = co-authored papers (WebGL)</div>
   <div style="color:#6b7280; margin-top: 2px;">Drag to pan · wheel to zoom · click node to pin · drag node to reposition · <a href="coauthor_network_methods.html" style="color:#38bdf8; text-decoration:none; border-bottom:1px dotted #38bdf8;">How this works →</a></div>
 </div>
 <div id="tooltip">
@@ -374,8 +377,6 @@ const META = DATA.meta;
 }
 
 // --- Build working data ---
-// DATA.nodes/DATA.edges are read-only aliases; filtered `nodes`/`edges` below
-// are fresh copies that the simulation is free to mutate.
 const INITIAL_EDGE_THRESHOLD = __DEFAULT_EDGE__;
 const allNodes = DATA.nodes;
 const allEdges = DATA.edges;  // source/target are ids here
@@ -387,6 +388,96 @@ const usedIdsInit = new Set();
 edges.forEach(e => { usedIdsInit.add(e.source); usedIdsInit.add(e.target); });
 let nodes = allNodes.filter(n => usedIdsInit.has(n.id));
 edges.forEach(e => { e.source = nodeById.get(e.source); e.target = nodeById.get(e.target); });
+
+// =====================================================================
+// WebGL edge renderer (Three.js) — one draw call for all visible edges.
+// Edges are rendered on a WebGL canvas behind the Canvas 2D canvas.
+// Canvas 2D stays on top for nodes, labels, and all interaction handling.
+// =====================================================================
+const glCanvas = document.createElement('canvas');
+glCanvas.id = 'gl-canvas';
+document.body.insertBefore(glCanvas, canvas);
+
+const renderer = new THREE.WebGLRenderer({ canvas: glCanvas, antialias: false });
+renderer.setPixelRatio(1);
+renderer.setSize(width, height, false);
+renderer.setClearColor(0x0f1117, 1);
+
+const glCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, -1, 1);
+const glScene  = new THREE.Scene();
+
+// Pre-allocate buffers sized for the maximum possible edge count (all edges, threshold=MIN).
+// drawRange controls how many vertices are actually rendered each frame.
+const MAX_E = allEdges.length;
+
+function makeLines(colorHex, opacity) {
+  const positions = new Float32Array(MAX_E * 6);  // 2 endpoints × 3 floats each
+  const geom = new THREE.BufferGeometry();
+  const attr = new THREE.BufferAttribute(positions, 3);
+  geom.setAttribute('position', attr);
+  geom.setDrawRange(0, 0);
+  const mat = new THREE.LineBasicMaterial({ color: colorHex, opacity, transparent: opacity < 1 });
+  const lines = new THREE.LineSegments(geom, mat);
+  glScene.add(lines);
+  return { lines, geom, attr, positions };
+}
+
+// Six edge style groups matching the visual modes from the original batchEdges calls.
+const GL = {
+  normal: makeLines(0x9ca3af, 0.35),  // default view — all edges
+  dim:    makeLines(0x9ca3af, 0.06),  // background edges when selection is active
+  comm:   makeLines(0x9ca3af, 0.55),  // edges within the selected community
+  t1:     makeLines(0x34d399, 1.00),  // tier-1 (1st-degree) edges from selected node
+  t2:     makeLines(0x818cf8, 0.85),  // tier-2 (2nd-degree)
+  t3:     makeLines(0xf59e0b, 0.45),  // tier-3 (3rd-degree)
+};
+
+// Fill GL buffers and render — called once per animation frame from draw().
+// One loop over edges partitions into style groups; each group is one GL draw call.
+function drawGL() {
+  let iN=0, iD=0, iC=0, i1=0, i2=0, i3=0;
+  const bN=GL.normal.positions, bD=GL.dim.positions, bC=GL.comm.positions;
+  const b1=GL.t1.positions,     b2=GL.t2.positions,  b3=GL.t3.positions;
+  const tk=transform.k, tx=transform.x, ty=transform.y;
+  // Pre-compute scale factors to avoid divisions inside the loop.
+  const w2=2/width, h2=2/height;
+  const hasComm = !selectedNode && selectedCommunity != null;
+  const hasTier = selectedNode != null;
+
+  for (const e of edges) {
+    // World → screen → NDC (Y flipped: screen Y=0 → NDC Y=+1)
+    const ssx = (e.source.x * tk + tx) * w2 - 1;
+    const ssy = 1 - (e.source.y * tk + ty) * h2;
+    const eex = (e.target.x * tk + tx) * w2 - 1;
+    const eey = 1 - (e.target.y * tk + ty) * h2;
+
+    if (hasComm) {
+      if (e.source.community === selectedCommunity && e.target.community === selectedCommunity) {
+        bC[iC]=ssx; bC[iC+1]=ssy; bC[iC+2]=0; bC[iC+3]=eex; bC[iC+4]=eey; bC[iC+5]=0; iC+=6;
+      } else {
+        bD[iD]=ssx; bD[iD+1]=ssy; bD[iD+2]=0; bD[iD+3]=eex; bD[iD+4]=eey; bD[iD+5]=0; iD+=6;
+      }
+    } else if (hasTier) {
+      const tier = edgeTier.get(e);
+      if      (tier===1) { b1[i1]=ssx; b1[i1+1]=ssy; b1[i1+2]=0; b1[i1+3]=eex; b1[i1+4]=eey; b1[i1+5]=0; i1+=6; }
+      else if (tier===2) { b2[i2]=ssx; b2[i2+1]=ssy; b2[i2+2]=0; b2[i2+3]=eex; b2[i2+4]=eey; b2[i2+5]=0; i2+=6; }
+      else if (tier===3) { b3[i3]=ssx; b3[i3+1]=ssy; b3[i3+2]=0; b3[i3+3]=eex; b3[i3+4]=eey; b3[i3+5]=0; i3+=6; }
+      else               { bD[iD]=ssx; bD[iD+1]=ssy; bD[iD+2]=0; bD[iD+3]=eex; bD[iD+4]=eey; bD[iD+5]=0; iD+=6; }
+    } else {
+      bN[iN]=ssx; bN[iN+1]=ssy; bN[iN+2]=0; bN[iN+3]=eex; bN[iN+4]=eey; bN[iN+5]=0; iN+=6;
+    }
+  }
+
+  GL.normal.attr.needsUpdate=true; GL.normal.geom.setDrawRange(0, iN/3);
+  GL.dim.attr.needsUpdate=true;    GL.dim.geom.setDrawRange(0, iD/3);
+  GL.comm.attr.needsUpdate=true;   GL.comm.geom.setDrawRange(0, iC/3);
+  GL.t1.attr.needsUpdate=true;     GL.t1.geom.setDrawRange(0, i1/3);
+  GL.t2.attr.needsUpdate=true;     GL.t2.geom.setDrawRange(0, i2/3);
+  GL.t3.attr.needsUpdate=true;     GL.t3.geom.setDrawRange(0, i3/3);
+
+  renderer.render(glScene, glCamera);
+}
+// =====================================================================
 
 // Year color scale (inferno: dark → bright for older → newer)
 const years = nodes.map(n => n.last_year).filter(y => y > 0);
@@ -546,72 +637,23 @@ const zoom = d3.zoom().scaleExtent([0.02, 8]).on('zoom', (e) => {
 });
 d3.select(canvas).call(zoom);
 
+// --- Draw: WebGL edges (drawGL) + Canvas 2D nodes/labels ---
 function draw() {
+  // Render all edges into the WebGL canvas (behind the Canvas 2D canvas).
+  drawGL();
+
+  // Canvas 2D: nodes and labels only.
   ctx.save();
   ctx.clearRect(0, 0, width, height);
   ctx.translate(transform.x, transform.y);
   ctx.scale(transform.k, transform.k);
 
-  // Viewport bounds in world coords + margin so nodes near edge aren't clipped.
+  // Viewport bounds in world coords for node/label culling.
   const margin = 80 / transform.k;
   const vx0 = (-transform.x) / transform.k - margin;
   const vy0 = (-transform.y) / transform.k - margin;
   const vx1 = (width  - transform.x) / transform.k + margin;
   const vy1 = (height - transform.y) / transform.k + margin;
-
-  // Viewport cull once — skip edges whose AABB is entirely off-screen.
-  const visEdges = edges.filter(e => {
-    const sx = e.source.x, sy = e.source.y, tx = e.target.x, ty = e.target.y;
-    return Math.max(sx, tx) >= vx0 && Math.min(sx, tx) <= vx1
-        && Math.max(sy, ty) >= vy0 && Math.min(sy, ty) <= vy1;
-  });
-
-  ctx.lineCap = 'round';
-  const wMult = Math.max(1, 1 / transform.k);  // thicken when zoomed out
-
-  // Batched edge drawing: group by eScale bucket → one stroke() per bucket.
-  // eScale range [0.3, 3]; 4 buckets cover the full range.
-  const BUCKET_T = [0.75, 1.35, 2.1];          // threshold boundaries
-  const BUCKET_W = [0.45, 1.0, 1.75, 2.8];     // representative eScale width per bucket
-  function batchEdges(edgeList, style, alpha, scaleFactor) {
-    if (!edgeList.length) return;
-    ctx.globalAlpha = alpha;
-    ctx.strokeStyle = style;
-    const bins = [[], [], [], []];
-    for (const e of edgeList) {
-      const w = eScale(e.weight);
-      bins[w < BUCKET_T[0] ? 0 : w < BUCKET_T[1] ? 1 : w < BUCKET_T[2] ? 2 : 3].push(e);
-    }
-    for (let i = 0; i < 4; i++) {
-      if (!bins[i].length) continue;
-      ctx.lineWidth = BUCKET_W[i] * scaleFactor * wMult;
-      ctx.beginPath();
-      for (const e of bins[i]) { ctx.moveTo(e.source.x, e.source.y); ctx.lineTo(e.target.x, e.target.y); }
-      ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
-  }
-
-  const TIER_STYLE = {
-    1: { color: '#34d399', alpha: 1.0,  sf: 2.4 },
-    2: { color: '#818cf8', alpha: 0.85, sf: 1.5 },
-    3: { color: '#f59e0b', alpha: 0.45, sf: 0.9 },
-  };
-
-  if (!selectedNode && selectedCommunity != null) {
-    batchEdges(visEdges.filter(e => !(e.source.community === selectedCommunity && e.target.community === selectedCommunity)),
-               'rgba(156, 163, 175, 0.06)', 1, 1);
-    batchEdges(visEdges.filter(e => e.source.community === selectedCommunity && e.target.community === selectedCommunity),
-               'rgba(156, 163, 175, 0.55)', 1, 1);
-  } else if (!selectedNode) {
-    batchEdges(visEdges, 'rgba(156, 163, 175, 0.35)', 1, 1);
-  } else {
-    batchEdges(visEdges.filter(e => !edgeTier.has(e)), 'rgba(156, 163, 175, 0.15)', 1, 1);
-    for (const tier of [3, 2, 1]) {
-      const s = TIER_STYLE[tier];
-      batchEdges(visEdges.filter(e => edgeTier.get(e) === tier), s.color, s.alpha, s.sf);
-    }
-  }
 
   // Nodes — viewport culling + partial zoom compensation.
   const nodeMult = Math.min(8, Math.pow(Math.max(1 / transform.k, 1), 0.75));
@@ -1156,6 +1198,7 @@ sparsitySlider.oninput = (e) => {
 window.addEventListener('resize', () => {
   width = canvas.width = window.innerWidth;
   height = canvas.height = window.innerHeight;
+  renderer.setSize(width, height, false);
   simulation.force('center', d3.forceCenter(width / 2, height / 2));
   simulation.alpha(0.3).restart();
 });
