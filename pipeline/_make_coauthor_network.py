@@ -700,6 +700,81 @@ function draw() {
   ctx.restore();
 }
 
+// --- URL state sync ---
+function syncURL() {
+  const p = new URLSearchParams();
+  if (selectedNode) p.set('node', selectedNode.label);
+  const q = searchInput ? searchInput.value.trim() : '';
+  if (q) p.set('q', q);
+  const th = slider ? parseInt(slider.value) : INITIAL_EDGE_THRESHOLD;
+  if (th !== INITIAL_EDGE_THRESHOLD) p.set('th', th);
+  const sp = sparsitySlider ? parseFloat(sparsitySlider.value) : INITIAL_SPARSITY;
+  if (sp !== INITIAL_SPARSITY) p.set('spread', sp);
+  if (colorMode !== 'community') p.set('color', colorMode);
+  if (showDegrees) p.set('deg', '1');
+  const qs = p.toString();
+  history.replaceState(null, '', qs ? '?' + qs : location.pathname);
+}
+
+function loadFromURL() {
+  const p = new URLSearchParams(location.search);
+  if (!p.toString()) return;
+
+  const cm = p.get('color');
+  if (cm) {
+    colorMode = cm;
+    const r = document.querySelector('input[name="cmode"][value="' + cm + '"]');
+    if (r) r.checked = true;
+  }
+
+  if (p.has('deg')) {
+    showDegrees = true;
+    document.getElementById('show-degrees').checked = true;
+    document.getElementById('tier-legend').style.display = 'block';
+  }
+
+  const th = p.get('th');
+  if (th) {
+    const thN = parseInt(th);
+    slider.value = thN;
+    sliderVal.textContent = thN;
+    edges = allEdges.filter(d => d.weight >= thN).map(d => ({ ...d }));
+    edges.forEach(e => {
+      e.source = nodeById.get(typeof e.source === 'object' ? e.source.id : e.source);
+      e.target = nodeById.get(typeof e.target === 'object' ? e.target.id : e.target);
+    });
+    const used = new Set();
+    edges.forEach(e => { used.add(e.source.id); used.add(e.target.id); });
+    nodes = allNodes.filter(n => used.has(n.id));
+    nodes.forEach(n => { n.x = nodeById.get(n.id).x; n.y = nodeById.get(n.id).y; });
+    simulation.nodes(nodes);
+    simulation.force('link').links(edges);
+    buildAdjacency();
+  }
+
+  const sp = p.get('spread');
+  if (sp) {
+    const spN = parseFloat(sp);
+    sparsitySlider.value = spN;
+    sparsityVal.textContent = spN;
+    applySparsity(spN);
+  }
+
+  const q = p.get('q');
+  if (q) {
+    searchInput.value = q;
+    searchInput.dispatchEvent(new Event('input'));
+  }
+
+  const nodeLabel = p.get('node');
+  if (nodeLabel) {
+    setTimeout(() => {
+      const n = nodes.find(nd => nd.label === nodeLabel);
+      if (n) centerOnNode(n);
+    }, 1800);
+  }
+}
+
 // --- Interaction ---
 let selectedNode = null;
 let draggingNode = null;
@@ -810,6 +885,7 @@ function centerOnNode(n, scale = 1.8) {
   const ty = height / 2 - n.y * scale;
   d3.select(canvas).transition().duration(500)
     .call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
+  syncURL();
 }
 
 canvas.addEventListener('click', (e) => {
@@ -825,6 +901,7 @@ canvas.addEventListener('click', (e) => {
   updateSelectedPanel(n);
   recomputeEdgeTiers();
   draw();
+  syncURL();
 });
 
 // --- Search ---
@@ -833,7 +910,7 @@ const resultsDiv = document.getElementById('results');
 
 searchInput.addEventListener('input', (e) => {
   const q = e.target.value.trim().toLowerCase();
-  if (!q) { resultsDiv.innerHTML = ''; return; }
+  if (!q) { resultsDiv.innerHTML = ''; syncURL(); return; }
   const visibleIds = new Set(nodes.map(n => n.id));
   const matches = allNodes
     .filter(n => n.label.toLowerCase().includes(q))
@@ -850,6 +927,7 @@ searchInput.addEventListener('input', (e) => {
     return `<div class="${cls}" data-id="${n.id}"${title}>`
       + `<span>${n.label}</span><span class="count">${n.papers}</span></div>`;
   }).join('');
+  syncURL();
 });
 
 searchInput.addEventListener('keyup', (e) => {
@@ -1142,6 +1220,7 @@ function fullReset() {
     .call(zoom.transform, d3.zoomIdentity);
 
   document.getElementById('freeze').textContent = 'Freeze';
+  syncURL();
 }
 
 document.getElementById('restart').onclick = fullReset;
@@ -1176,6 +1255,7 @@ slider.oninput = (e) => {
   if (hubsList.style.display === 'block') populateHubs();
   // Refresh community list counts too (visible-per-community changes with threshold)
   if (commsPanel && commsPanel.style.display !== 'none') populateComms();
+  syncURL();
 };
 
 // Checkbox: show 2nd/3rd degree connections
@@ -1184,6 +1264,7 @@ document.getElementById('show-degrees').addEventListener('change', (e) => {
   document.getElementById('tier-legend').style.display = showDegrees ? 'block' : 'none';
   recomputeEdgeTiers();
   draw();
+  syncURL();
 });
 
 // Sparsity slider: controls how "exploded" the graph is
@@ -1193,6 +1274,7 @@ sparsitySlider.oninput = (e) => {
   const s = parseFloat(e.target.value);
   sparsityVal.textContent = s;
   applySparsity(s);
+  syncURL();
 };
 
 window.addEventListener('resize', () => {
@@ -1206,8 +1288,9 @@ window.addEventListener('resize', () => {
 // Color mode radio handlers + sync initial UI state with `colorMode`.
 document.querySelectorAll('input[name="cmode"]').forEach(r => {
   r.checked = (r.value === colorMode);
-  r.addEventListener('change', (e) => { if (e.target.checked) applyColorMode(e.target.value); });
+  r.addEventListener('change', (e) => { if (e.target.checked) { applyColorMode(e.target.value); syncURL(); } });
 });
+loadFromURL();
 applyColorMode(colorMode);
 })();
 </script>
