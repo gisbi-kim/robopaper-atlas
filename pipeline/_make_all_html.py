@@ -1195,7 +1195,56 @@ function applyFilters() {
   ];
   state.titleOp = document.getElementById('f-title-op').value;
   state.author = document.getElementById('f-author').value;
+  syncURL();
   rerenderAll();
+}
+
+// Serialize current filter state → URL query string (history.replaceState).
+// Only non-default values are written so the URL stays short.
+function syncURL() {
+  const p = new URLSearchParams();
+  const terms = state.titleTerms.map(t => t.trim()).filter(Boolean);
+  if (terms.length) p.set('q', terms.join(','));
+  if (state.author.trim()) p.set('author', state.author.trim());
+  if (state.yearFrom > YMIN) p.set('yf', state.yearFrom);
+  if (state.yearTo   < YMAX) p.set('yt', state.yearTo);
+  const activeV = VENUES.filter(v => state.venueFilter[v]);
+  if (activeV.length < VENUES.length) p.set('v', activeV.map(v => VENUE_IDS[v]).join(','));
+  if (state.minCite > 0) p.set('mc', state.minCite);
+  if (state.titleOp !== 'AND') p.set('op', state.titleOp);
+  const sortStr = state.sortKey + (state.sortDesc ? '-desc' : '-asc');
+  if (sortStr !== 'cites-desc') p.set('sort', sortStr);
+  const qs = p.toString();
+  history.replaceState(null, '', qs ? '?' + qs : location.pathname);
+}
+
+// Read URL query string → pre-fill filter UI + sort state.
+// Called once before the initial render so shared links open with the right filters.
+function loadFromURL() {
+  const p = new URLSearchParams(location.search);
+  if (!p.toString()) return;
+  if (p.has('q')) {
+    const terms = p.get('q').split(',').map(t => t.trim()).filter(Boolean);
+    ['f-title-1','f-title-2','f-title-3'].forEach((id, i) => {
+      const el = document.getElementById(id); if (el) el.value = terms[i] || '';
+    });
+  }
+  if (p.has('author')) { const el = document.getElementById('f-author');   if (el) el.value = p.get('author'); }
+  if (p.has('yf'))     { const el = document.getElementById('f-year-from'); if (el) el.value = p.get('yf'); }
+  if (p.has('yt'))     { const el = document.getElementById('f-year-to');   if (el) el.value = p.get('yt'); }
+  if (p.has('v')) {
+    const activeIds = new Set(p.get('v').split(','));
+    for (const v of VENUES) {
+      const el = document.getElementById('f-' + VENUE_IDS[v]);
+      if (el) el.checked = activeIds.has(VENUE_IDS[v]);
+    }
+  }
+  if (p.has('mc'))   { const el = document.getElementById('f-mincite');  if (el) el.value = p.get('mc'); }
+  if (p.has('op'))   { const el = document.getElementById('f-title-op'); if (el) el.value = p.get('op'); }
+  if (p.has('sort')) {
+    const parts = p.get('sort').split('-');
+    if (parts.length >= 2) { state.sortKey = parts[0]; state.sortDesc = parts[1] !== 'asc'; }
+  }
 }
 
 function resetFilters() {
@@ -1384,6 +1433,7 @@ _bChangeIds.forEach(id =>
   });
 });
 
+loadFromURL();
 rerenderAll();
 
 // --- Abstract tooltip on title hover (OpenAlex on-demand, cached) ---
