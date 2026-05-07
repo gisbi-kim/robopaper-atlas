@@ -20,6 +20,8 @@ VENUES_CFG = [
     {'label': 'RA-P',    'id': 'rap',    'color': '#d4a017', 'since': 2025},
     {'label': 'T-ASE',   'id': 'tase',   'color': '#2c8c8c', 'since': 2004},
     {'label': 'RAM',     'id': 'ram',    'color': '#3f51b5', 'since': 1994},
+    {'label': 'CoRL',    'id': 'corl',   'color': '#880e4f', 'since': 2017},
+    {'label': 'iSpaRo',  'id': 'isparo', 'color': '#5e548e', 'since': 2024},
 ]
 VENUE_LABELS = [v['label'] for v in VENUES_CFG]
 TITLE_STR = ' / '.join(VENUE_LABELS) + ' Papers by Year'
@@ -109,7 +111,7 @@ __CELL_TEXT_CSS__  td.c-total { font-weight: 600; font-variant-numeric: tabular-
 <div class="brand"><a href="index.html">RoboPaper Atlas</a></div>
 <h1>__TITLE_STR__</h1>
 <div class="sub" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
-  <span>DBLP + OpenAlex · __YMIN__ ~ __YMAX__ · __TOTAL__ papers (DOI-deduped)</span>
+  <span>DBLP + Crossref + OpenAlex · __YMIN__ ~ __YMAX__ · __TOTAL__ papers (DOI-deduped)</span>
   <span style="color:#888; text-align:right; line-height:1.4;">
     <a href="REFRESH.md" style="color:#1f77b4; text-decoration:none; font-size:11px;">How to refresh? ↻</a><br>
     Data as of __AS_OF__

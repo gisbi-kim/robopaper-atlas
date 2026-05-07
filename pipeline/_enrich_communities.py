@@ -21,6 +21,7 @@ import html as htmllib
 import json
 import math
 import re
+import sys
 from collections import defaultdict
 
 import igraph as ig
@@ -30,6 +31,9 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from _clean import is_front_matter
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 
 COAUTHOR_JSON = "../coauthor_network.json"
 ENRICHED_JSON = "all_enriched.json"
@@ -104,7 +108,7 @@ def main():
         if e['weight'] >= args.giant_threshold:
             G_strong.add_edge(e['source'], e['target'], weight=e['weight'])
     if G_strong.number_of_nodes() == 0:
-        print(f'No edges at giant_threshold {args.giant_threshold} — aborting.')
+        print(f'No edges at giant_threshold {args.giant_threshold} - aborting.')
         return
     mainland = max(nx.connected_components(G_strong), key=len)
     Gi = G_strong.subgraph(mainland).copy()
@@ -288,9 +292,9 @@ def main():
     print('Top 10 communities by size:')
     for c in communities_meta[:10]:
         authors = ', '.join(c['top_authors'][:3]) or '(none)'
-        words = ' · '.join(c['label_words']) or '(none)'
+        words = ' / '.join(c['label_words']) or '(none)'
         tag = ' [misc]' if c['misc'] else ''
-        print(f'  [{c["id"]:>3}] {c["size"]:>4,}{tag}  — {authors}')
+        print(f'  [{c["id"]:>3}] {c["size"]:>4,}{tag}  - {authors}')
         print(f'         words: {words}')
     # Also show the misc bucket summary if present
     misc = next((c for c in communities_meta if c['misc']), None)

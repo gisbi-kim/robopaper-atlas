@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>RoboPaper Atlas — 40+ years of ICRA / IROS / RA-L / T-RO / RSS / IJRR / Sci-Rob / SoRo / T-Mech / T-FR / RA-P / T-ASE / RAM / CoRL papers</title>
-<meta name="description" content="Interactive explorer for 91,000+ robotics papers across ICRA, IROS, RA-L, T-RO, RSS, IJRR, Science Robotics, Soft Robotics, IEEE/ASME T-Mech, T-FR, RA-P, T-ASE, IEEE RAM, and CoRL (1984~2026). Full-text search, year filter, citation sort.">
+<title>RoboPaper Atlas — 40+ years of robotics papers incl. iSpaRo</title>
+<meta name="description" content="Interactive explorer for 91,000+ robotics papers across ICRA, IROS, RA-L, T-RO, RSS, IJRR, Science Robotics, Soft Robotics, IEEE/ASME T-Mech, T-FR, RA-P, T-ASE, IEEE RAM, CoRL, and iSpaRo (1984~2026). Full-text search, year filter, citation sort.">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   * { box-sizing: border-box; }
@@ -33,6 +33,7 @@
   .b-tase   { background: #2c8c8c; }
   .b-ram    { background: #3f51b5; }
   .b-corl   { background: #880e4f; }
+  .b-isparo { background: #5e548e; }
 
   .stats {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -102,7 +103,7 @@
 <h1>RoboPaper Atlas</h1>
 <div class="tagline">
   Four decades of robotics research, indexed. 91,000+ papers from ICRA, IROS, RA-L, T-RO, RSS, IJRR,
-  Science Robotics, Soft Robotics, IEEE/ASME T-Mech, IEEE T-FR, IEEE RA-P, IEEE T-ASE, IEEE RAM, and CoRL — searchable, filterable, ranked by citation impact.
+  Science Robotics, Soft Robotics, IEEE/ASME T-Mech, IEEE T-FR, IEEE RA-P, IEEE T-ASE, IEEE RAM, CoRL, and iSpaRo — searchable, filterable, ranked by citation impact.
 </div>
 
 <div class="badges">
@@ -120,11 +121,12 @@
   <span class="badge b-tase">T-ASE 2004~</span>
   <span class="badge b-ram">RAM 1994~</span>
   <span class="badge b-corl">CoRL 2017~</span>
+  <span class="badge b-isparo">iSpaRo 2024~</span>
 </div>
 
 <div class="stats">
-  <div class="stat"><div class="n">91,303</div><div class="l">Papers (deduped)</div></div>
-  <div class="stat"><div class="n">14</div><div class="l">Venues</div></div>
+  <div class="stat"><div class="n">91,457</div><div class="l">Papers (deduped)</div></div>
+  <div class="stat"><div class="n">15</div><div class="l">Venues</div></div>
   <div class="stat"><div class="n">1984~2026</div><div class="l">Years</div></div>
   <div class="stat"><div class="n">95.4%</div><div class="l">Abstract coverage</div></div>
 </div>
@@ -156,7 +158,7 @@
 <h2>Download the dataset</h2>
 <div class="downloads">
   <a class="dl" href="robopaper_atlas_all.xlsx">
-    <span>📊 Excel (.xlsx)</span> <span class="sz">5 sheets · 91,040 papers</span>
+    <span>📊 Excel (.xlsx)</span> <span class="sz">5 sheets · 91,457 papers</span>
   </a>
   <a class="dl" href="dataset_preview.html">
     <span>👁 Preview</span> <span class="sz">first rows of every sheet</span>
@@ -167,7 +169,7 @@
 <div class="sources">
   <p>
     Paper metadata (title, authors, year, DOI, pages) is harvested from
-    <a href="https://dblp.org/">DBLP</a>; abstracts, citation counts, and topic concepts come from
+    <a href="https://dblp.org/">DBLP</a> / Crossref / OpenAlex; abstracts, citation counts, and topic concepts come from
     <a href="https://www.semanticscholar.org/">Semantic Scholar</a>. Duplicates across venues (e.g., a RA-L paper presented at ICRA)
     are collapsed via DOI + (normalized title, year) matching, with journals taking priority over conferences.
   </p>
@@ -191,6 +193,7 @@
     <tr><td>IEEE T-ASE</td><td>OpenAlex ISSN <code>1545-5955</code></td><td>2004</td></tr>
     <tr><td>IEEE RAM</td><td>DBLP <code>journals/ram</code></td><td>1994</td></tr>
     <tr><td>CoRL</td><td>DBLP <code>conf/corl</code></td><td>2017</td></tr>
+    <tr><td>iSpaRo</td><td>Crossref IEEE proceedings</td><td>2024</td></tr>
   </table>
 </div>
 

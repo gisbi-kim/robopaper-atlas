@@ -25,12 +25,13 @@ VENUES_CFG = [
     {'label': 'T-ASE',   'id': 'tase',   'color': '#2c8c8c', 'since': 2004},
     {'label': 'RAM',     'id': 'ram',    'color': '#3f51b5', 'since': 1994},
     {'label': 'CoRL',    'id': 'corl',   'color': '#880e4f', 'since': 2017},
+    {'label': 'iSpaRo',  'id': 'isparo', 'color': '#5e548e', 'since': 2024},
 ]
 
 # Dedup priority: when one paper is cross-listed (RA-L→ICRA, etc.) we keep
 # the JOURNAL version as the primary venue. Order MUST match step3_excel.py
 # so summary cards / by_year totals stay consistent across pages.
-_DEDUP_ORDER = ['T-RO', 'IJRR', 'Sci-Rob', 'T-FR', 'SoRo', 'T-Mech', 'T-ASE', 'RAM', 'RA-L', 'RA-P', 'RSS', 'ICRA', 'IROS', 'CoRL']
+_DEDUP_ORDER = ['T-RO', 'IJRR', 'Sci-Rob', 'T-FR', 'SoRo', 'T-Mech', 'T-ASE', 'RAM', 'RA-L', 'RA-P', 'RSS', 'ICRA', 'IROS', 'CoRL', 'iSpaRo']
 VENUE_PRIORITY = {v: i for i, v in enumerate(_DEDUP_ORDER)}
 VENUE_LABELS   = [v['label'] for v in VENUES_CFG]
 VENUE_COLORS   = {v['label']: v['color'] for v in VENUES_CFG}
@@ -315,7 +316,7 @@ __VENUE_TEXT_CSS__  .venue-also { color: #888; font-weight: 400; font-size: 10px
 <div class="brand"><a href="index.html">RoboPaper Atlas</a></div>
 <h1>__TITLE_STR__</h1>
 <div class="sub">
-  <span>DBLP + OpenAlex · __TOTAL_FMT__ papers (DOI-deduped) · __YMIN__ ~ __YMAX__ · Filter · Sort · Search</span>
+  <span>DBLP + Crossref + OpenAlex · __TOTAL_FMT__ papers (DOI-deduped) · __YMIN__ ~ __YMAX__ · Filter · Sort · Search</span>
   <span style="color:#888; text-align:right; line-height:1.4;">
     <a href="REFRESH.md" style="color:#1f77b4; text-decoration:none; font-size:11px;">How to refresh? ↻</a><br>
     Citations from Semantic Scholar · as of __AS_OF__

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>ICRA / IROS / RA-L / T-RO / RSS / IJRR / Sci-Rob / SoRo / T-Mech / T-FR / RA-P / T-ASE / RAM Papers by Year</title>
+<title>ICRA / IROS / RA-L / T-RO / RSS / IJRR / Sci-Rob / SoRo / T-Mech / T-FR / RA-P / T-ASE / RAM / CoRL / iSpaRo Papers by Year</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   body { font-family: -apple-system, "Segoe UI", sans-serif; margin: 24px; background: #fafafa; color: #222; }
@@ -36,6 +36,8 @@
   .card.v-rap { border-top: 3px solid #d4a017; }
   .card.v-tase { border-top: 3px solid #2c8c8c; }
   .card.v-ram { border-top: 3px solid #3f51b5; }
+  .card.v-corl { border-top: 3px solid #880e4f; }
+  .card.v-isparo { border-top: 3px solid #5e548e; }
   table { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 12px; }
   th, td { border-bottom: 1px solid #eee; padding: 6px 10px; text-align: right; }
   th:first-child, td:first-child { text-align: left; }
@@ -53,18 +55,20 @@
   td.c-rap { color: #d4a017; font-variant-numeric: tabular-nums; }
   td.c-tase { color: #2c8c8c; font-variant-numeric: tabular-nums; }
   td.c-ram { color: #3f51b5; font-variant-numeric: tabular-nums; }
+  td.c-corl { color: #880e4f; font-variant-numeric: tabular-nums; }
+  td.c-isparo { color: #5e548e; font-variant-numeric: tabular-nums; }
   td.c-total { font-weight: 600; font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body>
 
 <div class="brand"><a href="index.html">RoboPaper Atlas</a></div>
-<h1>ICRA / IROS / RA-L / T-RO / RSS / IJRR / Sci-Rob / SoRo / T-Mech / T-FR / RA-P / T-ASE / RAM Papers by Year</h1>
+<h1>ICRA / IROS / RA-L / T-RO / RSS / IJRR / Sci-Rob / SoRo / T-Mech / T-FR / RA-P / T-ASE / RAM / CoRL / iSpaRo Papers by Year</h1>
 <div class="sub" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
-  <span>DBLP + OpenAlex · 1984 ~ 2026 · 90,046 papers (DOI-deduped)</span>
+  <span>DBLP + Crossref + OpenAlex · 1984 ~ 2026 · 91,457 papers (DOI-deduped)</span>
   <span style="color:#888; text-align:right; line-height:1.4;">
     <a href="REFRESH.md" style="color:#1f77b4; text-decoration:none; font-size:11px;">How to refresh? ↻</a><br>
-    Data as of 2026-04-28
+    Data as of 2026-05-08
   </span>
 </div>
 
@@ -82,8 +86,10 @@
   <div class="card v-rap"><div class="num">19</div><div class="label">RA-P (2025~)</div></div>
   <div class="card v-tase"><div class="num">5,506</div><div class="label">T-ASE (2004~)</div></div>
   <div class="card v-ram"><div class="num">1,688</div><div class="label">RAM (1994~)</div></div>
-  <div class="card"><div class="num">90,046</div><div class="label">Grand total</div></div>
-  <div class="card"><div class="num">2025 (7,979)</div><div class="label">Peak year</div></div>
+  <div class="card v-corl"><div class="num">1,257</div><div class="label">CoRL (2017~)</div></div>
+  <div class="card v-isparo"><div class="num">154</div><div class="label">iSpaRo (2024~)</div></div>
+  <div class="card"><div class="num">91,457</div><div class="label">Grand total</div></div>
+  <div class="card"><div class="num">2025 (8,340)</div><div class="label">Peak year</div></div>
 </div>
 
 <div style="margin-top: 24px;">
@@ -96,16 +102,16 @@
 </div>
 
 <table>
-  <thead><tr><th>Year</th><th>ICRA</th><th>IROS</th><th>RA-L</th><th>T-RO</th><th>RSS</th><th>IJRR</th><th>Sci-Rob</th><th>SoRo</th><th>T-Mech</th><th>T-FR</th><th>RA-P</th><th>T-ASE</th><th>RAM</th><th>Total</th></tr></thead>
+  <thead><tr><th>Year</th><th>ICRA</th><th>IROS</th><th>RA-L</th><th>T-RO</th><th>RSS</th><th>IJRR</th><th>Sci-Rob</th><th>SoRo</th><th>T-Mech</th><th>T-FR</th><th>RA-P</th><th>T-ASE</th><th>RAM</th><th>CoRL</th><th>iSpaRo</th><th>Total</th></tr></thead>
   <tbody id="tbody"></tbody>
 </table>
 
 <script>
 // rows: [year, ...counts in VENUES order]
-const VENUES = ["ICRA", "IROS", "RA-L", "T-RO", "RSS", "IJRR", "Sci-Rob", "SoRo", "T-Mech", "T-FR", "RA-P", "T-ASE", "RAM"];
-const VENUE_COLOR = {"ICRA": "#1f77b4", "IROS": "#ff7f0e", "RA-L": "#2ca02c", "T-RO": "#d62728", "RSS": "#9467bd", "IJRR": "#8c564b", "Sci-Rob": "#17becf", "SoRo": "#e377c2", "T-Mech": "#bcbd22", "T-FR": "#7f7f7f", "RA-P": "#d4a017", "T-ASE": "#2c8c8c", "RAM": "#3f51b5"};
-const VENUE_IDS = {"ICRA": "icra", "IROS": "iros", "RA-L": "ral", "T-RO": "tro", "RSS": "rss", "IJRR": "ijrr", "Sci-Rob": "scirob", "SoRo": "soro", "T-Mech": "tmech", "T-FR": "tfr", "RA-P": "rap", "T-ASE": "tase", "RAM": "ram"};
-const raw = [[1984, 74, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1985, 158, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1986, 339, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1987, 329, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1988, 329, 129, 0, 0, 0, 33, 0, 0, 0, 0, 0, 0, 0], [1989, 281, 89, 0, 0, 0, 36, 0, 0, 0, 0, 0, 0, 0], [1990, 331, 139, 0, 0, 0, 42, 0, 0, 0, 0, 0, 0, 0], [1991, 390, 255, 0, 0, 0, 55, 0, 0, 0, 0, 0, 0, 0], [1992, 428, 289, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1993, 452, 312, 0, 0, 0, 43, 0, 0, 0, 0, 0, 0, 0], [1994, 533, 311, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 13], [1995, 498, 265, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 15], [1996, 588, 238, 0, 0, 0, 34, 0, 0, 34, 0, 0, 0, 18], [1997, 574, 289, 0, 0, 0, 50, 0, 0, 32, 0, 0, 0, 19], [1998, 593, 318, 0, 0, 0, 86, 0, 0, 39, 0, 0, 0, 23], [1999, 519, 311, 0, 0, 0, 84, 0, 0, 46, 0, 0, 0, 20], [2000, 641, 378, 0, 0, 0, 75, 0, 0, 49, 0, 0, 0, 20], [2001, 677, 379, 0, 0, 0, 58, 0, 0, 58, 0, 0, 0, 22], [2002, 689, 499, 0, 0, 0, 60, 0, 0, 58, 0, 0, 0, 24], [2003, 714, 620, 0, 0, 0, 51, 0, 0, 60, 0, 0, 0, 30], [2004, 854, 660, 0, 111, 0, 72, 0, 0, 65, 0, 0, 16, 46], [2005, 765, 663, 0, 127, 49, 66, 0, 0, 85, 0, 0, 40, 50], [2006, 680, 1001, 0, 120, 39, 73, 0, 0, 84, 0, 0, 45, 53], [2007, 807, 688, 0, 124, 42, 70, 0, 0, 81, 0, 0, 57, 44], [2008, 663, 687, 0, 135, 40, 75, 0, 0, 82, 0, 0, 90, 42], [2009, 712, 948, 0, 139, 40, 100, 0, 0, 144, 0, 0, 112, 40], [2010, 871, 992, 0, 99, 40, 98, 0, 0, 135, 0, 0, 79, 30], [2011, 1017, 786, 0, 107, 46, 102, 0, 0, 168, 0, 0, 67, 79], [2012, 836, 854, 0, 124, 60, 99, 0, 0, 139, 0, 0, 90, 79], [2013, 873, 913, 0, 119, 55, 92, 0, 0, 165, 0, 0, 145, 70], [2014, 1036, 749, 0, 133, 57, 99, 0, 25, 269, 0, 0, 152, 76], [2015, 940, 970, 0, 124, 49, 91, 0, 47, 255, 0, 0, 177, 91], [2016, 693, 830, 157, 119, 47, 86, 6, 30, 233, 0, 0, 152, 84], [2017, 795, 878, 301, 116, 75, 82, 48, 48, 218, 0, 0, 120, 96], [2018, 816, 1086, 573, 122, 71, 87, 67, 68, 256, 0, 0, 165, 87], [2019, 1024, 934, 598, 111, 84, 84, 81, 73, 319, 0, 0, 157, 69], [2020, 1073, 1128, 895, 120, 103, 88, 83, 98, 426, 0, 0, 268, 71], [2021, 1386, 1032, 1119, 148, 92, 78, 123, 78, 369, 0, 0, 237, 61], [2022, 929, 1213, 1610, 235, 74, 49, 90, 67, 428, 0, 0, 317, 57], [2023, 1341, 1195, 1083, 283, 112, 61, 95, 84, 420, 0, 0, 567, 72], [2024, 1760, 1581, 1490, 270, 134, 94, 134, 90, 522, 33, 0, 810, 80], [2025, 1604, 1985, 1577, 364, 163, 98, 130, 76, 624, 43, 4, 1225, 86], [2026, 0, 0, 802, 85, 0, 23, 29, 39, 202, 9, 15, 418, 21]];
+const VENUES = ["ICRA", "IROS", "RA-L", "T-RO", "RSS", "IJRR", "Sci-Rob", "SoRo", "T-Mech", "T-FR", "RA-P", "T-ASE", "RAM", "CoRL", "iSpaRo"];
+const VENUE_COLOR = {"ICRA": "#1f77b4", "IROS": "#ff7f0e", "RA-L": "#2ca02c", "T-RO": "#d62728", "RSS": "#9467bd", "IJRR": "#8c564b", "Sci-Rob": "#17becf", "SoRo": "#e377c2", "T-Mech": "#bcbd22", "T-FR": "#7f7f7f", "RA-P": "#d4a017", "T-ASE": "#2c8c8c", "RAM": "#3f51b5", "CoRL": "#880e4f", "iSpaRo": "#5e548e"};
+const VENUE_IDS = {"ICRA": "icra", "IROS": "iros", "RA-L": "ral", "T-RO": "tro", "RSS": "rss", "IJRR": "ijrr", "Sci-Rob": "scirob", "SoRo": "soro", "T-Mech": "tmech", "T-FR": "tfr", "RA-P": "rap", "T-ASE": "tase", "RAM": "ram", "CoRL": "corl", "iSpaRo": "isparo"};
+const raw = [[1984, 74, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1985, 158, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1986, 339, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1987, 329, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1988, 329, 129, 0, 0, 0, 33, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1989, 281, 89, 0, 0, 0, 36, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1990, 331, 139, 0, 0, 0, 42, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1991, 390, 255, 0, 0, 0, 55, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1992, 428, 289, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1993, 452, 312, 0, 0, 0, 43, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1994, 533, 311, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 13, 0, 0], [1995, 498, 265, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 15, 0, 0], [1996, 588, 238, 0, 0, 0, 34, 0, 0, 34, 0, 0, 0, 18, 0, 0], [1997, 574, 289, 0, 0, 0, 50, 0, 0, 32, 0, 0, 0, 19, 0, 0], [1998, 593, 318, 0, 0, 0, 86, 0, 0, 39, 0, 0, 0, 23, 0, 0], [1999, 519, 311, 0, 0, 0, 84, 0, 0, 46, 0, 0, 0, 20, 0, 0], [2000, 641, 378, 0, 0, 0, 75, 0, 0, 49, 0, 0, 0, 20, 0, 0], [2001, 677, 379, 0, 0, 0, 58, 0, 0, 58, 0, 0, 0, 22, 0, 0], [2002, 689, 499, 0, 0, 0, 60, 0, 0, 58, 0, 0, 0, 24, 0, 0], [2003, 714, 620, 0, 0, 0, 51, 0, 0, 60, 0, 0, 0, 30, 0, 0], [2004, 854, 660, 0, 111, 0, 72, 0, 0, 65, 0, 0, 16, 46, 0, 0], [2005, 765, 663, 0, 127, 49, 66, 0, 0, 85, 0, 0, 40, 50, 0, 0], [2006, 680, 1001, 0, 120, 39, 73, 0, 0, 84, 0, 0, 45, 53, 0, 0], [2007, 807, 688, 0, 124, 42, 70, 0, 0, 81, 0, 0, 57, 44, 0, 0], [2008, 663, 687, 0, 135, 40, 75, 0, 0, 82, 0, 0, 90, 42, 0, 0], [2009, 712, 948, 0, 139, 40, 100, 0, 0, 144, 0, 0, 112, 40, 0, 0], [2010, 871, 992, 0, 99, 40, 98, 0, 0, 135, 0, 0, 79, 30, 0, 0], [2011, 1017, 786, 0, 107, 46, 102, 0, 0, 168, 0, 0, 67, 79, 0, 0], [2012, 836, 854, 0, 124, 60, 99, 0, 0, 139, 0, 0, 90, 79, 0, 0], [2013, 873, 913, 0, 119, 55, 92, 0, 0, 165, 0, 0, 145, 70, 0, 0], [2014, 1036, 749, 0, 133, 57, 99, 0, 25, 269, 0, 0, 152, 76, 0, 0], [2015, 940, 970, 0, 124, 49, 91, 0, 47, 255, 0, 0, 177, 91, 0, 0], [2016, 693, 830, 157, 119, 47, 86, 6, 30, 233, 0, 0, 152, 84, 0, 0], [2017, 795, 878, 301, 116, 75, 82, 48, 48, 218, 0, 0, 120, 96, 0, 0], [2018, 816, 1086, 573, 122, 71, 87, 67, 68, 256, 0, 0, 165, 87, 0, 0], [2019, 1024, 934, 598, 111, 84, 84, 81, 73, 319, 0, 0, 157, 69, 0, 0], [2020, 1073, 1128, 895, 120, 103, 88, 83, 98, 426, 0, 0, 268, 71, 165, 0], [2021, 1386, 1032, 1119, 148, 92, 78, 123, 78, 369, 0, 0, 237, 61, 166, 0], [2022, 929, 1213, 1610, 235, 74, 49, 90, 67, 428, 0, 0, 317, 57, 197, 0], [2023, 1341, 1195, 1083, 283, 112, 61, 95, 84, 420, 0, 0, 567, 72, 201, 0], [2024, 1760, 1581, 1490, 270, 134, 94, 134, 90, 522, 33, 0, 810, 80, 265, 56], [2025, 1604, 1985, 1577, 364, 163, 98, 130, 76, 624, 43, 4, 1225, 86, 263, 98], [2026, 0, 0, 802, 85, 0, 23, 29, 39, 202, 9, 15, 418, 21, 0, 0]];
 raw.sort((a, b) => a[0] - b[0]);
 const labels = raw.map(r => r[0]);
 // byVenue[i] = array of counts for VENUES[i] across years

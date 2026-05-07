@@ -117,7 +117,12 @@ def main():
             cc = w.get("citationCount")
             ic = w.get("influentialCitationCount")
             abstract = (w.get("abstract") or "").strip()
-            fields = [f.get("category", "") for f in (w.get("fieldsOfStudy") or [])]
+            fields = []
+            for f in (w.get("fieldsOfStudy") or []):
+                if isinstance(f, dict):
+                    fields.append(f.get("category", ""))
+                elif isinstance(f, str):
+                    fields.append(f)
 
             enriched[doi]["cited_by_s2"] = cc if cc is not None else ""
             if ic is not None:

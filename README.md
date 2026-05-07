@@ -1,7 +1,7 @@
 # RoboPaper Atlas
 
-**40여 년치 로봇공학 논문(ICRA · IROS · RA-L · T-RO · RSS · IJRR · Sci-Rob · SoRo · T-Mech · T-FR · RA-P · T-ASE · RAM)을 한 곳에 모은 인터랙티브 아틀라스.**
-DBLP + OpenAlex로 90,000+ 편의 제목·저자·초록·인용수·키워드를 긁어와서
+**40여 년치 로봇공학 논문(ICRA · IROS · RA-L · T-RO · RSS · IJRR · Sci-Rob · SoRo · T-Mech · T-FR · RA-P · T-ASE · RAM · CoRL · iSpaRo)을 한 곳에 모은 인터랙티브 아틀라스.**
+DBLP + Crossref + OpenAlex + Semantic Scholar로 91,000+ 편의 제목·저자·초록·인용수·키워드를 긁어와서
 중복 제거하고, 바로 탐색·정렬·필터할 수 있는 웹 페이지와 엑셀로 정리합니다.
 
 🔗 **Live demo**: https://gisbi-kim.github.io/robopaper-atlas/
@@ -23,14 +23,16 @@ DBLP + OpenAlex로 90,000+ 편의 제목·저자·초록·인용수·키워드�
 | RA-P | OpenAlex ISSN `2995-4304` | 2025 | ~20 |
 | T-ASE | OpenAlex ISSN `1545-5955` | 2004 | ~5,500 |
 | RAM | DBLP `journals/ram` | 1994 | ~1,690 |
-| **합계** | | 1984 ~ 2026 | **~90,000** |
+| CoRL | DBLP `conf/corl` | 2017 | ~1,260 |
+| iSpaRo | Crossref IEEE proceedings | 2024 | 154 |
+| **합계** | | 1984 ~ 2026 | **91,457** |
 
 DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 병합 (예: RA-L 논문이 ICRA에서 발표된 경우 1개 엔트리).
 
 ## 무엇을 할 수 있나
 
 ### 🔍 [Full Explorer](explorer.html)
-90,000+편 전체 탐색기. 한 페이지에서:
+91,000+편 전체 탐색기. 한 페이지에서:
 - **연도 범위** / **venue** / **최소 인용수** / **제목·저자 검색** 복합 필터
 - 모든 컬럼(venue, year, cites 등) **클릭 정렬**
 - 페이지당 50 ~ 10,000 선택 가능한 페이지네이션
@@ -90,6 +92,7 @@ pip install requests pandas openpyxl
 ```bash
 python step1_dblp.py                    # core 6 venues
 python step1_dblp.py --include-optional # + Science Robotics
+python step1c_crossref_conferences.py --only isparo
 ```
 - `step1_dblp.py`의 `CORE_VENUES` / `OPTIONAL_VENUES` 에서 venue/연도 범위 설정
 - `dblp_raw/{venue}_{year}.json` 에 연도별 캐시 저장 — 중단해도 이어서
@@ -101,6 +104,13 @@ python step1_extra_openalex.py
 ```
 - DBLP에 없는 Soft Robotics / IEEE TMech 을 OpenAlex ISSN 필터로 연도별 수집
 - `openalex_raw/{venue}_{year}.json` 캐시 + `all_dblp.json` 에 머지
+
+### Step 1c. Crossref 기반 학회 proceedings 수집
+```bash
+python step1c_crossref_conferences.py --only isparo
+```
+- DBLP stream/ISSN source가 안정적이지 않은 IEEE proceedings 학회(iSpaRo 등)를 Crossref container title 기준으로 수집
+- `crossref_raw/{venue}_{year}.json` 캐시 + `all_dblp.json` 에 머지
 
 ### Step 2. OpenAlex로 초록·인용수·concepts 보강 (1~3시간)
 ```bash
@@ -143,7 +153,7 @@ python _make_coauthor_network.py  # coauthor_network.html — 공저자 그래�
 
 | 컬럼 | 출처 | 설명 |
 |---|---|---|
-| `venue` | dedup | ICRA / IROS / RA-L / T-RO / RSS / IJRR / Sci-Rob / SoRo / T-Mech (primary, 우선순위 규칙 적용 후) |
+| `venue` | dedup | ICRA / IROS / RA-L / T-RO / RSS / IJRR / Sci-Rob / SoRo / T-Mech / T-FR / RA-P / T-ASE / RAM / CoRL / iSpaRo (primary, 우선순위 규칙 적용 후) |
 | `venues_all` | dedup | 같은 논문이 등장했던 모든 venue (쉼표 구분) |
 | `year` | DBLP | 발표/발간 연도 |
 | `title` | DBLP | 논문 제목 (HTML 엔티티 디코딩 후) |
@@ -167,11 +177,12 @@ python _make_coauthor_network.py  # coauthor_network.html — 공저자 그래�
 
 ## 새 venue 추가하려면
 
-`step1_dblp.py`의 `venues_config`에 한 줄:
+DBLP venue는 `step1_dblp.py`의 `venues_config`에 한 줄:
 ```python
 ('key', 'dblp/stream', 'LABEL', range(start_year, 2027)),
 ```
-그 후 step1 → step2 → step3 순서로 실행. 각 `_make_*.py` 생성기의 `VENUES` 리스트·색·필터 체크박스에도 LABEL 추가 필요.
+ISSN 기반 저널은 `step1_extra_openalex.py`, Crossref 기반 proceedings는 `step1c_crossref_conferences.py`에 추가합니다.
+그 후 step1 → step2 → step3 순서로 실행. 각 `_make_*.py` 생성기의 `VENUES_CFG` 리스트·색·필터 체크박스에도 LABEL 추가 필요.
 
 ## Credit
 
