@@ -681,7 +681,7 @@ function computeFiltered(f) {
   return out;
 }
 
-function filterAndSort() {
+function filterAndSort(resetPage = true) {
   const out = computeFiltered(state);
   const k = KEYS[state.sortKey];
   const dir = state.sortDesc ? -1 : 1;
@@ -692,7 +692,7 @@ function filterAndSort() {
     return 0;
   });
   state.filtered = out;
-  state.page = 1;
+  if (resetPage) state.page = 1;
   if (state.compareMode) {
     state.filteredB = computeFiltered(state.filterB);
   }
@@ -1168,8 +1168,8 @@ function renderWordCloud() {
 }
 
 let wcDebounceTimer = null;
-function rerenderAll() {
-  filterAndSort();
+function rerenderAll(resetPage = true) {
+  filterAndSort(resetPage);
   renderStats();
   renderBarChart();
   renderVenueComparison();
@@ -1180,7 +1180,7 @@ function rerenderAll() {
   wcDebounceTimer = setTimeout(renderWordCloud, 180);
 }
 
-function applyFilters() {
+function applyFilters(resetPage = true, updateUrl = true) {
   const yf = parseInt(document.getElementById('f-year-from').value) || YMIN;
   const yt = parseInt(document.getElementById('f-year-to').value) || YMAX;
   state.yearFrom = Math.min(yf, yt);
@@ -1196,55 +1196,96 @@ function applyFilters() {
   ];
   state.titleOp = document.getElementById('f-title-op').value;
   state.author = document.getElementById('f-author').value;
-  syncURL();
-  rerenderAll();
+  rerenderAll(resetPage);
+  if (updateUrl) syncURL();
 }
 
-// Serialize current filter state → URL query string (history.replaceState).
+function filterToParams(p, f, prefix) {
+  const terms = f.titleTerms.map(t => t.trim()).filter(Boolean);
+  if (terms.length) p.set(prefix + 'q', terms.join(','));
+  if (f.author.trim()) p.set(prefix + 'author', f.author.trim());
+  if (f.yearFrom > YMIN) p.set(prefix + 'yf', f.yearFrom);
+  if (f.yearTo < YMAX) p.set(prefix + 'yt', f.yearTo);
+  const activeV = VENUES.filter(v => f.venueFilter[v]);
+  if (activeV.length < VENUES.length) p.set(prefix + 'v', activeV.map(v => VENUE_IDS[v]).join(','));
+  if (f.minCite > 0) p.set(prefix + 'mc', f.minCite);
+  if (f.titleOp !== 'AND') p.set(prefix + 'op', f.titleOp);
+}
+
+function paramsToFilterControls(p, prefix, suffix) {
+  const s = suffix || '';
+  if (p.has(prefix + 'q')) {
+    const terms = p.get(prefix + 'q').split(',').map(t => t.trim()).filter(Boolean);
+    ['f-title-1' + s, 'f-title-2' + s, 'f-title-3' + s].forEach((id, i) => {
+      const el = document.getElementById(id); if (el) el.value = terms[i] || '';
+    });
+  }
+  if (p.has(prefix + 'author')) { const el = document.getElementById('f-author' + s); if (el) el.value = p.get(prefix + 'author'); }
+  if (p.has(prefix + 'yf'))     { const el = document.getElementById('f-year-from' + s); if (el) el.value = p.get(prefix + 'yf'); }
+  if (p.has(prefix + 'yt'))     { const el = document.getElementById('f-year-to' + s); if (el) el.value = p.get(prefix + 'yt'); }
+  if (p.has(prefix + 'v')) {
+    const activeIds = new Set(p.get(prefix + 'v').split(',').filter(Boolean));
+    for (const v of VENUES) {
+      const el = document.getElementById('f-' + VENUE_IDS[v] + s);
+      if (el) el.checked = activeIds.has(VENUE_IDS[v]);
+    }
+  }
+  if (p.has(prefix + 'mc')) { const el = document.getElementById('f-mincite' + s); if (el) el.value = p.get(prefix + 'mc'); }
+  if (p.has(prefix + 'op')) { const el = document.getElementById('f-title-op' + s); if (el) el.value = p.get(prefix + 'op'); }
+}
+
+// Serialize current filter state to URL query string (history.replaceState).
 // Only non-default values are written so the URL stays short.
 function syncURL() {
   const p = new URLSearchParams();
-  const terms = state.titleTerms.map(t => t.trim()).filter(Boolean);
-  if (terms.length) p.set('q', terms.join(','));
-  if (state.author.trim()) p.set('author', state.author.trim());
-  if (state.yearFrom > YMIN) p.set('yf', state.yearFrom);
-  if (state.yearTo   < YMAX) p.set('yt', state.yearTo);
-  const activeV = VENUES.filter(v => state.venueFilter[v]);
-  if (activeV.length < VENUES.length) p.set('v', activeV.map(v => VENUE_IDS[v]).join(','));
-  if (state.minCite > 0) p.set('mc', state.minCite);
-  if (state.titleOp !== 'AND') p.set('op', state.titleOp);
+  filterToParams(p, state, '');
   const sortStr = state.sortKey + (state.sortDesc ? '-desc' : '-asc');
   if (sortStr !== 'cites-desc') p.set('sort', sortStr);
+  if (state.page > 1) p.set('page', state.page);
+  if (state.pageSize !== 500) p.set('ps', state.pageSize);
+  const topK = parseInt(document.getElementById('topk-select').value) || 100;
+  if (topK !== 100) p.set('topk', topK);
+  if (state.compareMode) {
+    p.set('cmp', '1');
+    filterToParams(p, state.filterB, 'b');
+    if (state.shareYAxis) p.set('sharey', '1');
+  }
   const qs = p.toString();
   history.replaceState(null, '', qs ? '?' + qs : location.pathname);
 }
 
-// Read URL query string → pre-fill filter UI + sort state.
-// Called once before the initial render so shared links open with the right filters.
+// Read URL query string to pre-fill filter UI + sort/page/compare state.
 function loadFromURL() {
   const p = new URLSearchParams(location.search);
   if (!p.toString()) return;
-  if (p.has('q')) {
-    const terms = p.get('q').split(',').map(t => t.trim()).filter(Boolean);
-    ['f-title-1','f-title-2','f-title-3'].forEach((id, i) => {
-      const el = document.getElementById(id); if (el) el.value = terms[i] || '';
-    });
-  }
-  if (p.has('author')) { const el = document.getElementById('f-author');   if (el) el.value = p.get('author'); }
-  if (p.has('yf'))     { const el = document.getElementById('f-year-from'); if (el) el.value = p.get('yf'); }
-  if (p.has('yt'))     { const el = document.getElementById('f-year-to');   if (el) el.value = p.get('yt'); }
-  if (p.has('v')) {
-    const activeIds = new Set(p.get('v').split(','));
-    for (const v of VENUES) {
-      const el = document.getElementById('f-' + VENUE_IDS[v]);
-      if (el) el.checked = activeIds.has(VENUE_IDS[v]);
-    }
-  }
-  if (p.has('mc'))   { const el = document.getElementById('f-mincite');  if (el) el.value = p.get('mc'); }
-  if (p.has('op'))   { const el = document.getElementById('f-title-op'); if (el) el.value = p.get('op'); }
+  paramsToFilterControls(p, '', '');
   if (p.has('sort')) {
     const parts = p.get('sort').split('-');
-    if (parts.length >= 2) { state.sortKey = parts[0]; state.sortDesc = parts[1] !== 'asc'; }
+    if (parts.length >= 2 && KEYS[parts[0]] !== undefined) {
+      state.sortKey = parts[0];
+      state.sortDesc = parts[1] !== 'asc';
+    }
+  }
+  if (p.has('ps')) {
+    const ps = parseInt(p.get('ps'));
+    const el = document.getElementById('page-size');
+    if (el && [...el.options].some(o => parseInt(o.value) === ps)) {
+      el.value = String(ps);
+      state.pageSize = ps;
+    }
+  }
+  if (p.has('page')) state.page = Math.max(1, parseInt(p.get('page')) || 1);
+  if (p.has('topk')) {
+    const topK = parseInt(p.get('topk'));
+    const el = document.getElementById('topk-select');
+    if (el && [...el.options].some(o => parseInt(o.value) === topK)) el.value = String(topK);
+  }
+  if (p.get('cmp') === '1') {
+    paramsToFilterControls(p, 'b', '-b');
+    const share = document.getElementById('lock-y-axis');
+    if (share) share.checked = p.get('sharey') === '1';
+    state.shareYAxis = p.get('sharey') === '1';
+    setCompareMode(true, false, false);
   }
 }
 
@@ -1267,6 +1308,8 @@ document.querySelectorAll('th[data-sort]').forEach(th => {
     else { state.sortKey = key; state.sortDesc = (key === 'cites' || key === 'year'); }
     filterAndSort();
     renderTable();
+    renderVenueComparison();
+    syncURL();
   });
 });
 
@@ -1305,14 +1348,14 @@ VENUES.forEach(v => {
   if (cb) cb.addEventListener('change', syncVenueCardStyles);
 });
 
-document.getElementById('page-first').onclick = () => { state.page = 1; renderTable(); };
-document.getElementById('page-prev').onclick = () => { state.page--; renderTable(); };
-document.getElementById('page-next').onclick = () => { state.page++; renderTable(); };
+document.getElementById('page-first').onclick = () => { state.page = 1; renderTable(); syncURL(); };
+document.getElementById('page-prev').onclick = () => { state.page--; renderTable(); syncURL(); };
+document.getElementById('page-next').onclick = () => { state.page++; renderTable(); syncURL(); };
 document.getElementById('page-last').onclick = () => {
-  state.page = Math.ceil(state.filtered.length / state.pageSize); renderTable();
+  state.page = Math.ceil(state.filtered.length / state.pageSize); renderTable(); syncURL();
 };
 document.getElementById('page-size').onchange = (e) => {
-  state.pageSize = parseInt(e.target.value); state.page = 1; renderTable();
+  state.pageSize = parseInt(e.target.value); state.page = 1; renderTable(); syncURL();
 };
 
 document.getElementById('btn-apply').onclick = applyFilters;
@@ -1330,10 +1373,13 @@ _aChangeIds.forEach(id =>
 });
 
 // Top-K selector — only affects chart 2 so just re-render the venue block
-document.getElementById('topk-select').addEventListener('change', renderVenueComparison);
+document.getElementById('topk-select').addEventListener('change', () => {
+  renderVenueComparison();
+  syncURL();
+});
 
 // --- Compare mode (filter B) ---
-function applyFiltersB() {
+function applyFiltersB(updateUrl = true) {
   const yf = parseInt(document.getElementById('f-year-from-b').value) || YMIN;
   const yt = parseInt(document.getElementById('f-year-to-b').value) || YMAX;
   state.filterB.yearFrom = Math.min(yf, yt);
@@ -1353,6 +1399,7 @@ function applyFiltersB() {
   document.getElementById('result-info-b').textContent =
     `Showing ${state.filteredB.length.toLocaleString()} / ${ALL.length.toLocaleString()} papers`;
   if (state.compareMode) renderBarChart();
+  if (state.compareMode && updateUrl) syncURL();
 }
 
 function resetFiltersB() {
@@ -1380,8 +1427,8 @@ function copyFilterAtoBInputs() {
   document.getElementById('f-author-b').value = document.getElementById('f-author').value;
 }
 
-function toggleCompareMode() {
-  state.compareMode = !state.compareMode;
+function setCompareMode(active, copyA = true, updateUrl = true) {
+  state.compareMode = active;
   const btn = document.getElementById('btn-compare');
   const zoneB = document.getElementById('filter-b-wrap');
   const chartBCol = document.getElementById('bar-b-col');
@@ -1390,23 +1437,28 @@ function toggleCompareMode() {
   const hint = document.getElementById('compare-hint');
   const lockLabel = document.getElementById('lock-y-axis-label');
 
-  btn.classList.toggle('active', state.compareMode);
-  btn.textContent = state.compareMode ? '✕ Compare mode' : '+ Compare mode';
-  hint.textContent = state.compareMode
+  btn.classList.toggle('active', active);
+  btn.textContent = active ? '- Compare mode' : '+ Compare mode';
+  hint.textContent = active
     ? 'Change filter B below to contrast against filter A.'
     : 'Add a second filter zone to compare two trends side by side';
-  zoneB.style.display = state.compareMode ? '' : 'none';
-  chartBCol.style.display = state.compareMode ? '' : 'none';
-  document.getElementById('bar-overlay-col').style.display = state.compareMode ? '' : 'none';
-  labelA.style.display = state.compareMode ? '' : 'none';
-  chartLabelA.style.display = state.compareMode ? '' : 'none';
-  lockLabel.style.display = state.compareMode ? '' : 'none';
+  zoneB.style.display = active ? '' : 'none';
+  chartBCol.style.display = active ? '' : 'none';
+  document.getElementById('bar-overlay-col').style.display = active ? '' : 'none';
+  labelA.style.display = active ? '' : 'none';
+  chartLabelA.style.display = active ? '' : 'none';
+  lockLabel.style.display = active ? '' : 'none';
 
-  if (state.compareMode) {
-    copyFilterAtoBInputs();
-    applyFiltersB();
+  if (active) {
+    if (copyA) copyFilterAtoBInputs();
+    applyFiltersB(updateUrl);
   }
   renderBarChart();
+  if (updateUrl) syncURL();
+}
+
+function toggleCompareMode() {
+  setCompareMode(!state.compareMode, true, true);
 }
 
 document.getElementById('btn-apply-b').onclick = applyFiltersB;
@@ -1415,6 +1467,7 @@ document.getElementById('btn-compare').onclick = toggleCompareMode;
 document.getElementById('lock-y-axis').addEventListener('change', (e) => {
   state.shareYAxis = e.target.checked;
   renderBarChart();
+  syncURL();
 });
 
 // Word cloud uses wordcloud2.js which layouts on draw; re-render on resize
@@ -1435,7 +1488,9 @@ _bChangeIds.forEach(id =>
 });
 
 loadFromURL();
-rerenderAll();
+applyFilters(false, false);
+syncVenueCardStyles();
+syncURL();
 
 // --- Abstract tooltip on title hover (OpenAlex on-demand, cached) ---
 const abstractCache = new Map();
