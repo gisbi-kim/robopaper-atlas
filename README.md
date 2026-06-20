@@ -13,19 +13,19 @@ DBLP + Crossref + OpenAlex + Semantic Scholar로 91,000+ 편의 제목·저자·
 | ICRA | DBLP `conf/icra` | 1984 | ~30,600 |
 | IROS | DBLP `conf/iros` | 1988 | ~26,600 |
 | RA-L | DBLP `journals/ral` | 2016 | ~10,200 |
-| T-Mech | OpenAlex ISSN `1083-4435` | 1996 | ~6,100 |
+| T-Mech | OpenAlex ISSN `1083-4435` | 1996 | ~6,200 |
 | T-RO | DBLP `journals/trob` | 2004 | ~3,400 |
 | IJRR | DBLP `journals/ijrr` | 1982 | ~2,700 |
 | RSS | DBLP `conf/rss` | 2005 | ~1,500 |
 | Sci-Rob | DBLP `journals/scirobotics` | 2016 | ~890 |
-| SoRo | OpenAlex ISSN `2169-5172` | 2014 | ~820 |
-| T-FR | OpenAlex ISSN `2997-1101` | 2024 | ~85 |
-| RA-P | OpenAlex ISSN `2995-4304` | 2025 | ~20 |
-| T-ASE | OpenAlex ISSN `1545-5955` | 2004 | ~5,500 |
+| SoRo | OpenAlex ISSN `2169-5172` | 2014 | ~830 |
+| T-FR | OpenAlex ISSN `2997-1101` | 2024 | ~100 |
+| RA-P | OpenAlex ISSN `2995-4304` | 2025 | ~25 |
+| T-ASE | OpenAlex ISSN `1545-5955` | 2004 | ~5,700 |
 | RAM | DBLP `journals/ram` | 1994 | ~1,690 |
 | CoRL | DBLP `conf/corl` | 2017 | ~1,260 |
 | iSpaRo | Crossref IEEE proceedings | 2024 | 154 |
-| **합계** | | 1984 ~ 2026 | **91,457** |
+| **합계** | | 1984 ~ 2026 | **91,844** |
 
 DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 병합 (예: RA-L 논문이 ICRA에서 발표된 경우 1개 엔트리).
 
@@ -54,20 +54,20 @@ ICRA / IROS 개최지를 3D 지구본에 시각화 (별도 프로젝트).
 ### 📊 [Dataset download](robopaper_atlas_all.xlsx)
 **XLSX** — 5 시트: `summary` / `by_year_pivot` / `by_year_detail` / `top_cited_100` / `papers`
 
-> 인용수는 **Semantic Scholar** 기준 (~92% 커버리지). 나머지 ~8%는 S2 미색인 paper로 OpenAlex 값 폴백. OpenAlex는 Crossref deposited refs만 봐서 보수적이고 (예: ColoRadar 2022 OpenAlex 3 vs S2 93 vs GS 107), CS/robotics 도메인에선 S2가 GS에 가장 가까움.
+> 인용수는 **Semantic Scholar** 기준 (~95% 커버리지). 나머지는 S2 미색인 paper로 OpenAlex 값 폴백. OpenAlex는 Crossref deposited refs만 봐서 보수적이고 (예: ColoRadar 2022 OpenAlex 3 vs S2 93 vs GS 107), CS/robotics 도메인에선 S2가 GS에 가장 가까움.
 
-**Word book**: [`word_book.csv`](word_book.csv) (0.3 MB) · [`word_book.json`](word_book.json) (18 MB)
+**Word book**: [`word_book.csv`](word_book.csv) (0.3 MB) · [`word_book.json`](word_book.json) (24 MB)
 초록에서 stop word 제외 후 추출한 단어장. CSV는 `word,total_count,num_papers`. JSON은 vocab + per-paper 상위 50 단어 인덱스 — word cloud용.
 
 ## 데이터 기준일
 
-OpenAlex 인용수는 시간이 지나면서 바뀝니다. 모든 HTML 상단 우측과 xlsx `summary` 시트 첫 행에 **"Citations as of YYYY-MM-DD"** 로 마지막 갱신일을 표기.
+Semantic Scholar 인용수는 시간이 지나면서 바뀝니다. 모든 HTML 상단 우측과 xlsx `summary` 시트 첫 행에 **"Citations as of YYYY-MM-DD"** 로 마지막 갱신일을 표기.
 
 ## 업데이트 (재조사)
 
 최신 인용수로 갱신하거나 새 연도 논문을 추가하고 싶으면 **[REFRESH.md](REFRESH.md)** 의 한 줄 프롬프트를 Claude에게 주세요. 다음 3 단계를 순서대로 진행합니다:
 
-1. [`REFRESH_step1_데이터업데이트.md`](REFRESH_step1_데이터업데이트.md) — DBLP 새 연도 + OpenAlex 인용수 + xlsx/HTML 재생성
+1. [`REFRESH_step1_데이터업데이트.md`](REFRESH_step1_데이터업데이트.md) — DBLP 새 연도 + Semantic Scholar 인용수 + xlsx/HTML 재생성
 2. [`REFRESH_step2_공저자네트워크.md`](REFRESH_step2_공저자네트워크.md) — 공저자 그래프 + Leiden 커뮤니티 재계산
 3. [`REFRESH_step3_랜딩페이지.md`](REFRESH_step3_랜딩페이지.md) — `index.html`·`README.md` 수기 통계 동기화
 
@@ -112,13 +112,13 @@ python step1c_crossref_conferences.py --only isparo
 - DBLP stream/ISSN source가 안정적이지 않은 IEEE proceedings 학회(iSpaRo 등)를 Crossref container title 기준으로 수집
 - `crossref_raw/{venue}_{year}.json` 캐시 + `all_dblp.json` 에 머지
 
-### Step 2. OpenAlex로 초록·인용수·concepts 보강 (1~3시간)
+### Step 2. Semantic Scholar로 초록·인용수·concepts 보강
 ```bash
 python step2_openalex.py
 ```
-> ⚠️ 첫 실행 전 `step2_openalex.py` 상단의 `USER_EMAIL`을 본인 이메일로 바꾸세요 (OpenAlex polite pool).
+> 환경변수 `S2_API_KEY`를 설정하면 batch API rate limit이 완화됩니다.
 
-- 50개 DOI씩 배치 쿼리, 500편마다 `enriched_checkpoint.json` 저장
+- 500개 DOI씩 batch 쿼리, 주기적으로 `enriched_checkpoint_*.json` shard 저장
 - 중단해도 재실행하면 체크포인트부터 이어서
 - 출력: `all_enriched.json`
 
@@ -158,9 +158,9 @@ python _make_coauthor_network.py  # coauthor_network.html — 공저자 그래�
 | `year` | DBLP | 발표/발간 연도 |
 | `title` | DBLP | 논문 제목 (HTML 엔티티 디코딩 후) |
 | `authors` | DBLP | 저자 (세미콜론 구분, 동명이인 식별자 제거) |
-| `abstract` | OpenAlex | 초록 (커버리지 ~99%) |
-| `cited_by_count` | OpenAlex | 인용 수 |
-| `concepts` | OpenAlex | 자동 분류 토픽 상위 5개 (세미콜론 구분) |
+| `abstract` | Semantic Scholar / OpenAlex fallback | 초록 |
+| `cited_by_count` | Semantic Scholar / OpenAlex fallback | 인용 수 |
+| `concepts` | Semantic Scholar / OpenAlex fallback | 자동 분류 토픽 (세미콜론 구분) |
 | `doi` | DBLP | DOI (소문자, `https://doi.org/` 프리픽스 제거) |
 | `ee` | DBLP | 전자 버전 URL (주로 IEEE Xplore) |
 | `pages` | DBLP | 페이지 범위 |
@@ -169,7 +169,7 @@ python _make_coauthor_network.py  # coauthor_network.html — 공저자 그래�
 
 ## 참고
 
-- **OpenAlex 초록 커버리지**: 최근 논문 95%+, 2010년 이전은 낮음
+- **초록 커버리지**: 최근 논문 95%+, 2010년 이전은 낮음
 - **DOI 커버리지**: 전체 99.9%, 1990년 이전 일부 없음
 - **세션 정보**: DBLP에 없음. OpenAlex `concepts`가 대체재 (세밀한 세션 트랙은 IEEE Xplore API 필요)
 - **저자 탐색**: Full Explorer에서 저자명 검색하면 해당 저자의 h-index, i10-index, 인용수 히스토그램이 하단에 표시됨

@@ -86,7 +86,7 @@ def fetch_dblp_year(stream, venue_label, year):
             })
 
         offset += len(hit_list)
-        if offset >= total or len(hit_list) < batch_size:
+        if offset >= total:
             break
         time.sleep(1)  # courtesy delay
 
