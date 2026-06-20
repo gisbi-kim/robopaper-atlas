@@ -29,7 +29,7 @@ def fetch_dblp_year(stream, venue_label, year):
     """
     results = []
     offset = 0
-    batch_size = 1000  # DBLP 최대
+    batch_size = 100  # DBLP search API effectively caps responses at 100.
 
     while True:
         query = f"stream:{stream}: year:{year}:"
