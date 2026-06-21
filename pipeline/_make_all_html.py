@@ -573,6 +573,55 @@ const VENUE_COLOR = __VENUE_COLOR_JSON__;
 const VENUES      = __VENUES_JSON__;
 const VENUE_IDS   = __VENUE_IDS_JSON__;  // venue label → id-suffix (e.g. 'RA-L' → 'ral')
 
+function paperRecencyScore(r) {
+  const displayYear = Number(r[1]) || 0;
+  const doi = String(r[5] || '').toLowerCase();
+  let doiYear = 0;
+  let doiSeq = 0;
+  const yearMatches = doi.match(/\b(19[8-9]\d|20[0-3]\d)\b/g) || [];
+  for (const y of yearMatches) {
+    const n = Number(y);
+    if (n <= displayYear && n > doiYear) doiYear = n;
+  }
+  const numericRuns = doi.match(/\d+/g) || [];
+  for (const run of numericRuns) {
+    if (run.length >= 5) {
+      const n = Number(run.slice(-9));
+      if (Number.isFinite(n) && n > doiSeq) doiSeq = n;
+    }
+  }
+  return displayYear * 1e12 + doiYear * 1e8 + doiSeq;
+}
+
+function compareText(a, b) {
+  return String(a || '').localeCompare(String(b || ''), undefined, { sensitivity: 'base' });
+}
+
+function comparePapers(a, b, key, desc) {
+  const dir = desc ? -1 : 1;
+  if (key === 'year') {
+    const yearDelta = (Number(a[1]) || 0) - (Number(b[1]) || 0);
+    if (yearDelta) return yearDelta * dir;
+    const recencyDelta = paperRecencyScore(a) - paperRecencyScore(b);
+    if (recencyDelta) return recencyDelta * dir;
+    const citeDelta = (Number(a[4]) || 0) - (Number(b[4]) || 0);
+    if (citeDelta) return citeDelta * dir;
+    return compareText(a[2], b[2]);
+  }
+  const k = KEYS[key];
+  const va = a[k], vb = b[k];
+  if (typeof va === 'number' && typeof vb === 'number') {
+    if (va < vb) return -1 * dir;
+    if (va > vb) return 1 * dir;
+  } else {
+    const textDelta = compareText(va, vb);
+    if (textDelta) return textDelta * dir;
+  }
+  const yearDelta = (Number(a[1]) || 0) - (Number(b[1]) || 0);
+  if (yearDelta) return yearDelta * -1;
+  return compareText(a[2], b[2]);
+}
+
 function emptyVenueCounts() {
   const m = {};
   for (const v of VENUES) m[v] = 0;
@@ -683,14 +732,7 @@ function computeFiltered(f) {
 
 function filterAndSort(resetPage = true) {
   const out = computeFiltered(state);
-  const k = KEYS[state.sortKey];
-  const dir = state.sortDesc ? -1 : 1;
-  out.sort((a, b) => {
-    const va = a[k], vb = b[k];
-    if (va < vb) return -1 * dir;
-    if (va > vb) return 1 * dir;
-    return 0;
-  });
+  out.sort((a, b) => comparePapers(a, b, state.sortKey, state.sortDesc));
   state.filtered = out;
   if (resetPage) state.page = 1;
   if (state.compareMode) {
