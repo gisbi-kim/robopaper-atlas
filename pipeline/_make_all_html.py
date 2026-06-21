@@ -657,6 +657,9 @@ const state = {
 };
 
 let barChart, barChartB, overlayChart, lineChart, histChart;
+const filterCache = new Map();
+const statsCache = new Map();
+const FILTER_CACHE_LIMIT = 24;
 
 function hIndex(cites) {
   const s = cites.slice().sort((a, b) => b - a);
@@ -730,10 +733,39 @@ function computeFiltered(f) {
   return out;
 }
 
+function filterCacheKey(f, sortKey, sortDesc) {
+  const venues = VENUES.filter(v => f.venueFilter[v]).join('|');
+  const terms = f.titleTerms.map(t => t.trim().toLowerCase()).join('|');
+  return [
+    f.yearFrom, f.yearTo, venues, f.minCite,
+    terms, f.titleOp, f.author.trim().toLowerCase(),
+    sortKey, sortDesc ? 'desc' : 'asc'
+  ].join('::');
+}
+
+function rememberFiltered(key, rows) {
+  if (filterCache.has(key)) filterCache.delete(key);
+  filterCache.set(key, rows);
+  while (filterCache.size > FILTER_CACHE_LIMIT) {
+    const oldest = filterCache.keys().next().value;
+    filterCache.delete(oldest);
+    statsCache.delete(oldest);
+  }
+}
+
 function filterAndSort(resetPage = true) {
-  const out = computeFiltered(state);
-  out.sort((a, b) => comparePapers(a, b, state.sortKey, state.sortDesc));
+  const cacheKey = filterCacheKey(state, state.sortKey, state.sortDesc);
+  let out = filterCache.get(cacheKey);
+  if (out) {
+    filterCache.delete(cacheKey);
+    filterCache.set(cacheKey, out);
+  } else {
+    out = computeFiltered(state);
+    out.sort((a, b) => comparePapers(a, b, state.sortKey, state.sortDesc));
+    rememberFiltered(cacheKey, out);
+  }
   state.filtered = out;
+  state.filteredKey = cacheKey;
   if (resetPage) state.page = 1;
   if (state.compareMode) {
     state.filteredB = computeFiltered(state.filterB);
@@ -742,24 +774,30 @@ function filterAndSort(resetPage = true) {
 
 function renderStats() {
   const f = state.filtered;
-  document.getElementById('c-total').textContent = f.length.toLocaleString();
-  const counts = emptyVenueCounts();
-  let maxC = 0, sumC = 0;
-  for (const r of f) {
-    if (counts[r[0]] !== undefined) counts[r[0]]++;
-    if (r[4] > maxC) maxC = r[4];
-    sumC += r[4];
+  const key = state.filteredKey || '';
+  let stats = key ? statsCache.get(key) : null;
+  if (!stats) {
+    const counts = emptyVenueCounts();
+    let maxC = 0, sumC = 0;
+    for (const r of f) {
+      if (counts[r[0]] !== undefined) counts[r[0]]++;
+      if (r[4] > maxC) maxC = r[4];
+      sumC += r[4];
+    }
+    stats = { counts, maxC, sumC };
+    if (key) statsCache.set(key, stats);
   }
+  document.getElementById('c-total').textContent = f.length.toLocaleString();
   for (const v of VENUES) {
     const el = document.getElementById('c-' + VENUE_IDS[v]);
-    if (el) el.textContent = counts[v].toLocaleString();
+    if (el) el.textContent = stats.counts[v].toLocaleString();
   }
   if (f.length === 0) {
     document.getElementById('c-maxcite').textContent = '-';
     document.getElementById('c-meancite').textContent = '-';
   } else {
-    document.getElementById('c-maxcite').textContent = maxC.toLocaleString();
-    document.getElementById('c-meancite').textContent = (sumC / f.length).toFixed(1);
+    document.getElementById('c-maxcite').textContent = stats.maxC.toLocaleString();
+    document.getElementById('c-meancite').textContent = (stats.sumC / f.length).toFixed(1);
   }
   document.getElementById('result-info').textContent =
     `Showing ${f.length.toLocaleString()} / ${ALL.length.toLocaleString()} papers`;
@@ -1210,19 +1248,45 @@ function renderWordCloud() {
 }
 
 let wcDebounceTimer = null;
-function rerenderAll(resetPage = true) {
+let heavyRenderJob = null;
+function cancelHeavyRender() {
+  clearTimeout(wcDebounceTimer);
+  if (!heavyRenderJob) return;
+  if (heavyRenderJob.type === 'idle' && window.cancelIdleCallback) cancelIdleCallback(heavyRenderJob.id);
+  else clearTimeout(heavyRenderJob.id);
+  heavyRenderJob = null;
+}
+function scheduleHeavyRender() {
+  cancelHeavyRender();
+  const run = () => {
+    heavyRenderJob = null;
+    renderBarChart();
+    renderVenueComparison();
+    renderCitationStats();
+    clearTimeout(wcDebounceTimer);
+    wcDebounceTimer = setTimeout(renderWordCloud, 180);
+  };
+  heavyRenderJob = { type: 'timeout', id: setTimeout(run, 8000) };
+}
+function rerenderAll(resetPage = true, options = {}) {
+  cancelHeavyRender();
   filterAndSort(resetPage);
   renderStats();
+  renderTable();
+  if (options.deferHeavy) {
+    scheduleHeavyRender();
+    return;
+  }
   renderBarChart();
   renderVenueComparison();
   renderCitationStats();
-  renderTable();
   // Word cloud layout is the slowest — debounce so rapid filter clicks don't relayout repeatedly.
   clearTimeout(wcDebounceTimer);
   wcDebounceTimer = setTimeout(renderWordCloud, 180);
 }
 
-function applyFilters(resetPage = true, updateUrl = true) {
+function applyFilters(resetPage = true, updateUrl = true, options = {}) {
+  if (typeof resetPage !== 'boolean') resetPage = true;
   const yf = parseInt(document.getElementById('f-year-from').value) || YMIN;
   const yt = parseInt(document.getElementById('f-year-to').value) || YMAX;
   state.yearFrom = Math.min(yf, yt);
@@ -1238,7 +1302,7 @@ function applyFilters(resetPage = true, updateUrl = true) {
   ];
   state.titleOp = document.getElementById('f-title-op').value;
   state.author = document.getElementById('f-author').value;
-  rerenderAll(resetPage);
+  rerenderAll(resetPage, options);
   if (updateUrl) syncURL();
 }
 
@@ -1380,8 +1444,8 @@ document.querySelectorAll('.venue-card').forEach(card => {
     } else {
       allBoxes.forEach(cb => cb.checked = (cb.id === targetId));  // solo
     }
-    applyFilters();
     syncVenueCardStyles();
+    applyFilters(true, true, { deferHeavy: true });
   });
 });
 // Keep card highlight in sync when user toggles checkboxes manually.
