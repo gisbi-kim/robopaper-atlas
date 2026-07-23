@@ -96,7 +96,7 @@ def fetch_venue_year(issn, venue_label, year):
                 time.sleep(5)
         if r is None or r.status_code != 200:
             print(f'    FAILED {venue_label} {year}')
-            return results
+            return None
 
         data = r.json()
         for w in data.get('results', []):
@@ -161,12 +161,16 @@ def main():
                     help='skip merging into all_dblp.json (cache only)')
     ap.add_argument('--refresh-cache', action='store_true',
                     help='refetch selected venue/year caches instead of reusing them')
+    ap.add_argument('--years', default='',
+                    help='comma-separated years to process, e.g. 2025,2026')
     args = ap.parse_args()
 
     wanted = set(k.strip().lower() for k in args.only.split(',') if k.strip())
+    wanted_years = {int(y.strip()) for y in args.years.split(',') if y.strip()}
     venues = [v for v in EXTRA_VENUES if not wanted or v[0] in wanted]
 
-    jobs = [(k, lbl, issn, y) for k, lbl, issn, yrs in venues for y in yrs]
+    jobs = [(k, lbl, issn, y) for k, lbl, issn, yrs in venues for y in yrs
+            if not wanted_years or y in wanted_years]
 
     all_extra = []
     for i, (key, label, issn, year) in enumerate(jobs):
@@ -178,9 +182,18 @@ def main():
         else:
             print(f'[{i+1}/{len(jobs)}] {label} {year}: fetching...', flush=True)
             papers = fetch_venue_year(issn, label, year)
-            print(f'    got {len(papers)} papers')
-            with open(fpath, 'w', encoding='utf-8') as f:
-                json.dump(papers, f, ensure_ascii=False)
+            if papers is None:
+                if os.path.exists(fpath):
+                    with open(fpath, encoding='utf-8') as f:
+                        papers = json.load(f)
+                    print(f'    keeping previous cache ({len(papers)} papers)')
+                else:
+                    papers = []
+                    print('    no previous cache available')
+            else:
+                print(f'    got {len(papers)} papers')
+                with open(fpath, 'w', encoding='utf-8') as f:
+                    json.dump(papers, f, ensure_ascii=False)
             time.sleep(1)
         all_extra.extend(papers)
 

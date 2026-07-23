@@ -54,7 +54,7 @@ def fetch_dblp_year(stream, venue_label, year):
 
         if r is None or r.status_code != 200:
             print(f"    FAILED {venue_label} {year}")
-            return results
+            return None
 
         data = r.json()
         hits = data.get('result', {}).get('hits', {})
@@ -116,9 +116,17 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--include-optional', action='store_true',
                     help='also fetch optional DBLP venues (Science Robotics)')
+    ap.add_argument('--refresh-cache', action='store_true',
+                    help='refetch matching cached venue/year files')
+    ap.add_argument('--only', default='',
+                    help='comma-separated venue keys to refetch, e.g. ral,tro,ijrr')
+    ap.add_argument('--years', default='',
+                    help='comma-separated years to refetch, e.g. 2025,2026')
     args = ap.parse_args()
 
     venues_config = CORE_VENUES + (OPTIONAL_VENUES if args.include_optional else [])
+    refresh_keys = {v.strip().lower() for v in args.only.split(',') if v.strip()}
+    refresh_years = {int(v.strip()) for v in args.years.split(',') if v.strip()}
 
     jobs = []
     for key, stream, label, years in venues_config:
@@ -131,7 +139,12 @@ def main():
 
         # 이미 수집했으면 스킵 — 단 비어있는(0편) 캐시는 상류(DBLP)가
         # 당시 해당 연도를 아직 인덱싱 안 했던 경우이므로 재시도.
-        if os.path.exists(fpath) and os.path.getsize(fpath) > 2:
+        refresh_this = (
+            args.refresh_cache
+            and (not refresh_keys or key in refresh_keys)
+            and (not refresh_years or year in refresh_years)
+        )
+        if os.path.exists(fpath) and os.path.getsize(fpath) > 2 and not refresh_this:
             with open(fpath, encoding='utf-8') as f:
                 papers = json.load(f)
             print(f"[{i+1}/{len(jobs)}] {label} {year}: cached ({len(papers)})")
@@ -140,10 +153,18 @@ def main():
 
         print(f"[{i+1}/{len(jobs)}] {label} {year}: fetching...", flush=True)
         papers = fetch_dblp_year(stream, label, year)
-        print(f"    got {len(papers)} papers")
-
-        with open(fpath, 'w', encoding='utf-8') as f:
-            json.dump(papers, f, ensure_ascii=False)
+        if papers is None:
+            if os.path.exists(fpath):
+                with open(fpath, encoding='utf-8') as f:
+                    papers = json.load(f)
+                print(f"    keeping previous cache ({len(papers)} papers)")
+            else:
+                papers = []
+                print("    no previous cache available")
+        else:
+            print(f"    got {len(papers)} papers")
+            with open(fpath, 'w', encoding='utf-8') as f:
+                json.dump(papers, f, ensure_ascii=False)
 
         all_papers.extend(papers)
         time.sleep(2)  # DBLP courtesy between years

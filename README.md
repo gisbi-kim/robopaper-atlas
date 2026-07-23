@@ -12,20 +12,20 @@ DBLP + Crossref + OpenAlex + Semantic Scholar로 92,000+ 편의 제목·저자·
 |---|---|---:|---:|
 | ICRA | DBLP `conf/icra` | 1984 | ~30,600 |
 | IROS | DBLP `conf/iros` | 1988 | ~26,600 |
-| RA-L | DBLP `journals/ral` | 2016 | ~10,400 |
-| T-Mech | OpenAlex ISSN `1083-4435` | 1996 | ~6,200 |
+| RA-L | DBLP `journals/ral` | 2016 | ~10,600 |
+| T-Mech | OpenAlex ISSN `1083-4435` | 1996 | ~6,300 |
 | T-RO | DBLP `journals/trob` | 2004 | ~3,500 |
 | IJRR | DBLP `journals/ijrr` | 1982 | ~2,700 |
 | RSS | DBLP `conf/rss` | 2005 | ~1,500 |
-| Sci-Rob | DBLP `journals/scirobotics` | 2016 | ~910 |
-| SoRo | OpenAlex ISSN `2169-5172` | 2014 | ~830 |
-| T-FR | OpenAlex ISSN `2997-1101` | 2024 | ~100 |
+| Sci-Rob | DBLP `journals/scirobotics` | 2016 | ~920 |
+| SoRo | OpenAlex ISSN `2169-5172` | 2014 | ~840 |
+| T-FR | OpenAlex ISSN `2997-1101` | 2024 | ~110 |
 | RA-P | OpenAlex ISSN `2995-4304` | 2025 | 28 |
-| T-ASE | OpenAlex ISSN `1545-5955` | 2004 | ~5,700 |
-| RAM | DBLP `journals/ram` | 1994 | ~1,690 |
+| T-ASE | OpenAlex ISSN `1545-5955` | 2004 | ~5,800 |
+| RAM | DBLP `journals/ram` | 1994 | ~1,720 |
 | CoRL | DBLP `conf/corl` | 2017 | ~1,260 |
 | iSpaRo | Crossref IEEE proceedings | 2024 | 154 |
-| **합계** | | 1984 ~ 2026 | **92,150** |
+| **합계** | | 1984 ~ 2026 | **92,533** |
 
 DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 병합 (예: RA-L 논문이 ICRA에서 발표된 경우 1개 엔트리).
 
