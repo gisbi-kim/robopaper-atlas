@@ -159,6 +159,8 @@ def main():
                          'e.g. --only soro,tmech')
     ap.add_argument('--no-merge', action='store_true',
                     help='skip merging into all_dblp.json (cache only)')
+    ap.add_argument('--refresh-cache', action='store_true',
+                    help='refetch selected venue/year caches instead of reusing them')
     args = ap.parse_args()
 
     wanted = set(k.strip().lower() for k in args.only.split(',') if k.strip())
@@ -169,7 +171,7 @@ def main():
     all_extra = []
     for i, (key, label, issn, year) in enumerate(jobs):
         fpath = f'{OUT_DIR}/{key}_{year}.json'
-        if os.path.exists(fpath):
+        if os.path.exists(fpath) and not args.refresh_cache:
             with open(fpath, encoding='utf-8') as f:
                 papers = json.load(f)
             print(f'[{i+1}/{len(jobs)}] {label} {year}: cached ({len(papers)})')

@@ -20,12 +20,12 @@ DBLP + Crossref + OpenAlex + Semantic Scholar로 92,000+ 편의 제목·저자·
 | Sci-Rob | DBLP `journals/scirobotics` | 2016 | ~910 |
 | SoRo | OpenAlex ISSN `2169-5172` | 2014 | ~830 |
 | T-FR | OpenAlex ISSN `2997-1101` | 2024 | ~100 |
-| RA-P | OpenAlex ISSN `2995-4304` | 2025 | ~25 |
+| RA-P | OpenAlex ISSN `2995-4304` | 2025 | 28 |
 | T-ASE | OpenAlex ISSN `1545-5955` | 2004 | ~5,700 |
 | RAM | DBLP `journals/ram` | 1994 | ~1,690 |
 | CoRL | DBLP `conf/corl` | 2017 | ~1,260 |
 | iSpaRo | Crossref IEEE proceedings | 2024 | 154 |
-| **합계** | | 1984 ~ 2026 | **92,146** |
+| **합계** | | 1984 ~ 2026 | **92,150** |
 
 DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 병합 (예: RA-L 논문이 ICRA에서 발표된 경우 1개 엔트리).
 
