@@ -1396,15 +1396,22 @@ function loadFromURL() {
   }
 }
 
-function resetFilters() {
-  document.getElementById('f-year-from').value = YMIN;
-  document.getElementById('f-year-to').value = YMAX;
+function resetFilterControls(suffix = '') {
+  const s = suffix || '';
+  document.getElementById('f-year-from' + s).value = YMIN;
+  document.getElementById('f-year-to' + s).value = YMAX;
   for (const v of VENUES) {
-    document.getElementById('f-' + VENUE_IDS[v]).checked = true;
+    document.getElementById('f-' + VENUE_IDS[v] + s).checked = true;
   }
-  document.getElementById('f-mincite').value = 0;
-  ['f-title-1','f-title-2','f-title-3','f-author'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('f-title-op').value = 'AND';
+  document.getElementById('f-mincite' + s).value = 0;
+  ['f-title-1', 'f-title-2', 'f-title-3', 'f-author'].forEach(id => {
+    document.getElementById(id + s).value = '';
+  });
+  document.getElementById('f-title-op' + s).value = 'AND';
+}
+
+function resetFilters() {
+  resetFilterControls();
   applyFilters();
 }
 
@@ -1510,14 +1517,7 @@ function applyFiltersB(updateUrl = true) {
 }
 
 function resetFiltersB() {
-  document.getElementById('f-year-from-b').value = YMIN;
-  document.getElementById('f-year-to-b').value = YMAX;
-  for (const v of VENUES) {
-    document.getElementById('f-' + VENUE_IDS[v] + '-b').checked = true;
-  }
-  document.getElementById('f-mincite-b').value = 0;
-  ['f-title-1-b','f-title-2-b','f-title-3-b','f-author-b'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('f-title-op-b').value = 'AND';
+  resetFilterControls('-b');
   applyFiltersB();
 }
 
@@ -1594,7 +1594,19 @@ _bChangeIds.forEach(id =>
   });
 });
 
-loadFromURL();
+// Shared filter URLs work on first navigation; an explicit refresh starts clean.
+const navigationEntry = window.performance?.getEntriesByType?.('navigation')?.[0];
+const reloaded = navigationEntry
+  ? navigationEntry.type === 'reload'
+  : window.performance?.navigation?.type === 1;
+if (reloaded) {
+  resetFilterControls();
+  resetFilterControls('-b');
+  document.getElementById('lock-y-axis').checked = false;
+  history.replaceState(null, '', location.pathname);
+} else {
+  loadFromURL();
+}
 applyFilters(false, false);
 syncVenueCardStyles();
 syncURL();
