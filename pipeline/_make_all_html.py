@@ -1446,7 +1446,7 @@ document.querySelectorAll('.venue-card').forEach(card => {
       allBoxes.forEach(cb => cb.checked = (cb.id === targetId));  // solo
     }
     syncVenueCardStyles();
-    applyFilters(true, true, { deferHeavy: true });
+    applyFilters(true, true);
   });
 });
 // Keep card highlight in sync when user toggles checkboxes manually.
