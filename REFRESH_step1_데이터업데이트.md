@@ -31,9 +31,9 @@ REFRESH_step1_데이터업데이트.md 보고 인용수·데이터 재조사 해
 ### 2) 인용수 갱신 방식 사용자에게 질문
 
 > ⚠️ **중요**: `step2_openalex.py`는 S2 기반으로 전환되었음 (초록 + 인용수 통합).
-> 기본적으로 체크포인트에 `cited_by_s2` 없는 DOI만 새로 받습니다. 즉
-> 신규 venue·연도를 추가하면 그 신규 DOI만 fresh citation을 받고, 기존 ~91k
-> 논문의 인용수는 캐시된 옛 값 그대로 유지됩니다.
+> 기본적으로 체크포인트에 `cited_by_s2` 없는 DOI만 새로 받습니다. DOI 없는 PMLR
+> 논문(CoRL)은 S2 venue bulk + 검증된 title-match로 paper ID를 찾은 뒤 별도
+> `enriched_doi_less_checkpoint.json`에 저장합니다. 기존 논문의 인용수는 캐시된 옛 값 그대로 유지됩니다.
 >
 > **풀 refresh는 비용이 큽니다 (~10~90분, S2 API key 유무 따라)**. 기본 정책은
 > "신규 venue 추가 직후엔 굳이 안 하고, **3개월에 한 번 정도** 돌리는 것"입니다.
@@ -48,10 +48,9 @@ REFRESH_step1_데이터업데이트.md 보고 인용수·데이터 재조사 해
 > 사용자 응답을 받기 전에는 절대 (1) 또는 (2)를 임의로 실행하지 말 것.
 
 - **(0) 건너뛰기**: 신규 venue/연도 추가만 했다면 step1*.py 실행 후 곧장
-  `python step2_openalex.py` 실행해도 됨 — 체크포인트에 없는 신규 DOI만 자동 fetch.
-- **(1) 최근 7년**: `python refresh_recent.py 2019` → checkpoint에서 해당 연도 DOI 제거 → `python step2_openalex.py`
-- **(2) 전체**: `del enriched_checkpoint_*.json` (Windows) 또는 `rm enriched_checkpoint_*.json` →
-  `python step2_openalex.py --refresh`
+  `python step2_openalex.py` 실행해도 됨 — 신규 DOI와 신규 DOI-less PMLR 논문만 자동 fetch.
+- **(1) 최근 7년**: `python refresh_recent.py 2019` → DOI citation을 제거하고 DOI-less S2 ID는 보존한 채 재조사 표시 → `python step2_openalex.py`
+- **(2) 전체**: checkpoint를 삭제하지 말고 `python step2_openalex.py --refresh`
   (백그라운드로 돌리고 진행상황은 출력 모니터링)
 
 `enriched_checkpoint_*.json`의 mtime을 보면 마지막 전체 refresh가 언제였는지 추정 가능 — 3개월 이상 됐으면 사용자에게 (2) 권유.
@@ -69,6 +68,7 @@ REFRESH_step1_데이터업데이트.md 보고 인용수·데이터 재조사 해
 ```bash
 cd pipeline
 python step3_excel.py             # ../robopaper_atlas_all.xlsx
+cd .. && python pipeline/_split_by_venue.py && cd pipeline  # ../by_venue/*.xlsx
 python _make_word_book.py         # word_book.json / word_book.csv
 python _make_all_html.py          # ../explorer.html
 python _make_by_year_html.py      # ../by_year.html
@@ -119,7 +119,8 @@ python _enrich_communities.py     # Leiden + TF-IDF → community 필드 주입
 | 파일 | 역할 |
 |---|---|
 | `step1_dblp.py` | DBLP에서 venue별 연도별 메타데이터 수집 (캐시: `dblp_raw/`) |
-| `step2_openalex.py` | **Semantic Scholar**로 초록·인용수·분야 보강 (체크포인트: `enriched_checkpoint_*.json`) |
+| `step2_openalex.py` | **Semantic Scholar**로 초록·인용수·분야 보강 (DOI: `enriched_checkpoint_*.json`, DOI-less: `enriched_doi_less_checkpoint.json`) |
+| `_doi_less_checkpoint.py` | DOI 없는 PMLR 논문의 DBLP-key 기반 S2 ID/checkpoint 관리 |
 | `step2b_semanticscholar.py` | ~~deprecated~~ — step2_openalex.py에 통합됨 |
 | `step1_extra_openalex.py` | DBLP 미색인 저널(SoRo/TMech 등)을 OpenAlex ISSN으로 수집 (여전히 OpenAlex 사용) |
 | `step2_openalex_legacy.py` | 구버전 OpenAlex 기반 enrichment (참고용, 미사용) |
@@ -162,10 +163,8 @@ python _enrich_communities.py     # Leiden + TF-IDF → community 필드 주입
 ('key', 'LABEL', 'ISSN-NUMBER', range(start_year, 2027)),
 ```
 
-**PMLR 기반 학회 (CoRL 등)** — DBLP에 doi 필드가 없으므로 추가 스텝 필요:
-```bash
-python step1d_pmlr_doi_resolve.py   # OpenAlex 제목 검색으로 arXiv DOI 역추적
-```
-이후 step2 → step3 → HTML 생성 순서로 실행.
+**PMLR 기반 학회 (CoRL 등)** — DBLP에 DOI가 없어도 `step2_openalex.py`가 S2 venue bulk와
+검증된 title-match fallback으로 처리합니다. `DOI_LESS_VENUES`와 `S2_VENUE_NAMES`에 venue를 추가한 뒤
+step2 → step3 → HTML 생성 순서로 실행합니다. `step1d_pmlr_doi_resolve.py`는 arXiv DOI 백필이 별도로 필요할 때만 쓰는 선택적 legacy 도구입니다.
 
 그 후 step1 → step2 → step3 → HTML 생성 순서로 실행. 각 `_make_*.py` 상단의 `VENUES_CFG` 리스트에 `{'label', 'id', 'color'}` 한 줄 추가하면 모든 카드/차트/필터에 자동 반영.

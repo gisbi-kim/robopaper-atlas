@@ -55,7 +55,7 @@ ICRA / IROS 개최지를 3D 지구본에 시각화 (별도 프로젝트).
 ### 📊 [Dataset download](robopaper_atlas_all.xlsx)
 **XLSX** — 5 시트: `summary` / `by_year_pivot` / `by_year_detail` / `top_cited_100` / `papers`
 
-> 인용수는 **Semantic Scholar** 기준 (~95% 커버리지). 나머지는 S2 미색인 paper로 OpenAlex 값 폴백. OpenAlex는 Crossref deposited refs만 봐서 보수적이고 (예: ColoRadar 2022 OpenAlex 3 vs S2 93 vs GS 107), CS/robotics 도메인에선 S2가 GS에 가장 가까움.
+> 인용수는 **Semantic Scholar** 우선(현재 raw metadata 기준 약 97% 커버리지), S2 미색인 paper는 OpenAlex 값으로 폴백합니다. 최종 dedup 데이터의 citation 필드 커버리지는 99.9%입니다. OpenAlex는 Crossref deposited refs만 봐서 보수적이고 (예: ColoRadar 2022 OpenAlex 3 vs S2 93 vs GS 107), CS/robotics 도메인에선 S2가 GS에 가장 가까움.
 
 **Word book**: [`word_book.csv`](word_book.csv) (0.3 MB) · [`word_book.json`](word_book.json) (24 MB)
 초록에서 stop word 제외 후 추출한 단어장. CSV는 `word,total_count,num_papers`. JSON은 vocab + per-paper 상위 50 단어 인덱스 — word cloud용.
@@ -77,6 +77,7 @@ Semantic Scholar 인용수는 시간이 지나면서 바뀝니다. 모든 HTML �
 python refresh_recent.py 2019     # 2019~현재 DOI를 checkpoint에서 제거
 python step2_openalex.py          # 제거된 DOI만 재조회
 python step3_excel.py             # xlsx 재생성
+cd .. && python pipeline/_split_by_venue.py && cd pipeline  # venue별 xlsx
 python _make_all_html.py          # explorer.html
 python _make_by_year_html.py      # by_year.html
 python _make_coauthor_network.py  # coauthor_network.html
@@ -119,7 +120,9 @@ python step2_openalex.py
 ```
 > 환경변수 `S2_API_KEY`를 설정하면 batch API rate limit이 완화됩니다.
 
-- 500개 DOI씩 batch 쿼리, 주기적으로 `enriched_checkpoint_*.json` shard 저장
+- DOI 보유 논문은 500개씩 batch 쿼리하고 `enriched_checkpoint_*.json` shard에 저장
+- DOI 없는 PMLR 논문(CoRL)은 S2 venue bulk → 검증된 title-match 순으로 S2 paper ID를 찾고 `enriched_doi_less_checkpoint.json`에 저장
+- 이후 인용수 갱신은 저장된 S2 paper ID를 500개씩 batch 조회하므로 title-match를 반복하지 않음
 - 중단해도 재실행하면 체크포인트부터 이어서
 - 출력: `all_enriched.json`
 
@@ -170,8 +173,8 @@ python _make_coauthor_network.py  # coauthor_network.html — 공저자 그래�
 
 ## 참고
 
-- **초록 커버리지**: 최근 논문 95%+, 2010년 이전은 낮음
-- **DOI 커버리지**: 전체 99.9%, 1990년 이전 일부 없음
+- **초록 커버리지**: 전체 97.3%; 오래된 논문과 S2 미색인 논문은 낮음
+- **DOI-less citation**: CoRL은 DOI가 없어도 S2 venue/title 검증 fallback으로 수집하며, 현재 1,257편 중 1,236편에 citation이 있음
 - **세션 정보**: DBLP에 없음. OpenAlex `concepts`가 대체재 (세밀한 세션 트랙은 IEEE Xplore API 필요)
 - **저자 탐색**: Full Explorer에서 저자명 검색하면 해당 저자의 h-index, i10-index, 인용수 히스토그램이 하단에 표시됨
 - **큰 파일 분석**: xlsx가 버거우면 `df.to_parquet('x.parquet')` 후 pandas/DuckDB 권장
@@ -182,11 +185,12 @@ DBLP venue는 `step1_dblp.py`의 `venues_config`에 한 줄:
 ```python
 ('key', 'dblp/stream', 'LABEL', range(start_year, 2027)),
 ```
-ISSN 기반 저널은 `step1_extra_openalex.py`, Crossref 기반 proceedings는 `step1c_crossref_conferences.py`에 추가합니다.
+ISSN 기반 저널은 `step1_extra_openalex.py`, Crossref 기반 proceedings는 `step1c_crossref_conferences.py`에 추가합니다. DOI 없는 PMLR 학회는 `step2_openalex.py`의 `DOI_LESS_VENUES`와 `S2_VENUE_NAMES`에 추가하면 venue bulk + 검증된 title-match fallback이 적용됩니다.
 그 후 step1 → step2 → step3 순서로 실행. 각 `_make_*.py` 생성기의 `VENUES_CFG` 리스트·색·필터 체크박스에도 LABEL 추가 필요.
 
 ## Credit
 
 - **DBLP** (https://dblp.org/) — 메타데이터
-- **OpenAlex** (https://openalex.org/) — 초록·인용수·concepts
+- **Semantic Scholar** (https://www.semanticscholar.org/product/api) — 초록·인용수·분야, DOI-less CoRL title/venue 매칭
+- **OpenAlex** (https://openalex.org/) — DBLP 미색인 venue 수집과 S2 미색인 데이터 fallback
 - **Chart.js** — 시각화
