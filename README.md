@@ -12,7 +12,7 @@ DBLP + Crossref + OpenAlex + Semantic Scholar로 93,000+ 편의 제목·저자·
 |---|---|---:|---:|
 | ICRA | DBLP `conf/icra` | 1984 | ~30,600 |
 | IROS | DBLP `conf/iros` | 1988 | ~26,600 |
-| RA-L | DBLP `journals/ral` | 2016 | ~10,600 |
+| RA-L | DBLP `journals/ral` | 2016 | ~10,700 |
 | T-Mech | OpenAlex ISSN `1083-4435` | 1996 | ~6,300 |
 | T-RO | DBLP `journals/trob` | 2004 | ~3,500 |
 | IJRR | DBLP `journals/ijrr` | 1982 | ~2,700 |
@@ -26,7 +26,7 @@ DBLP + Crossref + OpenAlex + Semantic Scholar로 93,000+ 편의 제목·저자·
 | CoRL | DBLP `conf/corl` | 2017 | ~1,260 |
 | iSpaRo | Crossref IEEE proceedings | 2024 | 154 |
 | SSRR | Crossref IEEE proceedings | 2004 | 893 |
-| **합계** | | 1984 ~ 2026 | **93,443** |
+| **합계** | | 1984 ~ 2026 | **93,649** |
 
 DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 병합 (예: RA-L 논문이 ICRA에서 발표된 경우 1개 엔트리).
 
