@@ -1,7 +1,7 @@
 # RoboPaper Atlas
 
-**40여 년치 로봇공학 논문(ICRA · IROS · RA-L · T-RO · RSS · IJRR · Sci-Rob · SoRo · T-Mech · T-FR · RA-P · T-ASE · RAM · CoRL · iSpaRo)을 한 곳에 모은 인터랙티브 아틀라스.**
-DBLP + Crossref + OpenAlex + Semantic Scholar로 92,000+ 편의 제목·저자·초록·인용수·키워드를 긁어와서
+**40여 년치 로봇공학 논문(ICRA · IROS · RA-L · T-RO · RSS · IJRR · Sci-Rob · SoRo · T-Mech · T-FR · RA-P · T-ASE · RAM · CoRL · iSpaRo · SSRR)을 한 곳에 모은 인터랙티브 아틀라스.**
+DBLP + Crossref + OpenAlex + Semantic Scholar로 93,000+ 편의 제목·저자·초록·인용수·키워드를 긁어와서
 중복 제거하고, 바로 탐색·정렬·필터할 수 있는 웹 페이지와 엑셀로 정리합니다.
 
 🔗 **Live demo**: https://gisbi-kim.github.io/robopaper-atlas/
@@ -25,14 +25,15 @@ DBLP + Crossref + OpenAlex + Semantic Scholar로 92,000+ 편의 제목·저자·
 | RAM | DBLP `journals/ram` | 1994 | ~1,720 |
 | CoRL | DBLP `conf/corl` | 2017 | ~1,260 |
 | iSpaRo | Crossref IEEE proceedings | 2024 | 154 |
-| **합계** | | 1984 ~ 2026 | **92,533** |
+| SSRR | Crossref IEEE proceedings | 2004 | 893 |
+| **합계** | | 1984 ~ 2026 | **93,426** |
 
 DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 병합 (예: RA-L 논문이 ICRA에서 발표된 경우 1개 엔트리).
 
 ## 무엇을 할 수 있나
 
 ### 🔍 [Full Explorer](explorer.html)
-92,000+편 전체 탐색기. 한 페이지에서:
+93,000+편 전체 탐색기. 한 페이지에서:
 - **연도 범위** / **venue** / **최소 인용수** / **제목·저자 검색** 복합 필터
 - 모든 컬럼(venue, year, cites 등) **클릭 정렬**
 - 페이지당 50 ~ 10,000 선택 가능한 페이지네이션
@@ -153,7 +154,7 @@ python _make_coauthor_network.py  # coauthor_network.html — 공저자 그래�
 
 | 컬럼 | 출처 | 설명 |
 |---|---|---|
-| `venue` | dedup | ICRA / IROS / RA-L / T-RO / RSS / IJRR / Sci-Rob / SoRo / T-Mech / T-FR / RA-P / T-ASE / RAM / CoRL / iSpaRo (primary, 우선순위 규칙 적용 후) |
+| `venue` | dedup | ICRA / IROS / RA-L / T-RO / RSS / IJRR / Sci-Rob / SoRo / T-Mech / T-FR / RA-P / T-ASE / RAM / CoRL / iSpaRo / SSRR (primary, 우선순위 규칙 적용 후) |
 | `venues_all` | dedup | 같은 논문이 등장했던 모든 venue (쉼표 구분) |
 | `year` | DBLP | 발표/발간 연도 |
 | `title` | DBLP | 논문 제목 (HTML 엔티티 디코딩 후) |

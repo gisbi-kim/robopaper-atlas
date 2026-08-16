@@ -11,6 +11,7 @@ Run:
 import argparse
 import json
 import os
+import re
 import time
 
 import requests
@@ -22,7 +23,7 @@ DBLP_MERGE_FILE = "all_dblp.json"
 CROSSREF_WORKS = "https://api.crossref.org/works"
 USER_EMAIL = "gisbi.kim@gmail.com"
 
-# (cache_key, venue_label, container_title_template, year_range, query_window)
+# (cache_key, venue_label, query template, year_range, query_window, match mode)
 CONFERENCE_VENUES = [
     (
         "isparo",
@@ -30,7 +31,9 @@ CONFERENCE_VENUES = [
         "{year} International Conference on Space Robotics (iSpaRo)",
         range(2024, 2027),
         1,
+        "container",
     ),
+    ("ssrr", "SSRR", "Safety Security Rescue Robotics", range(2004, 2026), 0, "doi_stem"),
 ]
 
 
@@ -86,29 +89,35 @@ def _to_record(item, venue_label, fallback_year):
     }
 
 
-def fetch_conference_year(container_title, venue_label, year, query_window=1):
+def fetch_conference_year(query_text, venue_label, year, query_window=1, match_mode="container"):
     params = {
-        "filter": (
-            "prefix:10.1109,"
-            f"from-pub-date:{year}-01-01,"
-            f"until-pub-date:{year + query_window}-12-31"
-        ),
-        "query.container-title": container_title,
-        "rows": 200,
+        "rows": 1000,
         "select": "DOI,title,container-title,page,author,published-print,published-online,published",
         "mailto": USER_EMAIL,
     }
+    if match_mode == "container":
+        params["filter"] = (
+            "prefix:10.1109,"
+            f"from-pub-date:{year}-01-01,"
+            f"until-pub-date:{year + query_window}-12-31"
+        )
+        params["query.container-title"] = query_text
+    elif match_mode == "doi_stem":
+        params["query.bibliographic"] = query_text
+    else:
+        raise ValueError(f"unsupported match mode: {match_mode}")
 
     for attempt in range(3):
         try:
             r = requests.get(CROSSREF_WORKS, params=params, timeout=60)
             if r.status_code == 200:
                 items = (r.json().get("message") or {}).get("items", [])
-                records = [
-                    _to_record(item, venue_label, year)
-                    for item in items
-                    if _container_matches(item, container_title) and _doi(item)
-                ]
+                if match_mode == "container":
+                    matched = [item for item in items if _container_matches(item, query_text) and _doi(item)]
+                else:
+                    doi_pattern = re.compile(rf"^10\.1109/ssrr\d*\.{year}(?:\.|$)")
+                    matched = [item for item in items if doi_pattern.match(_doi(item)) and _authors_str(item)]
+                records = [_to_record(item, venue_label, year) for item in matched]
                 records.sort(key=lambda p: (int(str(p["year"]) or year), p["pages"], p["doi"]))
                 return records
             if r.status_code == 429:
@@ -173,8 +182,8 @@ def main():
     venues = [v for v in CONFERENCE_VENUES if not wanted or v[0] in wanted]
 
     all_extra = []
-    jobs = [(k, lbl, template, year, window) for k, lbl, template, years, window in venues for year in years]
-    for i, (key, label, template, year, query_window) in enumerate(jobs):
+    jobs = [(k, lbl, query, year, window, mode) for k, lbl, query, years, window, mode in venues for year in years]
+    for i, (key, label, query, year, query_window, match_mode) in enumerate(jobs):
         fpath = os.path.join(OUT_DIR, f"{key}_{year}.json")
         if os.path.exists(fpath):
             with open(fpath, encoding="utf-8") as f:
@@ -182,7 +191,7 @@ def main():
             print(f"[{i + 1}/{len(jobs)}] {label} {year}: cached ({len(papers)})")
         else:
             print(f"[{i + 1}/{len(jobs)}] {label} {year}: fetching...", flush=True)
-            papers = fetch_conference_year(template.format(year=year), label, year, query_window)
+            papers = fetch_conference_year(query.format(year=year), label, year, query_window, match_mode)
             print(f"    got {len(papers)} papers")
             with open(fpath, "w", encoding="utf-8") as f:
                 json.dump(papers, f, ensure_ascii=False)

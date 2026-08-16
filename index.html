@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>RoboPaper Atlas — 40+ years of robotics papers incl. iSpaRo</title>
-<meta name="description" content="Interactive explorer for 92,000+ robotics papers across ICRA, IROS, RA-L, T-RO, RSS, IJRR, Science Robotics, Soft Robotics, IEEE/ASME T-Mech, T-FR, RA-P, T-ASE, IEEE RAM, CoRL, and iSpaRo (1984~2026). Full-text search, year filter, citation sort.">
+<title>RoboPaper Atlas — 40+ years of robotics papers incl. SSRR</title>
+<meta name="description" content="Interactive explorer for 93,000+ robotics papers across ICRA, IROS, RA-L, T-RO, RSS, IJRR, Science Robotics, Soft Robotics, IEEE/ASME T-Mech, T-FR, RA-P, T-ASE, IEEE RAM, CoRL, iSpaRo, and SSRR (1984~2026). Full-text search, year filter, citation sort.">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   * { box-sizing: border-box; }
@@ -49,6 +49,7 @@
   .b-ram    { background: #3f51b5; }
   .b-corl   { background: #880e4f; }
   .b-isparo { background: #5e548e; }
+  .b-ssrr   { background: #00695c; }
 
   .stats {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -121,16 +122,16 @@
 
 <h1>RoboPaper Atlas</h1>
 <div class="tagline">
-  Four decades of robotics research, indexed. 92,000+ papers from ICRA, IROS, RA-L, T-RO, RSS, IJRR,
-  Science Robotics, Soft Robotics, IEEE/ASME T-Mech, IEEE T-FR, IEEE RA-P, IEEE T-ASE, IEEE RAM, CoRL, and iSpaRo — searchable, filterable, ranked by citation impact.
+  Four decades of robotics research, indexed. 93,000+ papers from ICRA, IROS, RA-L, T-RO, RSS, IJRR,
+  Science Robotics, Soft Robotics, IEEE/ASME T-Mech, IEEE T-FR, IEEE RA-P, IEEE T-ASE, IEEE RAM, CoRL, iSpaRo, and SSRR — searchable, filterable, ranked by citation impact.
 </div>
 
 <div class="update-banner" aria-label="Dataset update date">
   <div>
     <div class="label">Latest dataset update</div>
-    <div class="date">July 23, 2026</div>
+    <div class="date">August 16, 2026</div>
   </div>
-  <div class="note">92,533 deduplicated papers · journal records refreshed as of this date</div>
+  <div class="note">93,426 deduplicated papers · SSRR proceedings added to the latest journal refresh</div>
 </div>
 
 <div class="badges">
@@ -149,20 +150,21 @@
   <span class="badge b-ram">RAM 1994~</span>
   <span class="badge b-corl">CoRL 2017~</span>
   <span class="badge b-isparo">iSpaRo 2024~</span>
+  <span class="badge b-ssrr">SSRR 2004~</span>
 </div>
 
 <div class="stats">
-  <div class="stat"><div class="n">92,533</div><div class="l">Papers (deduped)</div></div>
-  <div class="stat"><div class="n">15</div><div class="l">Venues</div></div>
+  <div class="stat"><div class="n">93,426</div><div class="l">Papers (deduped)</div></div>
+  <div class="stat"><div class="n">16</div><div class="l">Venues</div></div>
   <div class="stat"><div class="n">1984~2026</div><div class="l">Years</div></div>
-  <div class="stat"><div class="n">96.8%</div><div class="l">Abstract coverage</div></div>
+  <div class="stat"><div class="n">95.8%</div><div class="l">Abstract coverage</div></div>
 </div>
 
 <h2>Explore</h2>
 <div class="cards">
   <a class="card primary" href="explorer.html">
     <div class="title">Full Explorer <span class="pill">MAIN</span></div>
-    <div class="desc">All 92k+ papers. Filter by year / venue / min-citations, search title & author, sort any column, paginate. Hover a title to preview its abstract.</div>
+    <div class="desc">All 93k+ papers. Filter by year / venue / min-citations, search title & author, sort any column, paginate. Hover a title to preview its abstract.</div>
     <div class="arrow">Open →</div>
   </a>
   <a class="card" href="by_year.html">
@@ -172,7 +174,7 @@
   </a>
   <a class="card" href="coauthor_network.html">
     <div class="title">Co-author Network</div>
-    <div class="desc">26k+ researchers connected by 83k+ co-authored-paper edges. Search a name, jump to their node, and reveal 1st / 2nd / 3rd-degree collaborators.</div>
+    <div class="desc">27k+ researchers connected by 84k+ co-authored-paper edges. Search a name, jump to their node, and reveal 1st / 2nd / 3rd-degree collaborators.</div>
     <div class="arrow">Open →</div>
   </a>
   <a class="card" href="https://gisbi-kim.github.io/robotics-paper-phylogeny/" target="_blank" rel="noopener">
@@ -205,7 +207,7 @@
 <h2>Download the dataset</h2>
 <div class="downloads">
   <a class="dl" href="robopaper_atlas_all.xlsx">
-    <span>📊 Excel (.xlsx)</span> <span class="sz">5 sheets · 92,533 papers · 49 MB</span>
+    <span>📊 Excel (.xlsx)</span> <span class="sz">5 sheets · 93,426 papers · 49 MB</span>
   </a>
   <a class="dl" href="dataset_preview.html">
     <span>👁 Preview</span> <span class="sz">first rows of every sheet</span>
@@ -241,6 +243,7 @@
     <tr><td>IEEE RAM</td><td>DBLP <code>journals/ram</code></td><td>1994</td></tr>
     <tr><td>CoRL</td><td>DBLP <code>conf/corl</code></td><td>2017</td></tr>
     <tr><td>iSpaRo</td><td>Crossref IEEE proceedings</td><td>2024</td></tr>
+    <tr><td>SSRR</td><td>Crossref IEEE proceedings</td><td>2004</td></tr>
   </table>
 </div>
 
