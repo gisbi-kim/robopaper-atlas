@@ -65,6 +65,30 @@ REFRESH_step1_데이터업데이트.md 보고 인용수·데이터 재조사 해
 
 ### 3) 산출물 재생성 (전부 돌림)
 
+#### DBLP 접근 불가 시 공식 출처 보완 (2026-09-08 추가)
+
+DBLP가 HTTP 200으로 봇 확인 HTML을 반환할 수 있습니다. 이 경우 기존 DBLP 캐시를
+보존하고 다음 명령으로 최근 2025·2026년 자료를 보완합니다. 새 갱신 시에는
+`refresh_publisher_sources.py`의 `YEARS`도 확인하세요.
+
+```bash
+python step1_extra_openalex.py --refresh-cache --years 2025,2026 --no-merge
+python refresh_publisher_sources.py journals
+python refresh_publisher_sources.py conferences
+python refresh_publisher_sources.py rss
+python refresh_publisher_sources.py corl
+python refresh_publisher_sources.py merge
+python step2_openalex.py
+```
+
+저널은 OpenAlex의 정확한 저널명·ISSN, IEEE 학회는 Crossref의 정확한 DOI stem,
+RSS·CoRL은 공식 proceedings를 사용합니다. 결과는 `publisher_raw/`에 출처를 보존하여
+저장됩니다. `merge`는 기존 DBLP 연도·식별자를 유지하고 venue+DOI/URL로 신규 자료를
+추가합니다. DBLP 재수집으로 `all_dblp.json`을 다시 만든 뒤에도 `merge`를 실행하여
+보완 캐시를 복원하세요. 공개되지 않은 최신 proceedings는 0편으로 기록될 수 있습니다.
+
+필요 패키지: `requests`, `beautifulsoup4` (기존 생성기 의존성은 별도).
+
 ```bash
 cd pipeline
 python step3_excel.py             # ../robopaper_atlas_all.xlsx
@@ -83,10 +107,10 @@ python _enrich_communities.py     # Leiden + TF-IDF → community 필드 주입
 
 ### 4) 검증
 
-- 재생성된 HTML 상단의 "Citations as of YYYY-MM-DD"가 오늘 날짜인지
-  > 주의: 이 날짜는 `all_enriched.json`의 mtime이라 step2가 재실행되면 무조건 오늘
-  > 날짜가 됨. 실제 인용수 신선도는 (2)번 풀 refresh를 안 돌렸으면 캐시된 옛 값.
-- xlsx `summary` 시트 첫 행 "인용수 기준일"도 오늘 날짜인지
+- 재생성된 탐색기의 "Data updated YYYY-MM-DD"가 오늘 날짜인지
+  > 이 날짜는 데이터 생성일입니다. 인용수 조회 시점은 논문마다 다르며,
+  > 전체 refresh를 실행하지 않았다면 기존 인용수는 캐시된 값입니다.
+- xlsx `summary` 시트 첫 행 "Data updated"도 오늘 날짜인지
 - 엑셀이 열려있어 저장 실패했다면 닫게 해달라고 요청
 
 ### Invariant 정리 (step3·_make_all_html에서 자동 적용 — 새 venue 추가시에도 그대로 적용됨)

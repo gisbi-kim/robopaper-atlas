@@ -19,12 +19,12 @@ from _clean import is_front_matter, is_translated_dup
 
 INPUT = "all_enriched.json"
 
-# 인용수 기준일: all_enriched.json의 최종 수정일 (step2가 마지막으로 돈 시점)
+# Dataset build date; cached citations may have earlier retrieval dates.
 try:
     AS_OF = datetime.fromtimestamp(os.path.getmtime(INPUT)).date().isoformat()
 except OSError:
     AS_OF = datetime.now().date().isoformat()
-print(f"Citations as of: {AS_OF}")
+print(f"Data updated: {AS_OF}")
 OUT_XLSX = "../robopaper_atlas_all.xlsx"
 
 # DOI 중복 시 어느 venue를 남길지 우선순위 (저널/선택도 높은 conf 우선).
@@ -158,7 +158,7 @@ pivot = pivot.sort_index(ascending=False).reset_index()
 # 3) summary: 전체 요약
 total = len(df)
 summary_rows = [
-    ('Citations as of', AS_OF),
+    ('Data updated', AS_OF),
     ('Total papers', total),
 ]
 # 알려진 venue는 VENUE_LABELS 순서로, 그 외 데이터에만 있는 venue는 뒤에 덧붙임
@@ -168,6 +168,7 @@ extras  = sorted(v for v in seen_venues if v and v not in VENUE_PRIORITY)
 for v in ordered + extras:
     summary_rows.append((v, int((df['venue'] == v).sum())))
 summary_rows += [
+    ('Citation freshness', 'Retrieval dates vary by paper; existing cached counts are retained unless refreshed.'),
     ('Year range', f"{df['year'].min()} ~ {df['year'].max()}"),
     ('With DOI', f"{int(df['doi'].astype(bool).sum())} ({100*df['doi'].astype(bool).mean():.1f}%)"),
     ('With abstract', f"{int((df['abstract'].astype(str).str.len() > 0).sum())} ({100*(df['abstract'].astype(str).str.len() > 0).mean():.1f}%)"),

@@ -1,7 +1,7 @@
 # RoboPaper Atlas
 
 **40여 년치 로봇공학 논문(ICRA · IROS · RA-L · T-RO · RSS · IJRR · Sci-Rob · SoRo · T-Mech · T-FR · RA-P · T-ASE · RAM · CoRL · iSpaRo · SSRR)을 한 곳에 모은 인터랙티브 아틀라스.**
-DBLP + Crossref + OpenAlex + Semantic Scholar로 93,000+ 편의 제목·저자·초록·인용수·키워드를 긁어와서
+DBLP + Crossref + OpenAlex + Semantic Scholar로 94,000+ 편의 제목·저자·초록·인용수·키워드를 긁어와서
 중복 제거하고, 바로 탐색·정렬·필터할 수 있는 웹 페이지와 엑셀로 정리합니다.
 
 🔗 **Live demo**: https://gisbi-kim.github.io/robopaper-atlas/
@@ -10,30 +10,30 @@ DBLP + Crossref + OpenAlex + Semantic Scholar로 93,000+ 편의 제목·저자·
 
 | Venue | Source | 시작 연도 | 편수 (dedup 후) |
 |---|---|---:|---:|
-| ICRA | DBLP `conf/icra` | 1984 | ~30,600 |
-| IROS | DBLP `conf/iros` | 1988 | ~26,600 |
-| RA-L | DBLP `journals/ral` | 2016 | ~10,700 |
-| T-Mech | OpenAlex ISSN `1083-4435` | 1996 | ~6,300 |
-| T-RO | DBLP `journals/trob` | 2004 | ~3,500 |
-| IJRR | DBLP `journals/ijrr` | 1982 | ~2,700 |
-| RSS | DBLP `conf/rss` | 2005 | ~1,500 |
-| Sci-Rob | DBLP `journals/scirobotics` | 2016 | ~920 |
-| SoRo | OpenAlex ISSN `2169-5172` | 2014 | ~840 |
-| T-FR | OpenAlex ISSN `2997-1101` | 2024 | ~110 |
-| RA-P | OpenAlex ISSN `2995-4304` | 2025 | 28 |
-| T-ASE | OpenAlex ISSN `1545-5955` | 2004 | ~5,800 |
-| RAM | DBLP `journals/ram` | 1994 | ~1,720 |
-| CoRL | DBLP `conf/corl` | 2017 | ~1,260 |
+| ICRA | DBLP `conf/icra` | 1984 | 30,612 |
+| IROS | DBLP `conf/iros` | 1988 | 26,594 |
+| RA-L | DBLP `journals/ral` | 2016 | 11,104 |
+| T-Mech | OpenAlex ISSN `1083-4435` | 1996 | 6,336 |
+| T-RO | DBLP `journals/trob` | 2004 | 3,558 |
+| IJRR | DBLP `journals/ijrr` | 1982 | 2,794 |
+| RSS | DBLP `conf/rss` | 2005 | 1,682 |
+| Sci-Rob | DBLP `journals/scirobotics` | 2016 | 936 |
+| SoRo | OpenAlex ISSN `2169-5172` | 2014 | 838 |
+| T-FR | OpenAlex ISSN `2997-1101` | 2024 | 108 |
+| RA-P | OpenAlex ISSN `2995-4304` | 2025 | 33 |
+| T-ASE | OpenAlex ISSN `1545-5955` | 2004 | 6,047 |
+| RAM | DBLP `journals/ram` | 1994 | 1,753 |
+| CoRL | DBLP `conf/corl` | 2017 | 1,257 |
 | iSpaRo | Crossref IEEE proceedings | 2024 | 154 |
 | SSRR | Crossref IEEE proceedings | 2004 | 893 |
-| **합계** | | 1984 ~ 2026 | **93,649** |
+| **합계** | | 1984 ~ 2026 | **94,699** |
 
 DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 병합 (예: RA-L 논문이 ICRA에서 발표된 경우 1개 엔트리).
 
 ## 무엇을 할 수 있나
 
 ### 🔍 [Full Explorer](explorer.html)
-93,000+편 전체 탐색기. 한 페이지에서:
+94,000+편 전체 탐색기. 한 페이지에서:
 - **연도 범위** / **venue** / **최소 인용수** / **제목·저자 검색** 복합 필터
 - 모든 컬럼(venue, year, cites 등) **클릭 정렬**
 - 페이지당 50 ~ 10,000 선택 가능한 페이지네이션
@@ -47,7 +47,7 @@ DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 �
 연도별 venue별 편수 추이. Stacked / Grouped / Line 세 가지 뷰로 토글.
 
 ### 🕸️ [Co-author Network](coauthor_network.html)
-저자 27k+, 공저 엣지 84k+ 인터랙티브 그래프.
+저자 27k+, 공저 엣지 86k+ 인터랙티브 그래프.
 
 ### 🌐 [Conference Location Globe](https://gisbi-kim.github.io/icra-iros-globe/src/icra_iros_globe.html)
 ICRA / IROS 개최지를 3D 지구본에 시각화 (별도 프로젝트).
@@ -60,9 +60,11 @@ ICRA / IROS 개최지를 3D 지구본에 시각화 (별도 프로젝트).
 **Word book**: [`word_book.csv`](word_book.csv) (0.3 MB) · [`word_book.json`](word_book.json) (24 MB)
 초록에서 stop word 제외 후 추출한 단어장. CSV는 `word,total_count,num_papers`. JSON은 vocab + per-paper 상위 50 단어 인덱스 — word cloud용.
 
+2026-09-08 갱신: 16개 venue의 2025·2026년 자료를 재확인했습니다. DBLP 접근 제한으로 최신 저널은 OpenAlex, RSS는 공식 proceedings로 보완했습니다. 상세 내역은 [갱신 보고서](REFRESH_REPORT_2026-09-08.md)를 참조하세요.
+
 ## 데이터 기준일
 
-Semantic Scholar 인용수는 시간이 지나면서 바뀝니다. 모든 HTML 상단 우측과 xlsx `summary` 시트 첫 행에 **"Citations as of YYYY-MM-DD"** 로 마지막 갱신일을 표기.
+탐색기와 xlsx `summary`의 **"Data updated YYYY-MM-DD"**는 데이터 재생성일입니다. Semantic Scholar 인용수 조회 시점은 논문마다 다릅니다. 신규 논문 보강만 실행한 경우 기존 인용수는 캐시를 유지하며, 데이터 재생성일이 전체 인용수 갱신일을 뜻하지 않습니다.
 
 ## 업데이트 (재조사)
 
@@ -173,7 +175,7 @@ python _make_coauthor_network.py  # coauthor_network.html — 공저자 그래�
 
 ## 참고
 
-- **초록 커버리지**: 전체 96.5%; 오래된 논문과 S2 미색인 논문은 낮음
+- **초록 커버리지**: 전체 97.0%; 오래된 논문과 S2 미색인 논문은 낮음
 - **DOI-less citation**: CoRL은 DOI가 없어도 S2 venue/title 검증 fallback으로 수집하며, 현재 1,257편 중 1,236편에 citation이 있음
 - **세션 정보**: DBLP에 없음. OpenAlex `concepts`가 대체재 (세밀한 세션 트랙은 IEEE Xplore API 필요)
 - **저자 탐색**: Full Explorer에서 저자명 검색하면 해당 저자의 h-index, i10-index, 인용수 히스토그램이 하단에 표시됨

@@ -39,7 +39,7 @@ VENUE_COLORS   = {v['label']: v['color'] for v in VENUES_CFG}
 VENUE_IDS      = {v['label']: v['id'] for v in VENUES_CFG}
 TITLE_STR      = ' / '.join(VENUE_LABELS) + ' Paper Explorer'
 
-# 인용수 기준일: all_enriched.json의 mtime (step2 마지막 실행일)
+# Dataset build date; this does not imply every citation count was refreshed.
 try:
     AS_OF = datetime.fromtimestamp(os.path.getmtime('all_enriched.json')).date().isoformat()
 except OSError:
@@ -317,10 +317,10 @@ __VENUE_TEXT_CSS__  .venue-also { color: #888; font-weight: 400; font-size: 10px
 <div class="brand"><a href="index.html">RoboPaper Atlas</a></div>
 <h1>__TITLE_STR__</h1>
 <div class="sub">
-  <span>DBLP + Crossref + OpenAlex · __TOTAL_FMT__ papers (DOI-deduped) · __YMIN__ ~ __YMAX__ · Filter · Sort · Search</span>
+  <span>DBLP + Crossref + OpenAlex + official proceedings · __TOTAL_FMT__ papers (DOI-deduped) · __YMIN__ ~ __YMAX__ · Filter · Sort · Search</span>
   <span style="color:#888; text-align:right; line-height:1.4;">
     <a href="REFRESH.md" style="color:#1f77b4; text-decoration:none; font-size:11px;">How to refresh? ↻</a><br>
-    Citations from Semantic Scholar · as of __AS_OF__
+    Data updated __AS_OF__ · Semantic Scholar citations (retrieval dates vary)
   </span>
 </div>
 

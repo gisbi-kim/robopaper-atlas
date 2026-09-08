@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>RoboPaper Atlas — 40+ years of robotics papers incl. SSRR</title>
-<meta name="description" content="Interactive explorer for 93,000+ robotics papers across ICRA, IROS, RA-L, T-RO, RSS, IJRR, Science Robotics, Soft Robotics, IEEE/ASME T-Mech, T-FR, RA-P, T-ASE, IEEE RAM, CoRL, iSpaRo, and SSRR (1984~2026). Full-text search, year filter, citation sort.">
+<meta name="description" content="Interactive explorer for 94,000+ robotics papers across ICRA, IROS, RA-L, T-RO, RSS, IJRR, Science Robotics, Soft Robotics, IEEE/ASME T-Mech, T-FR, RA-P, T-ASE, IEEE RAM, CoRL, iSpaRo, and SSRR (1984~2026). Full-text search, year filter, citation sort.">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   * { box-sizing: border-box; }
@@ -122,16 +122,16 @@
 
 <h1>RoboPaper Atlas</h1>
 <div class="tagline">
-  Four decades of robotics research, indexed. 93,000+ papers from ICRA, IROS, RA-L, T-RO, RSS, IJRR,
+  Four decades of robotics research, indexed. 94,000+ papers from ICRA, IROS, RA-L, T-RO, RSS, IJRR,
   Science Robotics, Soft Robotics, IEEE/ASME T-Mech, IEEE T-FR, IEEE RA-P, IEEE T-ASE, IEEE RAM, CoRL, iSpaRo, and SSRR — searchable, filterable, ranked by citation impact.
 </div>
 
 <div class="update-banner" aria-label="Dataset update date">
   <div>
     <div class="label">Latest dataset update</div>
-    <div class="date">August 16, 2026</div>
+    <div class="date">September 8, 2026</div>
   </div>
-  <div class="note">93,649 deduplicated papers · RA-L and T-Mech updated through their latest indexed issues</div>
+  <div class="note">94,699 deduplicated papers · All 16 venues checked · RSS 2026 proceedings added</div>
 </div>
 
 <div class="badges">
@@ -154,10 +154,10 @@
 </div>
 
 <div class="stats">
-  <div class="stat"><div class="n">93,649</div><div class="l">Papers (deduped)</div></div>
+  <div class="stat"><div class="n">94,699</div><div class="l">Papers (deduped)</div></div>
   <div class="stat"><div class="n">16</div><div class="l">Venues</div></div>
   <div class="stat"><div class="n">1984~2026</div><div class="l">Years</div></div>
-  <div class="stat"><div class="n">96.5%</div><div class="l">Abstract coverage</div></div>
+  <div class="stat"><div class="n">97.0%</div><div class="l">Abstract coverage</div></div>
 </div>
 
 <h2>Explore</h2>
@@ -174,7 +174,7 @@
   </a>
   <a class="card" href="coauthor_network.html">
     <div class="title">Co-author Network</div>
-    <div class="desc">27k+ researchers connected by 84k+ co-authored-paper edges. Search a name, jump to their node, and reveal 1st / 2nd / 3rd-degree collaborators.</div>
+    <div class="desc">27k+ researchers connected by 86k+ co-authored-paper edges. Search a name, jump to their node, and reveal 1st / 2nd / 3rd-degree collaborators.</div>
     <div class="arrow">Open →</div>
   </a>
   <a class="card" href="https://gisbi-kim.github.io/robotics-paper-phylogeny/" target="_blank" rel="noopener">
@@ -207,7 +207,7 @@
 <h2>Download the dataset</h2>
 <div class="downloads">
   <a class="dl" href="robopaper_atlas_all.xlsx">
-    <span>📊 Excel (.xlsx)</span> <span class="sz">5 sheets · 93,649 papers · 50 MB</span>
+    <span>📊 Excel (.xlsx)</span> <span class="sz">5 sheets · 94,699 papers · 51 MB</span>
   </a>
   <a class="dl" href="dataset_preview.html">
     <span>👁 Preview</span> <span class="sz">first rows of every sheet</span>
@@ -218,13 +218,14 @@
 <div class="sources">
   <p>
     Paper metadata (title, authors, year, DOI, pages) is harvested from
-    <a href="https://dblp.org/">DBLP</a> / Crossref / OpenAlex; abstracts, citation counts, and topic concepts come from
+    <a href="https://dblp.org/">DBLP</a> / Crossref / OpenAlex, supplemented by official RSS and PMLR proceedings; abstracts, citation counts, and topic concepts come from
     <a href="https://www.semanticscholar.org/">Semantic Scholar</a>. Duplicates across venues (e.g., a RA-L paper presented at ICRA)
     are collapsed via DOI + (normalized title, year) matching, with journals taking priority over conferences.
   </p>
   <p>
-    Citation counts change over time — the exact data date is shown in the header of every view and in the
-    Excel <code>summary</code> sheet.
+    The dataset update date is shown in each view and in the Excel <code>summary</code> sheet.
+    Citation retrieval dates vary by paper; existing cached counts are retained unless refreshed.
+    Recent journal records are supplemented by OpenAlex when DBLP is unavailable.
   </p>
   <table>
     <tr><th>Venue</th><th>Source</th><th>Since</th></tr>

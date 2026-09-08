@@ -433,9 +433,9 @@ def _merge(papers: list[dict], enriched: dict, doi_less: dict) -> None:
         doi = _norm_doi(paper.get("doi"))
         entry = enriched.get(doi, {}) if doi else doi_less.get(paper_key(paper), {})
 
-        paper["abstract"] = entry.get("abstract", "")
+        paper["abstract"] = entry.get("abstract") or paper.get("publisher_abstract", "")
         paper["concepts"] = entry.get("concepts", "")
-        paper["openalex_id"] = entry.get("openalex_id", "")
+        paper["openalex_id"] = entry.get("openalex_id") or paper.get("openalex_id", "")
         if entry.get("s2_paper_id"):
             paper["s2_paper_id"] = entry["s2_paper_id"]
         if not (paper.get("pages") or "").strip() and entry.get("pages_oa"):

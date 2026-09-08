@@ -56,7 +56,11 @@ def fetch_dblp_year(stream, venue_label, year):
             print(f"    FAILED {venue_label} {year}")
             return None
 
-        data = r.json()
+        try:
+            data = r.json()
+        except ValueError:
+            print(f"    FAILED {venue_label} {year}: DBLP returned non-JSON (possible bot challenge)")
+            return None
         hits = data.get('result', {}).get('hits', {})
         total = int(hits.get('@total', 0))
 
@@ -95,14 +99,14 @@ def fetch_dblp_year(stream, venue_label, year):
 
 # (cache_key, dblp_stream, venue_label, year_range)
 CORE_VENUES = [
-    ('icra', 'conf/icra',     'ICRA', range(1984, 2026)),
-    ('iros', 'conf/iros',     'IROS', range(1988, 2026)),
+    ('icra', 'conf/icra',     'ICRA', range(1984, 2027)),
+    ('iros', 'conf/iros',     'IROS', range(1988, 2027)),
     ('ral',  'journals/ral',  'RA-L', range(2016, 2027)),  # RA-L 창간 2016
     ('tro',  'journals/trob', 'T-RO', range(2004, 2027)),  # T-RO: 2004~ (이전 T-RA는 제외)
-    ('rss',  'conf/rss',      'RSS',  range(2005, 2026)),  # Robotics: Science and Systems
+    ('rss',  'conf/rss',      'RSS',  range(2005, 2027)),  # Robotics: Science and Systems
     ('ijrr', 'journals/ijrr', 'IJRR', range(1982, 2027)),  # Int. J. of Robotics Research (창간 1982)
     ('ram',  'journals/ram',  'RAM',  range(1994, 2027)),  # IEEE Robotics & Automation Magazine 창간 1994
-    ('corl', 'conf/corl',    'CoRL', range(2017, 2026)),  # Conference on Robot Learning 창간 2017
+    ('corl', 'conf/corl',    'CoRL', range(2017, 2027)),  # Conference on Robot Learning 창간 2017
 ]
 
 # DBLP에 색인된 optional venues. (Soft Robotics, IEEE TMech은 DBLP 미색인 →
