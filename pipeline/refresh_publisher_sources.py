@@ -35,6 +35,11 @@ def save(key, year, records):
     path.write_text(json.dumps(records, ensure_ascii=False), encoding='utf-8')
     print(f'{key} {year}: {len(records)} records', flush=True)
 
+def html_page(url):
+    # text/html without an HTTP charset makes requests.text default to Latin-1.
+    # Parse the original bytes so the document's UTF-8 declaration is respected.
+    return BeautifulSoup(get(url).content, 'html.parser')
+
 def journals():
     sources = [
         ('ral','RA-L','IEEE Robotics and Automation Letters'),
@@ -85,12 +90,12 @@ def conferences():
 def rss():
     for year in YEARS:
         base=f'https://www.roboticsproceedings.org/rss{year-2004:02d}/'
-        soup=BeautifulSoup(get(base).text,'html.parser')
+        soup=html_page(base)
         links=sorted({urljoin(base,a['href']) for a in soup.find_all('a',href=re.compile(r'^p\d+\.html$'))})
         if not links: raise RuntimeError(f'No RSS papers at {base}')
         records=[]
         for i,url in enumerate(links):
-            page=BeautifulSoup(get(url).text,'html.parser')
+            page=html_page(url)
             def meta(name):
                 return [x.get('content','') for x in page.find_all('meta',attrs={'name':name})]
             doi=re.search(r'DOI\s*=\s*\{([^}]+)\}',page.get_text())
@@ -106,14 +111,14 @@ def rss():
 
 def corl():
     base='https://proceedings.mlr.press/'
-    index=BeautifulSoup(get(base).text,'html.parser')
+    index=html_page(base)
     volumes=[]
     for li in index.select('.proceedings-list li'):
         match=re.search(r'CoRL (20\d\d)',li.get_text())
         if match and int(match.group(1)) in YEARS:
             volumes.append((int(match.group(1)),urljoin(base,li.a['href'])+'/'))
     for year,url in volumes:
-        page=BeautifulSoup(get(url).text,'html.parser')
+        page=html_page(url)
         records=[]
         for paper in page.select('.paper'):
             link=paper.find('a',string='abs')['href']
@@ -144,7 +149,11 @@ def merge():
                 old=by_id[key]
                 # Preserve DBLP year/identity; fill missing publisher information.
                 for field,value in row.items():
-                    if value and not old.get(field): old[field]=value
+                    own_publisher_text = (
+                        old.get('metadata_source') == row.get('metadata_source') == 'RSS proceedings'
+                        and field in ('title', 'authors', 'publisher_abstract')
+                    )
+                    if value and (not old.get(field) or own_publisher_text): old[field]=value
             else:
                 papers.append(row); by_id[key]=row;added+=1
         print(f'{file}: +{added}',flush=True)
