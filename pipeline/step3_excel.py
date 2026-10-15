@@ -16,6 +16,7 @@ from datetime import datetime
 import pandas as pd
 
 from _clean import is_front_matter, is_translated_dup
+from _programme import programme_mask, BY_URL
 
 INPUT = "all_enriched.json"
 
@@ -58,7 +59,7 @@ df['title'] = df['title'].str.rstrip('.').str.strip()
 
 # 2) 학회 전체 proceedings 표제 행 제거 (저자 없는 것들)
 before = len(df)
-df = df[df['authors'].str.strip() != ''].reset_index(drop=True)
+df = df[(df['authors'].str.strip() != '') | programme_mask(df)].reset_index(drop=True)
 print(f"제외된 proceedings 표제 행: {before - len(df)}개")
 
 # 2b) 저널 front-matter 제거 (Editorial, Table of Contents, Publication Info 등).
@@ -81,7 +82,7 @@ print(f"제외된 비영어 번역본 행: {before - len(df)}개")
 before = len(df)
 df['doi'] = df['doi'].fillna('').astype(str).str.strip()
 is_pmlr = df['ee'].fillna('').str.startswith('https://proceedings.mlr.press/')
-df = df[(df['doi'] != '') | is_pmlr].reset_index(drop=True)
+df = df[(df['doi'] != '') | is_pmlr | programme_mask(df)].reset_index(drop=True)
 print(f"제외된 DOI-less 행: {before - len(df)}개")
 
 # 3) DOI 기반 중복 제거 (같은 DOI가 RA-L·ICRA·IROS에 중복 등장하면 RA-L 우선으로 남김)

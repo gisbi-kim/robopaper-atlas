@@ -7,6 +7,7 @@ from datetime import datetime
 import pandas as pd
 
 from _clean import is_front_matter, is_translated_dup
+from _programme import programme_mask, BY_URL
 
 # Single source of truth for venues — priority order = display order.
 # Adding a venue: append a dict here; HTML/JS sections regenerate automatically.
@@ -56,8 +57,12 @@ _dblp_suffix = re.compile(r'\s+\d{4}$')
 def _clean_authors(s):
     return '; '.join(_dblp_suffix.sub('', a.strip()) for a in html.unescape(str(s)).split(';') if a.strip())
 slim['authors'] = slim['authors'].fillna('').astype(str).map(_clean_authors).str[:300]
+# Preserve complete verified programme author lists for exact-name search.
+_programme_rows = programme_mask(slim)
+slim.loc[_programme_rows, 'authors'] = slim.loc[_programme_rows, 'ee'].map(lambda url: _clean_authors(BY_URL[url]['authors']))
 slim['doi'] = slim['doi'].fillna('').astype(str).str.strip().str.lower()
 slim['doi'] = slim['doi'].str.replace(r'^https?://doi\.org/', '', regex=True)
+slim['citation_unknown'] = pd.to_numeric(slim['cited_by_count'], errors='coerce').isna()
 slim['cited_by_count'] = pd.to_numeric(slim['cited_by_count'], errors='coerce').fillna(0).astype(int)
 slim['year'] = pd.to_numeric(slim['year'], errors='coerce').fillna(0).astype(int)
 
@@ -101,7 +106,7 @@ slim['pages_n'] = [
 ]
 
 before = len(slim)
-slim = slim[slim['authors'].str.strip() != ''].reset_index(drop=True)
+slim = slim[(slim['authors'].str.strip() != '') | programme_mask(slim)].reset_index(drop=True)
 print(f"proceedings 표제 제외: {before - len(slim)}건")
 
 # 저널 front-matter 제거 (Editorial, Table of Contents, Publication Info 등)
@@ -111,7 +116,7 @@ slim = slim[~slim['title'].map(is_translated_dup)].reset_index(drop=True)
 # DOI 없는 행은 거의 다 학회 proceedings volume 표제 등 비논문 → drop.
 # 예외: PMLR 기반 학회 (CoRL 등) — ee URL로 정식 논문 확인됨.
 is_pmlr = slim['ee'].fillna('').str.startswith('https://proceedings.mlr.press/')
-slim = slim[(slim['doi'].astype(str).str.strip() != '') | is_pmlr].reset_index(drop=True)
+slim = slim[(slim['doi'].astype(str).str.strip() != '') | is_pmlr | programme_mask(slim)].reset_index(drop=True)
 print(f"front-matter / 비영어 / DOI-less 제외: {before - len(slim)}건")
 
 # DOI 기반 dedup — 우선순위는 VENUE_PRIORITY
@@ -145,7 +150,7 @@ pool = pool.drop_duplicates(subset=['_tn', 'year', 'venue'], keep='first').drop(
 slim = pd.concat([pool, keep], ignore_index=True).drop(columns=['_tn'])
 print(f"제목+연도 dedup (within-venue): {before} → {len(slim)} ({before - len(slim)}건 병합)")
 
-arr = [[r['venue'], r['year'], r['title'], r['authors'], r['cited_by_count'], r['doi'], r['venues_all'], int(r['pages_n'])]
+arr = [[r['venue'], r['year'], r['title'], r['authors'], r['cited_by_count'], r['doi'], r['venues_all'], int(r['pages_n']), BY_URL.get(r['ee'], {}).get('explorer_url', ''), bool(r['ee'] in BY_URL and r['citation_unknown'])]
        for r in slim.to_dict('records')]
 
 total = len(arr)
@@ -317,13 +322,14 @@ __VENUE_TEXT_CSS__  .venue-also { color: #888; font-weight: 400; font-size: 10px
 <div class="brand"><a href="index.html">RoboPaper Atlas</a></div>
 <h1>__TITLE_STR__</h1>
 <div class="sub">
-  <span>DBLP + Crossref + OpenAlex + official proceedings · __TOTAL_FMT__ papers (DOI-deduped) · __YMIN__ ~ __YMAX__ · Filter · Sort · Search</span>
+  <span>DBLP + Crossref + OpenAlex + official proceedings + CoRL programme · __TOTAL_FMT__ papers (DOI-deduped) · __YMIN__ ~ __YMAX__ · Filter · Sort · Search</span>
   <span style="color:#888; text-align:right; line-height:1.4;">
     <a href="REFRESH.md" style="color:#1f77b4; text-decoration:none; font-size:11px;">How to refresh? ↻</a><br>
     Data updated __AS_OF__ · Semantic Scholar citations (retrieval dates vary)
   </span>
 </div>
 
+<div style="margin:16px 0;padding:14px 18px;border-left:4px solid #880e4f;background:#fcf1f7;font-size:13px;line-height:1.7"><b>New · CoRL 2026: 687 papers</b> — 21 Oral · 72 Spotlight · 594 Poster only. <a href="?v=corl&yf=2026&yt=2026">Filter CoRL 2026</a> · <a href="https://gisbi-kim.github.io/conference-explorers/corl2026/">Sessions, abstracts, institutions & research trends ↗</a><br><span style="color:#666">Official programme snapshot: 2026-10-15. Author lists available for 511 papers; missing names remain blank. New-paper citations are not collected (N/A) and are excluded from citation statistics. Earlier citation data is unchanged. Excel / year explorer / network downloads retain their own earlier snapshots.</span></div>
 <!-- Row 1: aggregate stats (no venue colour bar) -->
 <div class="summary" style="margin-bottom: 8px;">
   <div class="card"><div class="num" id="c-total">-</div><div class="label">Total</div></div>
@@ -779,13 +785,15 @@ function renderStats() {
   let stats = key ? statsCache.get(key) : null;
   if (!stats) {
     const counts = emptyVenueCounts();
-    let maxC = 0, sumC = 0;
+    let maxC = 0, sumC = 0, citationCount = 0;
     for (const r of f) {
       if (counts[r[0]] !== undefined) counts[r[0]]++;
+      if (r[9]) continue;
+      citationCount++;
       if (r[4] > maxC) maxC = r[4];
       sumC += r[4];
     }
-    stats = { counts, maxC, sumC };
+    stats = { counts, maxC, sumC, citationCount };
     if (key) statsCache.set(key, stats);
   }
   document.getElementById('c-total').textContent = f.length.toLocaleString();
@@ -793,12 +801,12 @@ function renderStats() {
     const el = document.getElementById('c-' + VENUE_IDS[v]);
     if (el) el.textContent = stats.counts[v].toLocaleString();
   }
-  if (f.length === 0) {
+  if (stats.citationCount === 0) {
     document.getElementById('c-maxcite').textContent = '-';
     document.getElementById('c-meancite').textContent = '-';
   } else {
     document.getElementById('c-maxcite').textContent = stats.maxC.toLocaleString();
-    document.getElementById('c-meancite').textContent = (stats.sumC / f.length).toFixed(1);
+    document.getElementById('c-meancite').textContent = (stats.sumC / stats.citationCount).toFixed(1);
   }
   document.getElementById('result-info').textContent =
     `Showing ${f.length.toLocaleString()} / ${ALL.length.toLocaleString()} papers`;
@@ -944,7 +952,8 @@ function venueStats(filtered, topK) {
   for (const r of filtered) {
     const v = r[0], c = r[4];
     if (sum[v] === undefined) continue;
-    sum[v] += c; count[v]++; cites[v].push(c);
+    if (!r[9]) { sum[v] += c; cites[v].push(c); }
+    if (r[3]) count[v]++;
     const nAuth = (r[3] || '').split(';').filter(s => s.trim()).length;
     authorsTot[v] += nAuth;
     const pn = r[7] || 0;
@@ -953,7 +962,7 @@ function venueStats(filtered, topK) {
   const avg = {}, avgAuth = {}, med = {}, hidx = {}, pagesAvg = {}, pagesSd = {};
   for (const v of VENUES) {
     const n = count[v];
-    avg[v]     = n ? sum[v] / n : 0;
+    avg[v]     = cites[v].length ? sum[v] / cites[v].length : 0;
     avgAuth[v] = n ? authorsTot[v] / n : 0;
     const pa = pagesArr[v];
     if (pa.length) {
@@ -979,7 +988,7 @@ function venueStats(filtered, topK) {
     hidx[v] = h;
   }
   // Top-K composition
-  const sorted = filtered.slice().sort((a, b) => b[4] - a[4]).slice(0, topK);
+  const sorted = filtered.filter(r => !r[9]).sort((a, b) => b[4] - a[4]).slice(0, topK);
   const topN = {};
   for (const v of VENUES) topN[v] = 0;
   for (const r of sorted) if (topN[r[0]] !== undefined) topN[r[0]]++;
@@ -1101,7 +1110,7 @@ function renderTable() {
     const r = f[i];
     const title = r[5]
       ? `<a href="https://doi.org/${r[5]}" data-doi="${r[5]}" target="_blank" rel="noopener">${escapeHtml(r[2])}</a>`
-      : escapeHtml(r[2]);
+      : r[8] ? `<a href="${escapeAttr(r[8])}" target="_blank" rel="noopener">${escapeHtml(r[2])}</a>` : escapeHtml(r[2]);
     const authorsHtml = r[3]
       ? r[3].split(';').map(a => {
           const name = a.trim();
@@ -1117,7 +1126,7 @@ function renderTable() {
       + `<td class="pages">${r[7] ? r[7] : 'N/A'}</td>`
       + `<td>${title}</td>`
       + `<td class="authors" title="${escapeAttr(r[3])}">${authorsHtml}</td>`
-      + `<td class="cites">${r[4].toLocaleString()}</td>`
+      + `<td class="cites">${r[9] ? 'N/A' : r[4].toLocaleString()}</td>`
       + `</tr>`
     );
   }
@@ -1148,7 +1157,7 @@ function escapeHtml(s) {
 function escapeAttr(s) { return escapeHtml(s); }
 
 function renderCitationStats() {
-  const cites = state.filtered.map(r => r[4]);
+  const cites = state.filtered.filter(r => !r[9]).map(r => r[4]);
   const setText = (id, v) => { document.getElementById(id).textContent = v; };
   if (cites.length === 0) {
     setText('stat-h', '-'); setText('stat-i10', '-');
@@ -1203,7 +1212,7 @@ function renderWordCloud() {
   const counts = new Array(WB_VOCAB.length).fill(0);
   let covered = 0;
   for (const r of state.filtered) {
-    const doi = r[5];
+    const doi = r[5] || r[8];
     const words = WB_PAPERS[doi];
     if (words) {
       covered++;

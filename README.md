@@ -1,7 +1,7 @@
 # RoboPaper Atlas
 
 **40여 년치 로봇공학 논문(ICRA · IROS · RA-L · T-RO · RSS · IJRR · Sci-Rob · SoRo · T-Mech · T-FR · RA-P · T-ASE · RAM · CoRL · iSpaRo · SSRR)을 한 곳에 모은 인터랙티브 아틀라스.**
-DBLP + Crossref + OpenAlex + Semantic Scholar로 94,000+ 편의 제목·저자·초록·인용수·키워드를 긁어와서
+DBLP + Crossref + OpenAlex + Semantic Scholar로 95,000+ 편의 제목·저자·초록·인용수·키워드를 긁어와서
 중복 제거하고, 바로 탐색·정렬·필터할 수 있는 웹 페이지와 엑셀로 정리합니다.
 
 🔗 **Live demo**: https://gisbi-kim.github.io/robopaper-atlas/
@@ -23,17 +23,17 @@ DBLP + Crossref + OpenAlex + Semantic Scholar로 94,000+ 편의 제목·저자·
 | RA-P | OpenAlex ISSN `2995-4304` | 2025 | 33 |
 | T-ASE | OpenAlex ISSN `1545-5955` | 2004 | 6,047 |
 | RAM | DBLP `journals/ram` | 1994 | 1,753 |
-| CoRL | DBLP `conf/corl` | 2017 | 1,257 |
+| CoRL | DBLP + PMLR + official 2026 programme | 2017 | 1,944 |
 | iSpaRo | Crossref IEEE proceedings | 2024 | 154 |
 | SSRR | Crossref IEEE proceedings | 2004 | 893 |
-| **합계** | | 1984 ~ 2026 | **94,699** |
+| **합계** | | 1984 ~ 2026 | **95,386** |
 
 DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 병합 (예: RA-L 논문이 ICRA에서 발표된 경우 1개 엔트리).
 
 ## 무엇을 할 수 있나
 
 ### 🔍 [Full Explorer](explorer.html)
-94,000+편 전체 탐색기. 한 페이지에서:
+95,000+편 전체 탐색기. 한 페이지에서:
 - **연도 범위** / **venue** / **최소 인용수** / **제목·저자 검색** 복합 필터
 - 모든 컬럼(venue, year, cites 등) **클릭 정렬**
 - 페이지당 50 ~ 10,000 선택 가능한 페이지네이션
@@ -196,3 +196,14 @@ ISSN 기반 저널은 `step1_extra_openalex.py`, Crossref 기반 proceedings는 
 - **Semantic Scholar** (https://www.semanticscholar.org/product/api) — 초록·인용수·분야, DOI-less CoRL title/venue 매칭
 - **OpenAlex** (https://openalex.org/) — DBLP 미색인 venue 수집과 S2 미색인 데이터 fallback
 - **Chart.js** — 시각화
+
+## CoRL 2026 programme addition — 2026-10-15
+
+Full Explorer now contains 95,386 papers, including all 687 CoRL 2026 programme papers (21 Oral, 72 Spotlight, 594 Poster only). Existing 94,699 explorer rows and their citation values are unchanged. The year explorer, Excel exports and coauthor network retain their earlier snapshots; the table above describes Full Explorer.
+
+- Source snapshot: `pipeline/publisher_raw/corl_programme_2026.json`, from https://www.corl.org/program.
+- Available author lists: 511; abstracts: 511; canonical paper-level institution lists: 480. Source details and sessions are linked through the dedicated CoRL explorer.
+- New citation counts remain unknown: displayed as N/A and omitted from citation summaries. No full citation refresh was performed.
+- `_programme.py` checks exact venue/year/URL/title against the committed snapshot so verified papers survive missing-author and DOI-less cleanup. No fake authors or DOIs were added.
+- `refresh_publisher_sources.py merge` restores the snapshot after raw-data rebuilding. `step2_openalex.py` retains `publisher_abstract`; `_make_word_book.py` indexes programme abstracts by detail URL. `step3_excel.py` uses the same narrow keep rule for future exports.
+- Validation: all 687 programme IDs and unique titles present; all existing eight-field explorer rows identical; 511 new abstracts indexed; JavaScript syntax and browser filters checked.

@@ -11,6 +11,7 @@ import json
 import os
 import re
 from datetime import date
+from _programme import is_programme
 
 INPUT = 'all_enriched.json'
 OUT_JSON = 'word_book.json'
@@ -104,6 +105,7 @@ def main():
     for p in papers:
         doi = (p.get('doi') or '').lower().strip()
         if doi.startswith('https://doi.org/'): doi = doi[len('https://doi.org/'):]
+        if not doi and is_programme(p): doi = p.get("explorer_url", "")
         if not doi: continue
         abs_text = p.get('abstract', '') or ''
         if not abs_text: continue
