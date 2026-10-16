@@ -1,0 +1,881 @@
+{
+  "snapshot": "2026-10-16",
+  "source": "https://www.ssrr-ieee.org/",
+  "provenance": "User-provided accepted-papers programme, 16 October 2026. Titles, author strings and session times preserved. Official homepage confirms venue and dates.",
+  "sessions": [
+    {
+      "id": 1,
+      "title": "Award Finalists",
+      "schedule": "Monday 2 November, 10:30",
+      "date": "2026-11-02"
+    },
+    {
+      "id": 2,
+      "title": "Multi-Robot Coordination and Task Allocation",
+      "schedule": "Monday 2 November, 13:00",
+      "date": "2026-11-02"
+    },
+    {
+      "id": 3,
+      "title": "Ground Platforms, Manipulation, and Medical Response",
+      "schedule": "Monday 2 November, 15:30",
+      "date": "2026-11-02"
+    },
+    {
+      "id": 4,
+      "title": "Localization, Mapping, and Resilient Communication",
+      "schedule": "Tuesday 3 November, 10:30",
+      "date": "2026-11-03"
+    },
+    {
+      "id": 5,
+      "title": "Remote Sensing and Perception for Disaster Assessment",
+      "schedule": "Tuesday 3 November, 15:30",
+      "date": "2026-11-03"
+    },
+    {
+      "id": 6,
+      "title": "Security, Counter-UAS, and Humanitarian Demining",
+      "schedule": "Wednesday 4 November, 10:30",
+      "date": "2026-11-04"
+    },
+    {
+      "id": 7,
+      "title": "Nuclear and CBRN Response",
+      "schedule": "Wednesday 4 November, 14:00",
+      "date": "2026-11-04"
+    }
+  ],
+  "topics": [
+    {
+      "name": "Multi-robot & coordination",
+      "pattern": "multi[-– ](?:robot|agent|uav)|swarm|flock|heterogeneous|task allocation|ugv[-–]uav|uav[-–]ugv"
+    },
+    {
+      "name": "Aerial robotics",
+      "pattern": "\\buav|\\buas\\b|drone|aerial"
+    },
+    {
+      "name": "Language & foundation models",
+      "pattern": "language|\\bllm|vlm|open-vocabulary|promptable"
+    },
+    {
+      "name": "Mapping & localization",
+      "pattern": "lidar|li[o ]dar|slam|mapping|odometry|registration|positioning|3d scanning"
+    },
+    {
+      "name": "Planning & exploration",
+      "pattern": "planning|exploration|navigation|next-best-view|patrolling|frontier"
+    },
+    {
+      "name": "Medical response",
+      "pattern": "medical|patient|casualty|airway|tourniquet|hemorrhage"
+    },
+    {
+      "name": "Security & demining",
+      "pattern": "landmine|mine detection|security|defense|threat|interceptor"
+    },
+    {
+      "name": "Nuclear & CBRN",
+      "pattern": "nuclear|radiation|cbrn|fukushima|contamination"
+    },
+    {
+      "name": "Field systems & hardware",
+      "pattern": "prototype|prototyping|design|platform|sensor|end-effector|catamaran|crawler|jumping|flipper|deployment|field demonstration"
+    },
+    {
+      "name": "Communication & networks",
+      "pattern": "network|communication|6g"
+    }
+  ],
+  "papers": [
+    {
+      "id": 7,
+      "title": "One Operator, Many Robots: Natural-Language Command of UAV-UGV Teams for Search, Victim Detection, and Rescue",
+      "authors": [
+        "Alejandro Jarabo-Peñas",
+        "Juan Bravo-Arrabal",
+        "Javier Serón",
+        "Dahui Lin-Yang",
+        "Francisco Pastor",
+        "Robert Ladig",
+        "Jesus Fernandez-Lozano",
+        "Alfonso García-Cerezo",
+        "Anders Lyhne Christensen"
+      ],
+      "session": 1,
+      "awardFinalist": true,
+      "topics": [
+        "Multi-robot & coordination",
+        "Aerial robotics",
+        "Language & foundation models"
+      ]
+    },
+    {
+      "id": 14,
+      "title": "I See You: Validated Initial Multi-Robot LiDAR Registration via Mutual Observation",
+      "authors": [
+        "Jonathan Lichtenfeld",
+        "Oskar von Stryk"
+      ],
+      "session": 1,
+      "awardFinalist": true,
+      "topics": [
+        "Multi-robot & coordination",
+        "Mapping & localization"
+      ]
+    },
+    {
+      "id": 35,
+      "title": "Prototyping and Functional Evaluation of a Tendon-Driven End-Effector for Robot-Assisted Combat Casualty Care",
+      "authors": [
+        "Aldrin Padua",
+        "Julianna Fischetti",
+        "Qianwen Zhao",
+        "Gerald Hodgkinson",
+        "Russell Biser",
+        "Chad Spurlock",
+        "Rajarshi Roy",
+        "Kevin Lister",
+        "Long Wang"
+      ],
+      "session": 1,
+      "awardFinalist": true,
+      "topics": [
+        "Medical response",
+        "Field systems & hardware"
+      ]
+    },
+    {
+      "id": 40,
+      "title": "Decomposition-Based Multi-Objective Path Planning for Disaster Response",
+      "authors": [
+        "Ananya Rao",
+        "Abigail Breitfeld",
+        "Howie Choset",
+        "David Wettergreen"
+      ],
+      "session": 1,
+      "awardFinalist": true,
+      "topics": [
+        "Planning & exploration"
+      ]
+    },
+    {
+      "id": 58,
+      "title": "Jumper: A Centimeter-Scale Rolling and Jumping Robot for Search and Rescue",
+      "authors": [
+        "Kiran Marques",
+        "Shashwat Singh",
+        "Ben D'Ambrosia",
+        "Zeynep Temel",
+        "Melisa Orta Martinez"
+      ],
+      "session": 1,
+      "awardFinalist": true,
+      "topics": [
+        "Field systems & hardware"
+      ]
+    },
+    {
+      "id": 78,
+      "title": "Tension Tells the Tail: Cable-Obstacle Interaction Sensing for Tethered Mobile Robot Navigation",
+      "authors": [
+        "Ryuki Shimada",
+        "Koki Suzuki",
+        "Genya Ishigami"
+      ],
+      "session": 1,
+      "awardFinalist": true,
+      "topics": [
+        "Planning & exploration"
+      ]
+    },
+    {
+      "id": 34,
+      "title": "Reinforcement Learning Based Heterogeneous Task Allocation Under Spatio-Temporal Environmental Uncertainty for Multi-Robot Teams",
+      "authors": [
+        "Xi Lin",
+        "Yaxuan Li",
+        "Paul Szenher",
+        "Brendan Englot"
+      ],
+      "session": 2,
+      "awardFinalist": false,
+      "topics": [
+        "Multi-robot & coordination"
+      ]
+    },
+    {
+      "id": 38,
+      "title": "Measure-Based Task Allocation for Information Gathering in Disaster Response using Heterogeneous Multi-Agent Teams",
+      "authors": [
+        "Ananya Rao",
+        "Howie Choset",
+        "David Wettergreen"
+      ],
+      "session": 2,
+      "awardFinalist": false,
+      "topics": [
+        "Multi-robot & coordination"
+      ]
+    },
+    {
+      "id": 55,
+      "title": "Decentralized Hybrid Approach for Multi-UAV Search and Rescue",
+      "authors": [
+        "Thomas Lafranconi",
+        "Michele Rota",
+        "Alessandro Nazzari",
+        "Davide Invernizzi"
+      ],
+      "session": 2,
+      "awardFinalist": false,
+      "topics": [
+        "Multi-robot & coordination",
+        "Aerial robotics"
+      ]
+    },
+    {
+      "id": 63,
+      "title": "LLM-Flock: LLM-Driven Decentralized Multi-Robot Flocking via Influence-Based Consensus with Collision Avoidance",
+      "authors": [
+        "Peihan Li",
+        "Lifeng Zhou"
+      ],
+      "session": 2,
+      "awardFinalist": false,
+      "topics": [
+        "Multi-robot & coordination",
+        "Language & foundation models"
+      ]
+    },
+    {
+      "id": 80,
+      "title": "Frontier-Following: A Reactive Terrain-Conformal Path Planning Framework for Multi-Agent Search over Terrain with Varying Elevation",
+      "authors": [
+        "Johnathan Lok",
+        "Spring Berman"
+      ],
+      "session": 2,
+      "awardFinalist": false,
+      "topics": [
+        "Multi-robot & coordination",
+        "Planning & exploration"
+      ]
+    },
+    {
+      "id": 13,
+      "title": "SwarmNxt: Open-Source Software-Hardware Platform for Fast and Agile Aerial Swarms",
+      "authors": [
+        "Charbel Toumieh",
+        "Niel Mistry",
+        "Benjamin Jarvis",
+        "Simon Luis Jeger",
+        "Peize LIU",
+        "Shaojie Shen",
+        "Dario Floreano"
+      ],
+      "session": 2,
+      "awardFinalist": false,
+      "topics": [
+        "Multi-robot & coordination",
+        "Aerial robotics",
+        "Field systems & hardware"
+      ]
+    },
+    {
+      "id": 70,
+      "title": "AoII-Based Persistent Monitoring for Unmanned Surface Vehicles in Spatiotemporal Fields",
+      "authors": [
+        "Razan Andigani",
+        "Yaxuan Li",
+        "Ivana Collado-Gonzalez",
+        "David Storch",
+        "Brendan Englot"
+      ],
+      "session": 2,
+      "awardFinalist": false,
+      "topics": []
+    },
+    {
+      "id": 30,
+      "title": "A Heterogeneous UGV–UAV Collaboration Framework for LiDAR-Based Search-And-Rescue Navigation in Unknown Environments",
+      "authors": [
+        "Bjarke Borg",
+        "Jacob Leif Studagaard Slot",
+        "Jonas Mølgaard Strøm Hansen",
+        "Simon Tang",
+        "Tobias Lund Rauh",
+        "Vithuran Vasantharajan",
+        "Shahab Heshmati-alamdari"
+      ],
+      "session": 2,
+      "awardFinalist": false,
+      "topics": [
+        "Multi-robot & coordination",
+        "Aerial robotics",
+        "Mapping & localization",
+        "Planning & exploration"
+      ]
+    },
+    {
+      "id": 88,
+      "title": "Onix2: Design of a Portable and Robust Crawler Rescue Robot Based on Long-Term Competition and Field Experience",
+      "authors": [
+        "Takaaki Nara",
+        "Ryo Egawa",
+        "Shotaro Kojima",
+        "Kenichi Takahashi",
+        "Yoshito Okada",
+        "Satoshi Tadokoro",
+        "Kazunori Ohno"
+      ],
+      "session": 3,
+      "awardFinalist": false,
+      "topics": [
+        "Field systems & hardware"
+      ]
+    },
+    {
+      "id": 50,
+      "title": "Motion-Based Design Optimization of a Centrally Rotating Sub-Crawler Flipper Arm for Rescue Tracked Robots",
+      "authors": [
+        "Danilo Mamocay",
+        "Jeanette Pao",
+        "Livey Czar Aligno",
+        "Sheena Alvarez",
+        "Carl John Salaan"
+      ],
+      "session": 3,
+      "awardFinalist": false,
+      "topics": [
+        "Field systems & hardware"
+      ]
+    },
+    {
+      "id": 86,
+      "title": "SPARC: RoboCup Standard Platform for Autonomous Rescue Competition with Initial Datasets, Software, and Simulation Environments",
+      "authors": [
+        "Yuezhong Wang",
+        "Bichi Zhang",
+        "Zhongli Yin",
+        "Pingcong Li",
+        "Raimund Edlinger",
+        "Sören Schwertfeger"
+      ],
+      "session": 3,
+      "awardFinalist": false,
+      "topics": [
+        "Field systems & hardware"
+      ]
+    },
+    {
+      "id": 25,
+      "title": "Language-Guided Grasping under Partial Observation for Mobile Manipulation in Field Inspection and Maintenance",
+      "authors": [
+        "Dilermando Almeida",
+        "Juliano Negri",
+        "Guilherme Lazzarini",
+        "Thiago Henrique Segreto Silva",
+        "Ranulfo Bezerra",
+        "Gustavo Jose Giardini Lahr",
+        "Ricardo de Godoy",
+        "Marcelo Becker"
+      ],
+      "session": 3,
+      "awardFinalist": false,
+      "topics": [
+        "Language & foundation models"
+      ]
+    },
+    {
+      "id": 37,
+      "title": "Off-Road and Human-Led Convoying for UGVs",
+      "authors": [
+        "Dante Benjamin Cometto",
+        "James Tukpah",
+        "Taskin Padir"
+      ],
+      "session": 3,
+      "awardFinalist": false,
+      "topics": []
+    },
+    {
+      "id": 67,
+      "title": "Layered Risk Mapping for Autonomous Patient Transport in Expeditionary Medical Facilities",
+      "authors": [
+        "Lorena Maria Genua",
+        "Sarvesh Prajapati",
+        "Damla Leblebicioglu",
+        "Taskin Padir"
+      ],
+      "session": 3,
+      "awardFinalist": false,
+      "topics": [
+        "Mapping & localization",
+        "Medical response"
+      ]
+    },
+    {
+      "id": 22,
+      "title": "A Guideline-Based Modular Robotic Airway-Management Workflow for Emergency and Military Rescue Scenarios",
+      "authors": [
+        "Maximilian Miller",
+        "Johannes Huegel",
+        "Julius Ambros",
+        "Christoph August Wilhelm Parhofer",
+        "Tim C. Lueth"
+      ],
+      "session": 3,
+      "awardFinalist": false,
+      "topics": [
+        "Medical response"
+      ]
+    },
+    {
+      "id": 73,
+      "title": "The Hybrid Emergency Tourniquet: Fail-Safe Mechatronic Hemorrhage Control for Human and Robotic First-Responders",
+      "authors": [
+        "Julius Ambros",
+        "Florian Sax",
+        "Maximilian Miller",
+        "Christoph August Wilhelm Parhofer",
+        "Willi Schmidbauer",
+        "Tim C. Lueth"
+      ],
+      "session": 3,
+      "awardFinalist": false,
+      "topics": [
+        "Medical response"
+      ]
+    },
+    {
+      "id": 9,
+      "title": "HDMAPPING-LIO: Discrete-Time, Tightly-Coupled, Fixed-Lag Smoothing Lidar-Inertial Odometry with Hierarchical Gaussian Voxel Map for agile, unpredictable maneuvers and mobile mapping of tiny spaces",
+      "authors": [
+        "Janusz Będkowski",
+        "Michał Własiuk"
+      ],
+      "session": 4,
+      "awardFinalist": false,
+      "topics": [
+        "Mapping & localization"
+      ]
+    },
+    {
+      "id": 17,
+      "title": "SGM-SLAM: Scene Graph Matching for Data-Efficient Distributed SLAM",
+      "authors": [
+        "Yewei Huang",
+        "Tixiao Shan",
+        "Abhinav Rajvanshi",
+        "Niluthpol Chowdhury Mithun",
+        "Yaxuan Li",
+        "Brendan Englot",
+        "Han-Pang Chiu"
+      ],
+      "session": 4,
+      "awardFinalist": false,
+      "topics": [
+        "Mapping & localization"
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Comparison and Fusion of Short-Range High-Resolution Positioning Methods for Tethered UAV-UGV Systems",
+      "authors": [
+        "Samuel Fearn",
+        "Gjosse Zijlstra",
+        "Thomas Martin Bennett",
+        "Sofia Leadbetter",
+        "David Megson-Smith"
+      ],
+      "session": 4,
+      "awardFinalist": false,
+      "topics": [
+        "Multi-robot & coordination",
+        "Aerial robotics",
+        "Mapping & localization"
+      ]
+    },
+    {
+      "id": 68,
+      "title": "OA-NBV: Occlusion-Aware Next-Best-View Planning for Human-Centered Active Perception on Mobile Robots",
+      "authors": [
+        "Boxun Hu",
+        "Chang Chang",
+        "Jiawei Ge",
+        "Man Namgung",
+        "Xiaomin Lin",
+        "Axel Krieger",
+        "Tinoosh Mohsenin"
+      ],
+      "session": 4,
+      "awardFinalist": false,
+      "topics": [
+        "Planning & exploration"
+      ]
+    },
+    {
+      "id": 16,
+      "title": "The Resilient 6G Networking Challenge: Collaborative Design of a Hyper-Resilient Multi-Network Architecture for Rescue Robotics",
+      "authors": [
+        "Tim Gebauer",
+        "Manuel Patchou",
+        "Simon Schippers",
+        "Valentin Thomas Haider",
+        "Laura Becker",
+        "Diederich Philip",
+        "Kröger Nicolai",
+        "Johannes Hofer",
+        "Peter Kappelt",
+        "Nico vom Hofe",
+        "Niklas Alexander Wagner",
+        "Kevin-Ismet Sabanovic",
+        "Steffen Fricke",
+        "Christian Arendt",
+        "Pascal Jörke",
+        "Stefan Böcker",
+        "Frank Fitzek",
+        "Wolfgang Kellerer",
+        "Christian Wietfeld"
+      ],
+      "session": 4,
+      "awardFinalist": false,
+      "topics": [
+        "Field systems & hardware",
+        "Communication & networks"
+      ]
+    },
+    {
+      "id": 85,
+      "title": "HANSEL: Automated Mesh Network Planning for Search and Rescue Multi-Robot Missions",
+      "authors": [
+        "Manuel Patchou",
+        "Maximilian Rozwora",
+        "Stefan Böcker",
+        "Christian Wietfeld"
+      ],
+      "session": 4,
+      "awardFinalist": false,
+      "topics": [
+        "Multi-robot & coordination",
+        "Planning & exploration",
+        "Communication & networks"
+      ]
+    },
+    {
+      "id": 72,
+      "title": "Key Findings for Small UAS for Post-Disaster Damage Assessment from the CURSE’26 Exercise",
+      "authors": [
+        "Thomas Manzini",
+        "Robin Murphy",
+        "Priyankari Perali",
+        "Stephen Johnson",
+        "David Merrick"
+      ],
+      "session": 5,
+      "awardFinalist": false,
+      "topics": [
+        "Aerial robotics"
+      ]
+    },
+    {
+      "id": 61,
+      "title": "Large Multiple UAS Wildfire Response Aircraft Deconfliction: Remote Pilot Performance",
+      "authors": [
+        "Vivek Mallampati",
+        "Atharv Marathe",
+        "Alejandra Hilbert",
+        "Andrew Dassonville",
+        "Christopher A. Sanchez",
+        "Julie Adams"
+      ],
+      "session": 5,
+      "awardFinalist": false,
+      "topics": [
+        "Aerial robotics"
+      ]
+    },
+    {
+      "id": 41,
+      "title": "Promptable Open-Vocabulary UAV Event Perception for Search and Rescue",
+      "authors": [
+        "Hsuan-Kai Liou",
+        "Xin Chun Zhang",
+        "YI-TING LAI",
+        "Ching-I Huang",
+        "CHIHHUI YEH",
+        "YICHENG LIN"
+      ],
+      "session": 5,
+      "awardFinalist": false,
+      "topics": [
+        "Aerial robotics",
+        "Language & foundation models"
+      ]
+    },
+    {
+      "id": 57,
+      "title": "RescueVLM: Model-Agnostic Vision-Language Framework for Rescue Drone Imagery",
+      "authors": [
+        "Niklas Voigt",
+        "Tim Sibum",
+        "Hartmut Surmann",
+        "Julien Meine",
+        "Niklas Digakis"
+      ],
+      "session": 5,
+      "awardFinalist": false,
+      "topics": [
+        "Aerial robotics",
+        "Language & foundation models"
+      ]
+    },
+    {
+      "id": 87,
+      "title": "Counting What Matters: Reducing Redundant Object Detections in Overlapping UAV Mapping Imagery for Disaster Response",
+      "authors": [
+        "Max Schulte",
+        "Hartmut Surmann"
+      ],
+      "session": 5,
+      "awardFinalist": false,
+      "topics": [
+        "Aerial robotics",
+        "Mapping & localization"
+      ]
+    },
+    {
+      "id": 66,
+      "title": "TriSAR-3D and PaintFusion: A Novel Trimodal LiDAR–RGB–Thermal Dataset and Method for 3D Person Detection in Search and Rescue",
+      "authors": [
+        "Markus Kramer",
+        "Jan Wachenfeld",
+        "Oskar von Stryk"
+      ],
+      "session": 5,
+      "awardFinalist": false,
+      "topics": [
+        "Mapping & localization"
+      ]
+    },
+    {
+      "id": 52,
+      "title": "Drone-Deployable Seismic Sensors with Dual-Stage Impact-and-Harpoon Anchoring for Volcanic Disaster Monitoring",
+      "authors": [
+        "Enoch Bryce Pandan",
+        "Jeanette Pao",
+        "Argel Bandala",
+        "Jhone Mychale Mariquit",
+        "Carl John Salaan"
+      ],
+      "session": 5,
+      "awardFinalist": false,
+      "topics": [
+        "Aerial robotics",
+        "Field systems & hardware"
+      ]
+    },
+    {
+      "id": 56,
+      "title": "An Anti-Snag, Shallow-Draft Catamaran USV for Disaster Reconnaissance in Debris-Choked Shallow Waters",
+      "authors": [
+        "Jessrel Salise",
+        "Jeanette Pao",
+        "Livey Czar Aligno",
+        "Sheena Alvarez",
+        "Japheth Daniel Sogo-an",
+        "Carl John Salaan"
+      ],
+      "session": 5,
+      "awardFinalist": false,
+      "topics": [
+        "Field systems & hardware"
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Project SCOUT: Interceptor Drone for Perimeter Defense",
+      "authors": [
+        "Md Azmain Yousuf",
+        "Siwei Cai",
+        "Knut Peterson",
+        "Lifeng Zhou",
+        "David Han"
+      ],
+      "session": 6,
+      "awardFinalist": false,
+      "topics": [
+        "Aerial robotics",
+        "Security & demining"
+      ]
+    },
+    {
+      "id": 51,
+      "title": "Security Drone: An End-to-End Framework for Adaptive UAV Patrolling",
+      "authors": [
+        "Camille Fleur Buschman",
+        "Benjamin R. van Manen",
+        "Fatima Yousif Rustamani",
+        "chandan kumar Rajendra",
+        "Abeje Yenehun Mersha"
+      ],
+      "session": 6,
+      "awardFinalist": false,
+      "topics": [
+        "Aerial robotics",
+        "Planning & exploration",
+        "Security & demining"
+      ]
+    },
+    {
+      "id": 77,
+      "title": "From Detection to Threat Assessment: Context-Aware Drone Intent Classification for Critical-Infrastructure Security",
+      "authors": [
+        "João Rodrigues",
+        "Maxim Vochten",
+        "Emile Le Flecher",
+        "Geert De Cubber",
+        "Daniela Doroftei"
+      ],
+      "session": 6,
+      "awardFinalist": false,
+      "topics": [
+        "Aerial robotics",
+        "Security & demining"
+      ]
+    },
+    {
+      "id": 18,
+      "title": "Benchmarking Consensus Robustness in Multi-UAV Mine Detection under Controlled Visual Perception Degradation",
+      "authors": [
+        "Aman Tifli",
+        "Gianluca Manca",
+        "Marvin Zager",
+        "Felix Gehlhoff",
+        "Galyna Tabunshchyk",
+        "Alexander Fay"
+      ],
+      "session": 6,
+      "awardFinalist": false,
+      "topics": [
+        "Multi-robot & coordination",
+        "Aerial robotics",
+        "Security & demining"
+      ]
+    },
+    {
+      "id": 26,
+      "title": "Towards replacing real images with synthetic data for surface landmine detection",
+      "authors": [
+        "Mario Malizia",
+        "Nikolaos Tsiogkas",
+        "Eric Demeester",
+        "Rob Haelterman",
+        "Ken Hasselmann"
+      ],
+      "session": 6,
+      "awardFinalist": false,
+      "topics": [
+        "Security & demining"
+      ]
+    },
+    {
+      "id": 53,
+      "title": "LiDAR-Based Semantic Next-Best-View Planning for Landmine Reconstruction",
+      "authors": [
+        "Brent Verbruggen",
+        "Alessandra Miuccio",
+        "Tristan Michielsen",
+        "Emile Le Flecher",
+        "Peter Slaets",
+        "Nikolaos Tsiogkas",
+        "Renaud Detry",
+        "Rob Haelterman"
+      ],
+      "session": 6,
+      "awardFinalist": false,
+      "topics": [
+        "Mapping & localization",
+        "Planning & exploration",
+        "Security & demining"
+      ]
+    },
+    {
+      "id": 15,
+      "title": "Development and Field Deployment of a 3D Scanning System at Fukushima Daiichi Nuclear Power Station",
+      "authors": [
+        "Masaki Nishioka",
+        "Tomoki Sakaue",
+        "Daisaku Uchijima",
+        "Tomoya Kaneda",
+        "Yuya Yoshimura",
+        "Takahiro Nagai",
+        "Kota Sasaki",
+        "Hiroaki Yamakawa",
+        "Yuji Matsui"
+      ],
+      "session": 7,
+      "awardFinalist": false,
+      "topics": [
+        "Mapping & localization",
+        "Nuclear & CBRN",
+        "Field systems & hardware"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Evaluation of a Radiation-Tolerant LiDAR Prototype for Fuel Debris Retrieval in High-Radiation Environments",
+      "authors": [
+        "Tomoki Sakaue",
+        "Yusuke Tsuburaya",
+        "Hiroshi Takano",
+        "Tatsuya Kawamura",
+        "Shuhei Fujita"
+      ],
+      "session": 7,
+      "awardFinalist": false,
+      "topics": [
+        "Mapping & localization",
+        "Nuclear & CBRN",
+        "Field systems & hardware"
+      ]
+    },
+    {
+      "id": 79,
+      "title": "Seek, Don't Avoid: Radiation-Guided Exploration for Early Contamination Discovery",
+      "authors": [
+        "Miryeong Park",
+        "Taehyun Jung",
+        "Sanghyun Kim",
+        "Younggun Cho"
+      ],
+      "session": 7,
+      "awardFinalist": false,
+      "topics": [
+        "Planning & exploration",
+        "Nuclear & CBRN"
+      ]
+    },
+    {
+      "id": 33,
+      "title": "Field Demonstration of a Tracked Hydraulic Mobile Manipulator for CBRN Sampling and Decontamination",
+      "authors": [
+        "Jan Jakovljevic",
+        "Tin Novosel",
+        "Nino Dragicevic",
+        "Zvonko Orehovec",
+        "Ante Bakic",
+        "Matko Orsag"
+      ],
+      "session": 7,
+      "awardFinalist": false,
+      "topics": [
+        "Nuclear & CBRN",
+        "Field systems & hardware"
+      ]
+    }
+  ]
+}

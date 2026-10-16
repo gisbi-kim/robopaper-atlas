@@ -25,8 +25,8 @@ DBLP + Crossref + OpenAlex + Semantic Scholar로 95,000+ 편의 제목·저자·
 | RAM | DBLP `journals/ram` | 1994 | 1,759 |
 | CoRL | DBLP + PMLR + official 2026 programme | 2017 | 1,944 |
 | iSpaRo | Crossref IEEE proceedings | 2024 | 154 |
-| SSRR | Crossref IEEE proceedings | 2004 | 893 |
-| **합계** | | 1984 ~ 2026 | **97,777** |
+| SSRR | Crossref + supplied 2026 programme | 2004 | 939 |
+| **합계** | | 1984 ~ 2026 | **97,823** |
 
 DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 병합 (예: RA-L 논문이 ICRA에서 발표된 경우 1개 엔트리).
 
@@ -248,7 +248,7 @@ added 2026-09-30). ICRA was checked only and was not imported in this journal up
 
 ## ICRA 2026 proceedings refresh — 2026-10-16
 
-Full Explorer now contains **97,777 papers**, including **all 1,875 ICRA 2026
+At this snapshot, Full Explorer contained **97,777 papers**, including **all 1,875 ICRA 2026
 proceedings papers** registered in Crossref as of 2026-10-16. The exact container
 title filter returned 1,882 records; all were retrieved by cursor pagination and
 validated against the `10.1109/icra57385.2026.` DOI prefix. Seven non-paper
@@ -264,3 +264,25 @@ at ICRA are not additional proceedings publications and retain their journal ent
 - Coverage verification: `pipeline/icra_refresh_2026-10-16.json`.
 - Full Explorer and its word book are updated. Excel, year explorer and coauthor
   network retain their previous snapshots.
+
+## SSRR 2026 programme addition — 2026-10-16
+
+Full Explorer now contains **97,823 papers**, including all **46 SSRR 2026
+accepted programme papers** from the user-specified [SSRR explorer](https://gisbi-kim.github.io/conference-explorers/ssrr2026/#finder).
+SSRR totals 939 papers. All 97,777 existing explorer rows remain identical.
+
+The source is the owner-supplied accepted-papers programme, not independently
+verified IEEE proceedings. All titles, full author lists, seven sessions and six
+award-finalist labels are preserved in the snapshot. Session times describe session
+starts, not individual talks. No DOI, abstract, affiliation or citation was supplied.
+Citations display N/A and do not enter citation statistics. Titles link to the
+source explorer filtered by exact title; these are programme links, not full text.
+
+- Original source: `pipeline/ssrr2026_source.json`.
+- Normalized snapshot: `pipeline/publisher_raw/ssrr_programme_2026.json`.
+- Reproducible import: `pipeline/import_ssrr_programme_2026.py`.
+- Validation: `pipeline/ssrr_refresh_2026-10-16.json`; all 46 records present,
+  complete authors preserved, existing rows unchanged, and DOI-less exceptions
+  require exact snapshot venue/year/title/URL matches.
+- Existing `refresh_publisher_sources.py merge` also restores this snapshot.
+- Excel, year explorer and coauthor network retain their earlier snapshots.

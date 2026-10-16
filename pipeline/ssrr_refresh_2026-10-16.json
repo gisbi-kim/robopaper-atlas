@@ -1,0 +1,11 @@
+{
+  "before": 97777,
+  "after": 97823,
+  "added_ssrr_2026": 46,
+  "ssrr_total": 939,
+  "existing_rows_unchanged": 97777,
+  "citation_status": "unknown",
+  "abstracts_available": 0,
+  "source": "https://gisbi-kim.github.io/conference-explorers/ssrr2026/data.json",
+  "provenance": "User-provided accepted-papers programme, 16 October 2026. Titles, author strings and session times preserved. Official homepage confirms venue and dates."
+}
