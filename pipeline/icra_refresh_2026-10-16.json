@@ -1,0 +1,19 @@
+{
+  "before": 95902,
+  "after": 97777,
+  "icra_2026_papers": 1875,
+  "added": 1875,
+  "icra_total": 32487,
+  "source_records": 1882,
+  "excluded_front_matter": [
+    "ICRA 2026 Author Index",
+    "ICRA 2026 Breaker Page",
+    "ICRA 2026 Content Announcement Page",
+    "ICRA 2026 Cover Page",
+    "ICRA 2026 Contributor Page",
+    "ICRA 2026 Commentary",
+    "ICRA 2026 Commentary"
+  ],
+  "new_unknown_citations": 0,
+  "existing_rows_unchanged": 95902
+}

@@ -10,7 +10,7 @@ DBLP + Crossref + OpenAlex + Semantic Scholar로 95,000+ 편의 제목·저자·
 
 | Venue | Source | 시작 연도 | 편수 (dedup 후) |
 |---|---|---:|---:|
-| ICRA | DBLP `conf/icra` | 1984 | 30,612 |
+| ICRA | DBLP + Crossref proceedings | 1984 | 32,487 |
 | IROS | DBLP `conf/iros` | 1988 | 26,594 |
 | RA-L | DBLP `journals/ral` | 2016 | 11,177 |
 | T-Mech | OpenAlex ISSN `1083-4435` | 1996 | 6,460 |
@@ -26,7 +26,7 @@ DBLP + Crossref + OpenAlex + Semantic Scholar로 95,000+ 편의 제목·저자·
 | CoRL | DBLP + PMLR + official 2026 programme | 2017 | 1,944 |
 | iSpaRo | Crossref IEEE proceedings | 2024 | 154 |
 | SSRR | Crossref IEEE proceedings | 2004 | 893 |
-| **합계** | | 1984 ~ 2026 | **95,902** |
+| **합계** | | 1984 ~ 2026 | **97,777** |
 
 DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 병합 (예: RA-L 논문이 ICRA에서 발표된 경우 1개 엔트리).
 
@@ -210,7 +210,7 @@ At this snapshot, Full Explorer contained 95,386 papers, including all 687 CoRL 
 
 ## Journal refresh — 2026-10-16
 
-Full Explorer contains **95,902 papers** after adding **516 journal papers**
+At this snapshot, Full Explorer contained **95,902 papers** after adding **516 journal papers**
 (443 from 2026 and 73 from 2025) across all ten journals. Crossref publisher
 deposits were retrieved by exact ISSN for publication dates from 2025-01-01
 through 2026-10-16. Cursor pagination was checked against each source total.
@@ -245,3 +245,22 @@ snapshots; this update refreshes Full Explorer and its word book.
 ICRA 2026 papers are available on IEEE Xplore (example:
 [R2BC](https://ieeexplore.ieee.org/abstract/document/11697586),
 added 2026-09-30). ICRA was checked only and was not imported in this journal update.
+
+## ICRA 2026 proceedings refresh — 2026-10-16
+
+Full Explorer now contains **97,777 papers**, including **all 1,875 ICRA 2026
+proceedings papers** registered in Crossref as of 2026-10-16. The exact container
+title filter returned 1,882 records; all were retrieved by cursor pagination and
+validated against the `10.1109/icra57385.2026.` DOI prefix. Seven non-paper
+cover/index/contributor/commentary entries were excluded. Journal presentations
+at ICRA are not additional proceedings publications and retain their journal entries.
+
+- ICRA total: 32,487. Existing 95,902 explorer rows are identical, including the
+  journal additions from the preceding refresh and all their citation values.
+- All 1,875 new papers have Semantic Scholar citation counts; 1,874 have abstracts.
+- One missing Crossref author list was filled using an exact DOI match in Semantic Scholar.
+- Collector: `pipeline/refresh_icra_2026.py`.
+- Source snapshot: `pipeline/publisher_raw/icra_2026_crossref_2026-10-16.json`.
+- Coverage verification: `pipeline/icra_refresh_2026-10-16.json`.
+- Full Explorer and its word book are updated. Excel, year explorer and coauthor
+  network retain their previous snapshots.

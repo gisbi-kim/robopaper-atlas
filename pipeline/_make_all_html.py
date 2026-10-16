@@ -151,7 +151,7 @@ slim = pd.concat([pool, keep], ignore_index=True).drop(columns=['_tn'])
 print(f"제목+연도 dedup (within-venue): {before} → {len(slim)} ({before - len(slim)}건 병합)")
 
 _JOURNALS = {'RA-L', 'T-RO', 'IJRR', 'RAM', 'Sci-Rob', 'SoRo', 'T-Mech', 'T-FR', 'RA-P', 'T-ASE'}
-arr = [[r['venue'], r['year'], r['title'], r['authors'], r['cited_by_count'], r['doi'], r['venues_all'], int(r['pages_n']), BY_URL.get(r['ee'], {}).get('explorer_url', ''), bool((r['ee'] in BY_URL or r['venue'] in _JOURNALS) and r['citation_unknown'])]
+arr = [[r['venue'], r['year'], r['title'], r['authors'], r['cited_by_count'], r['doi'], r['venues_all'], int(r['pages_n']), BY_URL.get(r['ee'], {}).get('explorer_url', ''), bool((r['ee'] in BY_URL or r['venue'] in _JOURNALS or (r['venue'] == 'ICRA' and r['year'] == 2026)) and r['citation_unknown'])]
        for r in slim.to_dict('records')]
 
 total = len(arr)
@@ -330,6 +330,7 @@ __VENUE_TEXT_CSS__  .venue-also { color: #888; font-weight: 400; font-size: 10px
   </span>
 </div>
 
+<div style="margin:16px 0;padding:14px 18px;border-left:4px solid #1f77b4;background:#edf5fc;font-size:13px;line-height:1.7"><b>New · ICRA 2026: 1,875 proceedings papers</b> · <a href="?v=icra&amp;yf=2026&amp;yt=2026">Filter ICRA 2026</a><br><span style="color:#666">Complete Crossref publisher snapshot: 2026-10-16. 1,882 source records checked; 7 cover/index/commentary entries excluded. Citation counts available for all 1,875 papers; abstracts for 1,874. Journal papers presented at ICRA retain their journal entries. Existing paper records and citations are unchanged.</span></div>
 <div style="margin:16px 0;padding:14px 18px;border-left:4px solid #880e4f;background:#fcf1f7;font-size:13px;line-height:1.7"><b>New · CoRL 2026: 687 papers</b> — 21 Oral · 72 Spotlight · 594 Poster only. <a href="?v=corl&yf=2026&yt=2026">Filter CoRL 2026</a> · <a href="https://gisbi-kim.github.io/conference-explorers/corl2026/">Sessions, abstracts, institutions & research trends ↗</a><br><span style="color:#666">Official programme snapshot: 2026-10-15. Author lists available for 511 papers; missing names remain blank. New-paper citations are not collected (N/A) and are excluded from citation statistics. Earlier citation data is unchanged. Excel / year explorer / network downloads retain their own earlier snapshots.</span></div>
 <!-- Row 1: aggregate stats (no venue colour bar) -->
 <div class="summary" style="margin-bottom: 8px;">
