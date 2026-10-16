@@ -12,21 +12,21 @@ DBLP + Crossref + OpenAlex + Semantic Scholar로 95,000+ 편의 제목·저자·
 |---|---|---:|---:|
 | ICRA | DBLP `conf/icra` | 1984 | 30,612 |
 | IROS | DBLP `conf/iros` | 1988 | 26,594 |
-| RA-L | DBLP `journals/ral` | 2016 | 11,104 |
-| T-Mech | OpenAlex ISSN `1083-4435` | 1996 | 6,336 |
-| T-RO | DBLP `journals/trob` | 2004 | 3,558 |
-| IJRR | DBLP `journals/ijrr` | 1982 | 2,794 |
+| RA-L | DBLP `journals/ral` | 2016 | 11,177 |
+| T-Mech | OpenAlex ISSN `1083-4435` | 1996 | 6,460 |
+| T-RO | DBLP `journals/trob` | 2004 | 3,591 |
+| IJRR | DBLP `journals/ijrr` | 1982 | 2,808 |
 | RSS | DBLP `conf/rss` | 2005 | 1,682 |
-| Sci-Rob | DBLP `journals/scirobotics` | 2016 | 936 |
-| SoRo | OpenAlex ISSN `2169-5172` | 2014 | 838 |
-| T-FR | OpenAlex ISSN `2997-1101` | 2024 | 108 |
-| RA-P | OpenAlex ISSN `2995-4304` | 2025 | 33 |
-| T-ASE | OpenAlex ISSN `1545-5955` | 2004 | 6,047 |
-| RAM | DBLP `journals/ram` | 1994 | 1,753 |
+| Sci-Rob | DBLP `journals/scirobotics` | 2016 | 949 |
+| SoRo | OpenAlex ISSN `2169-5172` | 2014 | 844 |
+| T-FR | OpenAlex ISSN `2997-1101` | 2024 | 122 |
+| RA-P | OpenAlex ISSN `2995-4304` | 2025 | 40 |
+| T-ASE | OpenAlex ISSN `1545-5955` | 2004 | 6,273 |
+| RAM | DBLP `journals/ram` | 1994 | 1,759 |
 | CoRL | DBLP + PMLR + official 2026 programme | 2017 | 1,944 |
 | iSpaRo | Crossref IEEE proceedings | 2024 | 154 |
 | SSRR | Crossref IEEE proceedings | 2004 | 893 |
-| **합계** | | 1984 ~ 2026 | **95,386** |
+| **합계** | | 1984 ~ 2026 | **95,902** |
 
 DOI + (정규화 제목, 연도) 기반으로 저널↔학회 교차 게재를 병합 (예: RA-L 논문이 ICRA에서 발표된 경우 1개 엔트리).
 
@@ -199,7 +199,7 @@ ISSN 기반 저널은 `step1_extra_openalex.py`, Crossref 기반 proceedings는 
 
 ## CoRL 2026 programme addition — 2026-10-15
 
-Full Explorer now contains 95,386 papers, including all 687 CoRL 2026 programme papers (21 Oral, 72 Spotlight, 594 Poster only). Existing 94,699 explorer rows and their citation values are unchanged. The year explorer, Excel exports and coauthor network retain their earlier snapshots; the table above describes Full Explorer.
+At this snapshot, Full Explorer contained 95,386 papers, including all 687 CoRL 2026 programme papers (21 Oral, 72 Spotlight, 594 Poster only). Existing 94,699 explorer rows and their citation values are unchanged. The year explorer, Excel exports and coauthor network retain their earlier snapshots; the table above describes Full Explorer.
 
 - Source snapshot: `pipeline/publisher_raw/corl_programme_2026.json`, from https://www.corl.org/program.
 - Available author lists: 511; abstracts: 511; canonical paper-level institution lists: 480. Source details and sessions are linked through the dedicated CoRL explorer.
@@ -207,3 +207,41 @@ Full Explorer now contains 95,386 papers, including all 687 CoRL 2026 programme 
 - `_programme.py` checks exact venue/year/URL/title against the committed snapshot so verified papers survive missing-author and DOI-less cleanup. No fake authors or DOIs were added.
 - `refresh_publisher_sources.py merge` restores the snapshot after raw-data rebuilding. `step2_openalex.py` retains `publisher_abstract`; `_make_word_book.py` indexes programme abstracts by detail URL. `step3_excel.py` uses the same narrow keep rule for future exports.
 - Validation: all 687 programme IDs and unique titles present; all existing eight-field explorer rows identical; 511 new abstracts indexed; JavaScript syntax and browser filters checked.
+
+## Journal refresh — 2026-10-16
+
+Full Explorer contains **95,902 papers** after adding **516 journal papers**
+(443 from 2026 and 73 from 2025) across all ten journals. Crossref publisher
+deposits were retrieved by exact ISSN for publication dates from 2025-01-01
+through 2026-10-16. Cursor pagination was checked against each source total.
+OpenAlex cursor pagination now requires an API key, so this refresh uses Crossref.
+
+| Journal | Added |
+|---|---:|
+| RA-L | 73 |
+| T-RO | 33 |
+| IJRR | 14 |
+| RAM | 6 |
+| Sci-Rob | 13 |
+| SoRo | 6 |
+| T-Mech | 124 |
+| T-FR | 14 |
+| RA-P | 7 |
+| T-ASE | 226 |
+
+All 95,386 existing records remain, with their citation counts unchanged.
+All 61,879 conference rows, including the 687 CoRL 2026 programme papers,
+are identical to the previous explorer snapshot. Of the 516 added papers,
+101 have unknown citation counts and are displayed as N/A; unknown journal
+citations are excluded from citation statistics. Existing journal metadata
+is only filled where missing. No full citation refresh was performed.
+
+Reproducible source collector: `pipeline/refresh_journals_crossref.py`.
+Source snapshots: `pipeline/publisher_raw/*_crossref_2026-10-16.json`.
+Validation counts: `pipeline/journal_refresh_2026-10-16.json`.
+The Excel exports, year explorer and coauthor network retain their previous
+snapshots; this update refreshes Full Explorer and its word book.
+
+ICRA 2026 papers are available on IEEE Xplore (example:
+[R2BC](https://ieeexplore.ieee.org/abstract/document/11697586),
+added 2026-09-30). ICRA was checked only and was not imported in this journal update.

@@ -150,7 +150,8 @@ pool = pool.drop_duplicates(subset=['_tn', 'year', 'venue'], keep='first').drop(
 slim = pd.concat([pool, keep], ignore_index=True).drop(columns=['_tn'])
 print(f"제목+연도 dedup (within-venue): {before} → {len(slim)} ({before - len(slim)}건 병합)")
 
-arr = [[r['venue'], r['year'], r['title'], r['authors'], r['cited_by_count'], r['doi'], r['venues_all'], int(r['pages_n']), BY_URL.get(r['ee'], {}).get('explorer_url', ''), bool(r['ee'] in BY_URL and r['citation_unknown'])]
+_JOURNALS = {'RA-L', 'T-RO', 'IJRR', 'RAM', 'Sci-Rob', 'SoRo', 'T-Mech', 'T-FR', 'RA-P', 'T-ASE'}
+arr = [[r['venue'], r['year'], r['title'], r['authors'], r['cited_by_count'], r['doi'], r['venues_all'], int(r['pages_n']), BY_URL.get(r['ee'], {}).get('explorer_url', ''), bool((r['ee'] in BY_URL or r['venue'] in _JOURNALS) and r['citation_unknown'])]
        for r in slim.to_dict('records')]
 
 total = len(arr)

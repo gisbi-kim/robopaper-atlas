@@ -1,0 +1,41 @@
+{
+  "before": 95386,
+  "after": 95902,
+  "added": 516,
+  "added_by_venue": {
+    "T-Mech": 124,
+    "RA-L": 73,
+    "T-ASE": 226,
+    "Sci-Rob": 13,
+    "T-RO": 33,
+    "RA-P": 7,
+    "T-FR": 14,
+    "SoRo": 6,
+    "RAM": 6,
+    "IJRR": 14
+  },
+  "totals": {
+    "CoRL": 1944,
+    "ICRA": 30612,
+    "SoRo": 844,
+    "IROS": 26594,
+    "RAM": 1759,
+    "RA-L": 11177,
+    "T-Mech": 6460,
+    "T-RO": 3591,
+    "IJRR": 2808,
+    "SSRR": 893,
+    "T-ASE": 6273,
+    "RSS": 1682,
+    "iSpaRo": 154,
+    "Sci-Rob": 949,
+    "T-FR": 122,
+    "RA-P": 40
+  },
+  "conference_rows_preserved": 61879,
+  "new_unknown_citations": 101,
+  "added_by_year": {
+    "2026": 443,
+    "2025": 73
+  }
+}
