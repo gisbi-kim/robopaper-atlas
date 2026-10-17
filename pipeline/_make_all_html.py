@@ -156,6 +156,8 @@ arr = [[r['venue'], r['year'], r['title'], r['authors'], r['cited_by_count'], r[
 
 from _iros_programme import with_iros_programme
 arr = with_iros_programme(arr)
+from _rss_citations import with_rss_citations
+arr = with_rss_citations(arr)
 
 total = len(arr)
 year_min = int(slim['year'].min())
@@ -325,6 +327,7 @@ __VENUE_TEXT_CSS__  .venue-also { color: #888; font-weight: 400; font-size: 10px
 
 <div class="brand"><a href="index.html">RoboPaper Atlas</a></div>
 <h1>__TITLE_STR__</h1>
+<div style="font-size:12px;color:#6b7280;margin:6px 0">RSS citations refreshed 2026-10-17: 1,627 / 1,682 records (Semantic Scholar + OpenAlex fallback); 55 retain earlier counts. <a href="pipeline/rss_citations_2026-10-17.json" target="_blank" rel="noopener">Refresh details</a></div>
 <div class="sub">
   <span>DBLP + Crossref + OpenAlex + official proceedings + conference programmes · __TOTAL_FMT__ papers (DOI-deduped) · __YMIN__ ~ __YMAX__ · Filter · Sort · Search</span>
   <span style="color:#888; text-align:right; line-height:1.4;">
