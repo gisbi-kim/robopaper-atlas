@@ -154,6 +154,9 @@ _JOURNALS = {'RA-L', 'T-RO', 'IJRR', 'RAM', 'Sci-Rob', 'SoRo', 'T-Mech', 'T-FR',
 arr = [[r['venue'], r['year'], r['title'], r['authors'], r['cited_by_count'], r['doi'], r['venues_all'], int(r['pages_n']), BY_URL.get(r['ee'], {}).get('explorer_url', ''), bool((r['ee'] in BY_URL or r['venue'] in _JOURNALS or (r['venue'] == 'ICRA' and r['year'] == 2026)) and r['citation_unknown'])]
        for r in slim.to_dict('records')]
 
+from _iros_programme import with_iros_programme
+arr = with_iros_programme(arr)
+
 total = len(arr)
 year_min = int(slim['year'].min())
 year_max = int(slim['year'].max())
@@ -323,16 +326,13 @@ __VENUE_TEXT_CSS__  .venue-also { color: #888; font-weight: 400; font-size: 10px
 <div class="brand"><a href="index.html">RoboPaper Atlas</a></div>
 <h1>__TITLE_STR__</h1>
 <div class="sub">
-  <span>DBLP + Crossref + OpenAlex + official proceedings + CoRL programme · __TOTAL_FMT__ papers (DOI-deduped) · __YMIN__ ~ __YMAX__ · Filter · Sort · Search</span>
+  <span>DBLP + Crossref + OpenAlex + official proceedings + conference programmes · __TOTAL_FMT__ papers (DOI-deduped) · __YMIN__ ~ __YMAX__ · Filter · Sort · Search</span>
   <span style="color:#888; text-align:right; line-height:1.4;">
     <a href="REFRESH.md" style="color:#1f77b4; text-decoration:none; font-size:11px;">How to refresh? ↻</a><br>
     Data updated __AS_OF__ · Semantic Scholar citations (retrieval dates vary)
   </span>
 </div>
 
-<div style="margin:16px 0;padding:14px 18px;border-left:4px solid #00695c;background:#edf8f5;font-size:13px;line-height:1.7"><b>New · SSRR 2026: 46 accepted programme papers</b> · <a href="?v=ssrr&amp;yf=2026&amp;yt=2026">Filter SSRR 2026</a> · <a href="https://gisbi-kim.github.io/conference-explorers/ssrr2026/#finder">Sessions &amp; paper finder ↗</a><br><span style="color:#666">Source: user-specified SSRR explorer, based on the owner-supplied accepted-papers programme (2026-10-16). Titles and complete author lists are preserved. DOI, abstracts and citation counts are unavailable; citations are N/A and excluded from statistics. Title links open the programme explorer, not full text.</span></div>
-<div style="margin:16px 0;padding:14px 18px;border-left:4px solid #1f77b4;background:#edf5fc;font-size:13px;line-height:1.7"><b>New · ICRA 2026: 1,875 proceedings papers</b> · <a href="?v=icra&amp;yf=2026&amp;yt=2026">Filter ICRA 2026</a><br><span style="color:#666">Complete Crossref publisher snapshot: 2026-10-16. 1,882 source records checked; 7 cover/index/commentary entries excluded. Citation counts available for all 1,875 papers; abstracts for 1,874. Journal papers presented at ICRA retain their journal entries. Existing paper records and citations are unchanged.</span></div>
-<div style="margin:16px 0;padding:14px 18px;border-left:4px solid #880e4f;background:#fcf1f7;font-size:13px;line-height:1.7"><b>New · CoRL 2026: 687 papers</b> — 21 Oral · 72 Spotlight · 594 Poster only. <a href="?v=corl&yf=2026&yt=2026">Filter CoRL 2026</a> · <a href="https://gisbi-kim.github.io/conference-explorers/corl2026/">Sessions, abstracts, institutions & research trends ↗</a><br><span style="color:#666">Official programme snapshot: 2026-10-15. Author lists available for 511 papers; missing names remain blank. New-paper citations are not collected (N/A) and are excluded from citation statistics. Earlier citation data is unchanged. Excel / year explorer / network downloads retain their own earlier snapshots.</span></div>
 <!-- Row 1: aggregate stats (no venue colour bar) -->
 <div class="summary" style="margin-bottom: 8px;">
   <div class="card"><div class="num" id="c-total">-</div><div class="label">Total</div></div>
@@ -1756,6 +1756,8 @@ html_out = (HTML
             .replace('__WB_PAPERS__', json.dumps(wb_papers_slim, ensure_ascii=False)))
 
 OUT = '../explorer.html'
+from _externalize_explorer import externalize_explorer
+html_out = externalize_explorer(html_out, '..')
 with open(OUT, 'w', encoding='utf-8') as f:
     f.write(html_out)
 print(f'wrote {OUT} ({len(html_out)/1024/1024:.1f} MB, {total:,} papers)')

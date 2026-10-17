@@ -14,21 +14,6 @@
   }
   h1 { font-size: 34px; margin: 0 0 8px; letter-spacing: -0.5px; }
   .tagline { color: #666; font-size: 16px; margin-bottom: 32px; }
-  .update-banner {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    margin: -14px 0 30px; padding: 12px 16px;
-    background: #fff7e6; border: 1px solid #f2c66d; border-left: 5px solid #d8870b;
-    border-radius: 8px; color: #503400;
-    box-shadow: 0 2px 8px rgba(216, 135, 11, 0.08);
-  }
-  .update-banner .label {
-    font-size: 11px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase;
-    color: #8a5400;
-  }
-  .update-banner .date {
-    font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums;
-  }
-  .update-banner .note { font-size: 13px; color: #6b4a12; text-align: right; }
   .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 32px; }
   .badge {
     display: inline-block; padding: 3px 10px; border-radius: 4px;
@@ -112,10 +97,7 @@
 
   footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid #e5e5e5; color: #888; font-size: 12px; }
   footer a { color: #666; }
-  @media (max-width: 620px) {
-    .update-banner { display: block; }
-    .update-banner .note { text-align: left; margin-top: 6px; }
-  }
+
 </style>
 </head>
 <body>
@@ -124,14 +106,6 @@
 <div class="tagline">
   Four decades of robotics research, indexed. 95,000+ papers from ICRA, IROS, RA-L, T-RO, RSS, IJRR,
   Science Robotics, Soft Robotics, IEEE/ASME T-Mech, IEEE T-FR, IEEE RA-P, IEEE T-ASE, IEEE RAM, CoRL, iSpaRo, and SSRR — searchable, filterable, ranked by citation impact.
-</div>
-
-<div class="update-banner" aria-label="Dataset update date">
-  <div>
-    <div class="label">Latest explorer update</div>
-    <div class="date">October 15, 2026</div>
-  </div>
-  <div class="note">97,823 explorer papers · SSRR 2026: +46 · ICRA 2026: +1,875 · Journals: +516</div>
 </div>
 
 <div class="badges">
@@ -154,18 +128,17 @@
 </div>
 
 <div class="stats">
-  <div class="stat"><div class="n">97,823</div><div class="l">Papers (deduped)</div></div>
+  <div class="stat"><div class="n">99,756</div><div class="l">Papers (deduped)</div></div>
   <div class="stat"><div class="n">16</div><div class="l">Venues</div></div>
   <div class="stat"><div class="n">1984~2026</div><div class="l">Years</div></div>
   <div class="stat"><div class="n">511 / 687</div><div class="l">CoRL 2026 abstracts</div></div>
 </div>
 
-<p><a href="explorer.html?v=ssrr&amp;yf=2026&amp;yt=2026">New: explore all 46 SSRR 2026 programme papers →</a><br><a href="explorer.html?v=icra&amp;yf=2026&amp;yt=2026">New: explore all 1,875 ICRA 2026 proceedings papers →</a><br><a href="explorer.html?v=corl&amp;yf=2026&amp;yt=2026">New: explore all 687 CoRL 2026 papers →</a> · <a href="https://gisbi-kim.github.io/conference-explorers/corl2026/">Detailed sessions, affiliations & trends ↗</a><br><small>Excel, year explorer and coauthor network retain their earlier snapshots; Full Explorer includes SSRR 2026 (+46 programme papers), ICRA 2026 (+1,875 papers), CoRL 2026 and the journal refresh (+516 papers).</small></p>
 <h2>Explore</h2>
 <div class="cards">
   <a class="card primary" href="explorer.html">
     <div class="title">Full Explorer <span class="pill">MAIN</span></div>
-    <div class="desc">All 97k+ papers. Filter by year / venue / min-citations, search title & author, sort any column, paginate. Hover a title to preview its abstract.</div>
+    <div class="desc">All 99k+ papers. Filter by year / venue / min-citations, search title & author, sort any column, paginate. Hover a title to preview its abstract.</div>
     <div class="arrow">Open →</div>
   </a>
   <a class="card" href="by_year.html">
