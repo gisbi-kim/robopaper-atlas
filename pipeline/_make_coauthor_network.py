@@ -18,7 +18,7 @@ from itertools import combinations
 
 from _clean import is_front_matter, is_translated_dup
 
-INPUT = 'all_enriched.json'
+INPUT = os.environ.get('COAUTHOR_INPUT', 'all_enriched.json')
 OUT_JSON = '../coauthor_network.json'
 OUT_HTML = '../coauthor_network.html'
 
@@ -49,10 +49,12 @@ for p in papers:
     # and DOI-less proceedings volume titles. All three pollute author lists.
     if is_front_matter(raw_title) or is_translated_dup(raw_title):
         continue
-    if not (p.get('doi') or '').strip():
+    # Published Atlas records have already passed its paper-level cleanup.
+    # CoRL/PMLR and accepted programmes often have no DOI.
+    if not (p.get('doi') or '').strip() and not p.get('atlas_verified'):
         continue
     authors = [clean_author(a) for a in a_str.split(';')]
-    authors = [a for a in authors if a]
+    authors = list(dict.fromkeys(a for a in authors if a))
     if not authors:
         continue
     try:
@@ -154,6 +156,8 @@ meta = {
     'paper_year_min': min(paper_years) if paper_years else None,
     'paper_year_max': max(paper_years) if paper_years else None,
     'built_at': datetime.now(timezone.utc).strftime('%Y-%m-%d'),
+    'papers_used': len(paper_authors),
+    'source': 'Published Atlas records including DOI-less papers' if any(p.get('atlas_verified') for p in papers) else INPUT,
 }
 
 out = {'nodes': nodes, 'edges': edges, 'meta': meta}
@@ -1304,6 +1308,7 @@ html_out = (HTML
             .replace('__MIN_EDGE__', str(MIN_EDGE_COLLABS))
             .replace('__DEFAULT_EDGE__', str(DEFAULT_EDGE_VIEW)))
 
-with open(OUT_HTML, 'w', encoding='utf-8') as f:
-    f.write(html_out)
-print(f'wrote {OUT_HTML} ({os.path.getsize(OUT_HTML)/1024/1024:.1f} MB)')
+if os.environ.get('COAUTHOR_SKIP_HTML') != '1':
+    with open(OUT_HTML, 'w', encoding='utf-8') as f:
+        f.write(html_out)
+    print(f'wrote {OUT_HTML} ({os.path.getsize(OUT_HTML)/1024/1024:.1f} MB)')

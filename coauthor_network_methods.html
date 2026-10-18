@@ -71,18 +71,18 @@
 <h2>The underlying graph</h2>
 <p>
   Authors are nodes. An undirected edge joins two authors if they co-published at
-  least one paper across the 13 venues indexed by the atlas (ICRA · IROS · RA-L ·
-  T-RO · RSS · IJRR · Sci-Rob · SoRo · T-Mech · T-FR · RA-P · T-ASE · RAM). Edge weight = <b>how many
+  least one paper across the 16 venues indexed by the atlas (ICRA · IROS · RA-L ·
+  T-RO · RSS · IJRR · Sci-Rob · SoRo · T-Mech · T-FR · RA-P · T-ASE · RAM · CoRL · iSpaRo · SSRR). Edge weight = <b>how many
   papers they co-authored together</b>.
 </p>
 <p>Two thresholds prune the graph before visualisation:</p>
 <ul>
-  <li><code>MIN_AUTHOR_PAPERS = 3</code> — each author must have ≥ 3 papers in the dataset. Keeps students/one-off attendees out.</li>
-  <li><code>MIN_EDGE_COLLABS = 2</code> — each edge must represent ≥ 2 co-authored papers. Filters accidental single-paper collaborations.</li>
+  <li><code>MIN_AUTHOR_PAPERS = 3</code> — each author must have ≥ 3 papers in the dataset.</li>
+  <li><code>MIN_EDGE_COLLABS = 2</code> — each edge must represent ≥ 2 co-authored papers. Retains repeated collaborations.</li>
 </ul>
 <p>
-  Result: <b>23,806 authors</b> connected by <b>68,598 edges</b> in the exported
-  dataset. The <code>Edge threshold</code> slider on the viewer further filters
+  Result: <b>29,411 authors</b> connected by <b>85,807 edges</b> in the exported
+  dataset, rebuilt on 2026-10-18 from 99,756 Atlas papers, including DOI-less CoRL and accepted-programme records. The <code>Edge threshold</code> slider on the viewer further filters
   edges at render time (default = 5, i.e. only show pairs who co-wrote 5+ papers).
 </p>
 

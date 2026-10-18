@@ -189,9 +189,15 @@ metaEl.innerHTML = '<div class="count">Loading…</div><div class="params">fetch
 (async function boot() {
 let DATA;
 try {
-  const res = await fetch('coauthor_network.json');
+  const res = await fetch('coauthor_network.json?v=2026-10-18');
   if (!res.ok) throw new Error('HTTP ' + res.status);
   DATA = await res.json();
+  if (DATA.edges_file) {
+    const edgeResponse = await fetch(DATA.edges_file);
+    if (!edgeResponse.ok) throw new Error('Edges HTTP ' + edgeResponse.status);
+    DATA = { ...DATA, edges: await edgeResponse.json() };
+  }
+  if (DATA.nodes.length !== DATA.meta.nodes || DATA.edges.length !== DATA.meta.edges) throw new Error('Incomplete network data');
 } catch (err) {
   metaEl.innerHTML = '<div class="count" style="color:#f87171;">Failed to load</div>'
     + '<div class="params">' + (err.message || err) + '</div>'
